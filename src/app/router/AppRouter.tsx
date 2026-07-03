@@ -12,7 +12,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MainLayout from "@/app/shell/MainLayout";
 
-import HomePage from "@/app/pages/HomePage";
+import { SearchPage } from "@/features/search";
 import NotFoundPage from "@/app/pages/NotFoundPage";
 
 import { ROUTES } from "./routes";
@@ -22,7 +22,7 @@ function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path={ROUTES.HOME} element={<HomePage />} />
+          <Route path={ROUTES.HOME} element={<SearchPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
