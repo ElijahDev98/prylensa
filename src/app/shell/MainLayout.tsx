@@ -14,23 +14,15 @@
  */
 
 import { Outlet } from "react-router-dom";
+import { AppSidebar } from "@/app/shell/sidebar";
 
 function MainLayout() {
   return (
     <div className="min-h-screen bg-slate-100">
       <div className="flex min-h-screen">
         {/* Sidebar Region */}
-        <aside
-          className="
-            hidden
-            w-72
-            border-r
-            border-slate-200
-            bg-white
-            lg:block
-          "
-        >
-          {/* AppSidebar will be mounted here */}
+        <aside className=" hidden lg:block ">
+          <AppSidebar />
         </aside>
 
         {/* Main Application */}

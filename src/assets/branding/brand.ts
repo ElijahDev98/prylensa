@@ -1,24 +1,14 @@
 /**
  * -----------------------------------------------------------------------------
  * File: brand.ts
- * Feature: Branding
+ * Feature: Application Configuration
  *
  * Purpose:
- * Centralizes the application's branding information.
- *
- * Responsibilities:
- * - Export the logo.
- * - Export the brand name.
- * - Export the brand tagline.
- *
- * Used By:
- * - SidebarBrand
- * - Header
- * - Authentication
+ * Centralized branding configuration.
  * -----------------------------------------------------------------------------
  */
 
-import PriciqLogo from "./priciq-logo.png";
+import PriciqLogo from "@/assets/branding/priciq-logo.png";
 
 export const BRAND = {
   name: "Priciq",
