@@ -4,11 +4,11 @@
  * Feature: Search
  *
  * Purpose:
- * Layout container for the primary search toolbar.
+ * Composes the complete search toolbar.
  * -----------------------------------------------------------------------------
  */
 
-import { SearchInput } from ".";
+import { SearchField, SearchSubmitButton } from ".";
 
 interface SearchToolbarProps {
   query: string;
@@ -17,28 +17,17 @@ interface SearchToolbarProps {
 
 function SearchToolbar({ query, onQueryChange }: SearchToolbarProps) {
   return (
-    <section
-      aria-label="Product Search Toolbar"
+    <form
       className="
         flex
         items-center
         gap-4
-        rounded-3xl
-        border
-        border-slate-200
-        bg-white
-        p-5
-        shadow-sm
       "
     >
-      <SearchInput value={query} onChange={onQueryChange} />
+      <SearchField query={query} onQueryChange={onQueryChange} />
 
-      {/* CameraButton */}
-
-      {/* VoiceButton */}
-
-      {/* SearchButton */}
-    </section>
+      <SearchSubmitButton />
+    </form>
   );
 }
 
