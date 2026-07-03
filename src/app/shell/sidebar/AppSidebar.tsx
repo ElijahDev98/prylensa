@@ -22,8 +22,7 @@ function AppSidebar() {
     <aside
       className="
         flex
-        h-screen
-        w-72
+        h-full
         flex-col
         overflow-hidden
         border-r

@@ -21,7 +21,7 @@ function MainLayout() {
     <div className="min-h-screen bg-slate-100">
       <div className="flex min-h-screen">
         {/* Sidebar Region */}
-        <aside className=" hidden lg:block ">
+        <aside className=" shrink-0 ">
           <AppSidebar />
         </aside>
 
