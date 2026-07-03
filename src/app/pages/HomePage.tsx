@@ -4,29 +4,21 @@
  * Feature: Home
  *
  * Purpose:
- * Temporary landing page until MainLayout is integrated.
+ * Temporary landing page rendered inside the application shell.
  * -----------------------------------------------------------------------------
  */
 
 function HomePage() {
   return (
-    <main
-      className="
-        flex
-        min-h-screen
-        items-center
-        justify-center
-        bg-slate-50
-      "
-    >
-      <section className="text-center">
-        <h1 className="text-5xl font-bold text-slate-900">Welcome to Priciq</h1>
+    <section className="space-y-3">
+      <header>
+        <h1 className="text-4xl font-bold text-slate-900">Welcome to Priciq</h1>
 
-        <p className="mt-4 text-slate-500">
-          Routing foundation successfully configured.
+        <p className="text-slate-500">
+          Application Shell initialized successfully.
         </p>
-      </section>
-    </main>
+      </header>
+    </section>
   );
 }
 

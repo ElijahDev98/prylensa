@@ -4,11 +4,13 @@
  * Feature: Router
  *
  * Purpose:
- * Configures the application's route hierarchy.
+ * Configures the application's routing hierarchy.
  * -----------------------------------------------------------------------------
  */
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import MainLayout from "@/app/shell/MainLayout";
 
 import HomePage from "@/app/pages/HomePage";
 import NotFoundPage from "@/app/pages/NotFoundPage";
@@ -19,7 +21,9 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route element={<MainLayout />}>
+          <Route path={ROUTES.HOME} element={<HomePage />} />
+        </Route>
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
