@@ -4,23 +4,17 @@
  * Feature: Search
  *
  * Purpose:
- * Entry page for the Search feature.
- *
- * Responsibilities:
- * - Compose all Search feature sections.
- *
- * Future Enhancements:
- * - Search Toolbar
- * - Product Workspace
- * - Compare Prices
- * - Price Trend
- * - AI Recommendation
+ * Entry point for the Search feature.
  * -----------------------------------------------------------------------------
  */
 
-import WelcomeSection from "./components/WelcomeSection";
+import { SearchToolbar, WelcomeSection } from "./components";
+
+import { useSearch } from "./hooks/useSearch";
 
 function SearchPage() {
+  const { state, updateQuery } = useSearch();
+
   return (
     <section
       className="
@@ -34,10 +28,14 @@ function SearchPage() {
     >
       <WelcomeSection />
 
-      {/* SearchToolbar */}
+      <SearchToolbar query={state.query} onQueryChange={updateQuery} />
+
       {/* ProductWorkspace */}
+
       {/* CompareSection */}
+
       {/* PriceTrendSection */}
+
       {/* RecommendationSection */}
     </section>
   );

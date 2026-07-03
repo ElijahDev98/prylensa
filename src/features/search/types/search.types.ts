@@ -16,3 +16,8 @@ export interface UseSearchReturn {
   state: SearchState;
   updateQuery: (value: string) => void;
 }
+
+export interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+}
