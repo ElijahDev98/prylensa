@@ -12,6 +12,8 @@ export interface MockProduct {
   discount: number;
   currency: string;
 
+  description: string;
+
   images: ProductImage[];
 }
 
@@ -56,6 +58,9 @@ export const MOCK_PRODUCT: MockProduct = {
   discount: 12,
 
   currency: "NGN",
+
+  description:
+    "The Apple iPhone 15 Pro Max features a titanium design, A17 Pro chip, advanced camera system, exceptional battery life, and a vibrant Super Retina XDR display. It is designed for users seeking flagship performance, premium photography, and long-term software support.",
 
   images: PRODUCT_IMAGES,
 };

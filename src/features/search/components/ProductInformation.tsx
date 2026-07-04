@@ -10,6 +10,7 @@
 
 import type { MockProduct } from "../data/products";
 
+import ProductDescription from "./ProductDescription";
 import ProductHeader from "./ProductHeader";
 import ProductPrice from "./ProductPrice";
 
@@ -46,16 +47,27 @@ function ProductInformation({ product }: ProductInformationProps) {
         currency={product.currency}
       />
 
-      <section className="mt-8 space-y-3">
-        <div className="h-4 rounded bg-slate-100" />
-        <div className="h-4 rounded bg-slate-100" />
-        <div className="h-4 w-4/5 rounded bg-slate-100" />
-      </section>
+      <ProductDescription description={product.description} />
 
       <div className="flex-1" />
 
       <section className="mt-8">
-        <div className="h-12 rounded-2xl bg-slate-100" />
+        <button
+          type="button"
+          className="
+            w-full
+            rounded-2xl
+            bg-blue-600
+            px-5
+            py-3
+            font-medium
+            text-white
+            transition-colors
+            hover:bg-blue-700
+          "
+        >
+          Compare Prices
+        </button>
       </section>
     </article>
   );
