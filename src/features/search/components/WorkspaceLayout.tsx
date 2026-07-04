@@ -4,61 +4,43 @@
  * Feature: Search
  *
  * Purpose:
- * Defines the three-column workspace layout.
- *
- * Responsibilities:
- * - Own layout only.
- * - Does not own business logic.
+ * Defines the workspace layout.
  * -----------------------------------------------------------------------------
  */
+
+import ProductGallery from "./ProductGallery";
+import ProductInformation from "./ProductInformation";
+import { PRODUCT_IMAGES } from "../data/products";
 
 function WorkspaceLayout() {
   return (
     <section
       className="
-        grid
-        gap-6
-        xl:grid-cols-[1.05fr_1.35fr_0.85fr]
-      "
+    grid
+    gap-6
+    xl:grid-cols-[1.05fr_1.35fr_0.85fr]
+  "
     >
-      {/* ProductGallery */}
+      <div className="min-w-0">
+        <ProductGallery images={PRODUCT_IMAGES} />
+      </div>
 
-      <section
-        className="
-          h-[520px]
-          rounded-3xl
-          border
-          border-slate-200
-          bg-white
-          shadow-sm
-        "
-      />
+      <div className="min-w-0">
+        <ProductInformation />
+      </div>
 
-      {/* ProductInformation */}
-
-      <section
-        className="
-          h-[520px]
-          rounded-3xl
-          border
-          border-slate-200
-          bg-white
-          shadow-sm
-        "
-      />
-
-      {/* BestPricePanel */}
-
-      <section
-        className="
-          h-[520px]
-          rounded-3xl
-          border
-          border-slate-200
-          bg-white
-          shadow-sm
-        "
-      />
+      <div className="min-w-0">
+        <section
+          className="
+        min-h-[500px]
+        rounded-3xl
+        border
+        border-slate-200
+        bg-white
+        shadow-sm
+      "
+        />
+      </div>
     </section>
   );
 }
