@@ -10,7 +10,7 @@
 
 import ProductGallery from "./ProductGallery";
 import ProductInformation from "./ProductInformation";
-import { PRODUCT_IMAGES } from "../data/products";
+import { MOCK_PRODUCT } from "../data/products";
 
 function WorkspaceLayout() {
   return (
@@ -22,11 +22,11 @@ function WorkspaceLayout() {
   "
     >
       <div className="min-w-0">
-        <ProductGallery images={PRODUCT_IMAGES} />
+        <ProductGallery images={MOCK_PRODUCT.images} />
       </div>
 
       <div className="min-w-0">
-        <ProductInformation />
+        <ProductInformation product={MOCK_PRODUCT} />
       </div>
 
       <div className="min-w-0">

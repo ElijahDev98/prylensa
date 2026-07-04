@@ -1,16 +1,19 @@
-/**
- * -----------------------------------------------------------------------------
- * File: products.ts
- * Feature: Search
- *
- * Purpose:
- * Mock product data for development.
- *
- * This file will later be replaced by data from the backend API.
- * -----------------------------------------------------------------------------
- */
-
 import type { ProductImage } from "../types/product-gallery.types";
+
+export interface MockProduct {
+  id: string;
+  title: string;
+  brand: string;
+  rating: number;
+  reviews: number;
+
+  currentPrice: number;
+  previousPrice: number;
+  discount: number;
+  currency: string;
+
+  images: ProductImage[];
+}
 
 export const PRODUCT_IMAGES: ProductImage[] = [
   {
@@ -34,3 +37,25 @@ export const PRODUCT_IMAGES: ProductImage[] = [
     alt: "Smartphone display",
   },
 ];
+
+export const MOCK_PRODUCT: MockProduct = {
+  id: "iphone-15-pro-max",
+
+  title: "Apple iPhone 15 Pro Max 256GB",
+
+  brand: "Apple",
+
+  rating: 4.8,
+
+  reviews: 1267,
+
+  currentPrice: 1899000,
+
+  previousPrice: 2150000,
+
+  discount: 12,
+
+  currency: "NGN",
+
+  images: PRODUCT_IMAGES,
+};
