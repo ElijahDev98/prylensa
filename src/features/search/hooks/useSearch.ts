@@ -4,43 +4,64 @@
  * Feature: Search
  *
  * Purpose:
- * Encapsulates search state and behavior.
- *
- * Responsibilities:
- * - Manage the search query state.
- * - Expose actions for updating the query.
- *
- * Dependencies:
- * - React Hooks
- * - Search constants
- * - Search types
- *
- * Future Enhancements:
- * - Debounced search
- * - Search suggestions
- * - Search history
- * - Filter integration
- * - API integration
- * - AI-powered recommendations
+ * Centralized state management for the Search Feature.
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
-import { SEARCH_DEFAULTS } from "../constants/search.constants";
-import type { UseSearchReturn } from "../types/search.types";
+import { searchProducts } from "../services/search.service";
+import type { MockProduct } from "../data/products";
 
-export function useSearch(): UseSearchReturn {
-  const [query, setQuery] = useState<string>(SEARCH_DEFAULTS.initialQuery);
+export interface SearchState {
+  query: string;
+  products: MockProduct[];
+  loading: boolean;
+  error: string | null;
+}
 
-  const updateQuery = useCallback((value: string) => {
-    setQuery(value);
-  }, []);
+export function useSearch() {
+  const [state, setState] = useState<SearchState>({
+    query: "",
+    products: [],
+    loading: false,
+    error: null,
+  });
+
+  const updateQuery = (query: string) => {
+    setState((previous) => ({
+      ...previous,
+      query,
+    }));
+  };
+
+  const executeSearch = useCallback(async () => {
+    try {
+      setState((previous) => ({
+        ...previous,
+        loading: true,
+        error: null,
+      }));
+
+      const results = await searchProducts(state.query);
+
+      setState((previous) => ({
+        ...previous,
+        loading: false,
+        products: results,
+      }));
+    } catch {
+      setState((previous) => ({
+        ...previous,
+        loading: false,
+        error: "Unable to complete search.",
+      }));
+    }
+  }, [state.query]);
 
   return {
-    state: {
-      query,
-    },
+    state,
     updateQuery,
+    executeSearch,
   };
 }
