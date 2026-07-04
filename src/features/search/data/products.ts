@@ -1,9 +1,21 @@
+/**
+ * -----------------------------------------------------------------------------
+ * File: products.ts
+ * -----------------------------------------------------------------------------
+ */
+
 import type { ProductImage } from "../types/product-gallery.types";
+
+export interface ProductFeature {
+  id: string;
+  label: string;
+}
 
 export interface MockProduct {
   id: string;
   title: string;
   brand: string;
+
   rating: number;
   reviews: number;
 
@@ -12,7 +24,7 @@ export interface MockProduct {
   discount: number;
   currency: string;
 
-  description: string;
+  features: ProductFeature[];
 
   images: ProductImage[];
 }
@@ -59,8 +71,20 @@ export const MOCK_PRODUCT: MockProduct = {
 
   currency: "NGN",
 
-  description:
-    "The Apple iPhone 15 Pro Max features a titanium design, A17 Pro chip, advanced camera system, exceptional battery life, and a vibrant Super Retina XDR display. It is designed for users seeking flagship performance, premium photography, and long-term software support.",
+  features: [
+    {
+      id: "storage",
+      label: "256 GB",
+    },
+    {
+      id: "chip",
+      label: "A17 Pro",
+    },
+    {
+      id: "display",
+      label: '6.7" OLED',
+    },
+  ],
 
   images: PRODUCT_IMAGES,
 };

@@ -25,8 +25,8 @@ function ProductThumbnail({
       aria-label={image.alt}
       className={`
         flex-none
-        h-16
-        w-16
+        h-12
+        w-12 
         overflow-hidden
         rounded-2xl
         border

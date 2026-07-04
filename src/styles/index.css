@@ -43,3 +43,14 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
 }
+
+/* Hide horizontal scrollbar while preserving scrolling */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

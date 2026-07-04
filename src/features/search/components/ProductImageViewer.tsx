@@ -1,13 +1,3 @@
-/**
- * -----------------------------------------------------------------------------
- * File: ProductImageViewer.tsx
- * Feature: Search
- *
- * Purpose:
- * Displays the active product image.
- * -----------------------------------------------------------------------------
- */
-
 import type { ProductImageViewerProps } from "../types/product-gallery.types";
 
 function ProductImageViewer({ image }: ProductImageViewerProps) {
@@ -16,7 +6,8 @@ function ProductImageViewer({ image }: ProductImageViewerProps) {
       <figure
         className="
           flex
-          h-[340px]
+          h-full
+          w-full
           items-center
           justify-center
           rounded-3xl
@@ -34,7 +25,8 @@ function ProductImageViewer({ image }: ProductImageViewerProps) {
     <figure
       className="
         flex
-        h-[340px]
+        h-full
+        w-full
         items-center
         justify-center
         rounded-3xl
@@ -46,8 +38,9 @@ function ProductImageViewer({ image }: ProductImageViewerProps) {
         src={image.url}
         alt={image.alt}
         className="
-          max-h-full
+          h-full
           w-auto
+          max-w-full
           object-contain
           transition-all
           duration-300

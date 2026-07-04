@@ -1,15 +1,7 @@
-/**
- * -----------------------------------------------------------------------------
- * File: ProductGallery.tsx
- * Feature: Search
- *
- * Purpose:
- * Displays the product gallery.
- * -----------------------------------------------------------------------------
- */
+import Card from "@/components/ui/Card";
 
 import ProductImageViewer from "./ProductImageViewer";
-import ProductThumbnailList from "./ProductThumbnailList";
+import ThumbnailCarousel from "./ThumbnailCarousel";
 
 import { useProductGallery } from "../hooks/useProductGallery";
 
@@ -23,31 +15,17 @@ function ProductGallery({ images }: ProductGalleryProps) {
   } = useProductGallery(images);
 
   return (
-    <section
-      className="
-        flex
-        min-w-0
-        min-h-[500px]
-        flex-col
-        overflow-hidden
-        rounded-3xl
-        border
-        border-slate-200
-        bg-white
-        p-6
-        shadow-sm
-      "
-    >
-      <div className="flex-1 min-h-0">
+    <Card className="p-6">
+      <div className="flex min-h-0 flex-1">
         <ProductImageViewer image={activeImage} />
       </div>
 
-      <ProductThumbnailList
+      <ThumbnailCarousel
         images={galleryImages}
         activeImageId={activeImage?.id ?? ""}
         onSelectImage={setActiveImageId}
       />
-    </section>
+    </Card>
   );
 }
 

@@ -4,9 +4,11 @@
  * Feature: Search
  *
  * Purpose:
- * Displays a horizontally scrollable list of product thumbnails.
+ * Displays the horizontal list of product thumbnails.
  * -----------------------------------------------------------------------------
  */
+
+import type { RefObject } from "react";
 
 import ProductThumbnail from "./ProductThumbnail";
 
@@ -16,35 +18,37 @@ interface ProductThumbnailListProps {
   images: ProductImage[];
   activeImageId: string;
   onSelectImage: (id: string) => void;
+  scrollRef: RefObject<HTMLDivElement | null>;
 }
 
 function ProductThumbnailList({
   images,
   activeImageId,
   onSelectImage,
+  scrollRef,
 }: ProductThumbnailListProps) {
   return (
-    <nav
-      aria-label="Product image thumbnails"
+    <div
+      ref={scrollRef}
       className="
-        mt-5
-        flex
-        gap-3
+        flex-1
         overflow-x-auto
-        pb-2
-        scrollbar-none
+        overflow-y-hidden
+        whitespace-nowrap
+        scrollbar-hide
       "
     >
-      {images.map((image) => (
-        <div key={image.id} className="shrink-0">
+      <div className="flex items-center gap-2">
+        {images.map((image) => (
           <ProductThumbnail
+            key={image.id}
             image={image}
             isActive={image.id === activeImageId}
             onSelect={onSelectImage}
           />
-        </div>
-      ))}
-    </nav>
+        ))}
+      </div>
+    </div>
   );
 }
 
