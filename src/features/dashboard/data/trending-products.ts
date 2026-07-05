@@ -38,4 +38,13 @@ export const TRENDING_PRODUCTS: TrendingProduct[] = [
     trend: "down",
     store: "Slot",
   },
+  {
+    id: "4",
+    name: "MacBook Pro M5",
+    category: "Laptop",
+    currentPrice: "₦4,250,000",
+    priceChange: "2%",
+    trend: "down",
+    store: "iStore",
+  },
 ];
