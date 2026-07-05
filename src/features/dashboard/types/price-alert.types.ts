@@ -2,10 +2,11 @@
  * -----------------------------------------------------------------------------
  * File: price-alert.types.ts
  * Feature: Dashboard
+ *
+ * Purpose:
+ * Domain model for dashboard price alerts.
  * -----------------------------------------------------------------------------
  */
-
-export type AlertStatus = "drop" | "rise";
 
 export interface PriceAlert {
   id: string;
@@ -14,11 +15,9 @@ export interface PriceAlert {
 
   store: string;
 
-  previousPrice: string;
-
   currentPrice: string;
 
-  change: string;
+  previousPrice: string;
 
-  status: AlertStatus;
+  direction: "up" | "down";
 }
