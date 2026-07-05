@@ -2,30 +2,26 @@
  * -----------------------------------------------------------------------------
  * File: search.service.ts
  * Feature: Search
- *
- * Purpose:
- * Centralizes all search operations.
  * -----------------------------------------------------------------------------
  */
 
-import { MOCK_PRODUCT } from "../data/products";
+import { fetchProducts } from "../api/search.api";
 
 import type { MockProduct } from "../data/products";
 
 export async function searchProducts(query: string): Promise<MockProduct[]> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  const products = await fetchProducts();
 
-  const products: MockProduct[] = [MOCK_PRODUCT];
+  const keyword = query.trim().toLowerCase();
 
-  if (!query.trim()) {
+  if (!keyword) {
     return products;
   }
 
-  const keyword = query.toLowerCase();
-
-  return products.filter(
-    (product) =>
+  return products.filter((product) => {
+    return (
       product.title.toLowerCase().includes(keyword) ||
-      product.brand.toLowerCase().includes(keyword),
-  );
+      product.brand.toLowerCase().includes(keyword)
+    );
+  });
 }

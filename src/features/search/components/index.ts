@@ -7,3 +7,4 @@ export { default as SearchVoiceButton } from "./SearchVoiceButton";
 export { default as SearchWorkspace } from "./SearchWorkspace";
 export { default as WelcomeSection } from "./WelcomeSection";
 export { default as WorkspaceLayout } from "./WorkspaceLayout";
+export { default as SearchResultList } from "./SearchResultList";

@@ -1,4 +1,5 @@
 import Card from "@/components/ui/Card";
+import { LAYOUT, SPACING } from "@/design-system";
 
 import type { MockProduct } from "../data/products";
 
@@ -13,8 +14,19 @@ interface ProductInformationProps {
 
 function ProductInformation({ product }: ProductInformationProps) {
   return (
-    <Card as="article" className="justify-between p-6">
-      <div>
+    <Card
+      as="article"
+      className={`
+        flex
+        ${LAYOUT.workspacePanel.fullHeight}
+        ${LAYOUT.workspacePanel.minHeight}
+        ${LAYOUT.workspacePanel.maxHeight}
+        flex-col
+        justify-between
+        ${SPACING.panel}
+      `}
+    >
+      <div className="flex-1">
         <ProductHeader
           title={product.title}
           brand={product.brand}
@@ -34,21 +46,27 @@ function ProductInformation({ product }: ProductInformationProps) {
         <ProductDetailsLink />
       </div>
 
-      <button
-        type="button"
-        className="
-          w-full
-          rounded-2xl
-          bg-blue-600
-          py-3
-          font-medium
-          text-white
-          transition-colors
-          hover:bg-blue-700
-        "
-      >
-        Compare Prices
-      </button>
+      <div className={SPACING.actionTop}>
+        <button
+          type="button"
+          className="
+            w-full
+            rounded-2xl
+            bg-blue-600
+            py-3
+            font-medium
+            text-white
+            transition-colors
+            duration-200
+            hover:bg-blue-700
+            focus:outline-none
+            focus:ring-2
+            focus:ring-blue-200
+          "
+        >
+          Compare Prices
+        </button>
+      </div>
     </Card>
   );
 }

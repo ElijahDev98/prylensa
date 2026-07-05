@@ -4,38 +4,75 @@
  * Feature: Search
  *
  * Purpose:
- * Centralized state management for the Search Feature.
+ * Centralized state management for the Search feature.
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
-import { searchProducts } from "../services/search.service";
 import type { MockProduct } from "../data/products";
+import { searchProducts } from "../services/search.service";
 
 export interface SearchState {
   query: string;
+
   products: MockProduct[];
+
+  selectedProduct: MockProduct | null;
+
   loading: boolean;
+
   error: string | null;
 }
 
-export function useSearch() {
-  const [state, setState] = useState<SearchState>({
-    query: "",
-    products: [],
-    loading: false,
-    error: null,
-  });
+const INITIAL_STATE: SearchState = {
+  query: "",
 
-  const updateQuery = (query: string) => {
+  products: [],
+
+  selectedProduct: null,
+
+  loading: false,
+
+  error: null,
+};
+
+const MINIMUM_SEARCH_LENGTH = 2;
+
+export function useSearch() {
+  const [state, setState] = useState<SearchState>(INITIAL_STATE);
+
+  const updateQuery = useCallback((query: string) => {
     setState((previous) => ({
       ...previous,
       query,
     }));
-  };
+  }, []);
+
+  const setSelectedProduct = useCallback((product: MockProduct) => {
+    setState((previous) => ({
+      ...previous,
+      selectedProduct: product,
+    }));
+  }, []);
 
   const executeSearch = useCallback(async () => {
+    const keyword = state.query.trim();
+
+    /**
+     * Prevent invalid searches.
+     */
+    if (keyword.length < MINIMUM_SEARCH_LENGTH) {
+      setState((previous) => ({
+        ...previous,
+        products: [],
+        loading: false,
+        error: null,
+      }));
+
+      return;
+    }
+
     try {
       setState((previous) => ({
         ...previous,
@@ -43,18 +80,22 @@ export function useSearch() {
         error: null,
       }));
 
-      const results = await searchProducts(state.query);
+      const products = await searchProducts(keyword);
 
       setState((previous) => ({
         ...previous,
+
+        products,
+
+        selectedProduct: products.length > 0 ? products[0] : null,
+
         loading: false,
-        products: results,
       }));
     } catch {
       setState((previous) => ({
         ...previous,
         loading: false,
-        error: "Unable to complete search.",
+        error: "Unable to search products.",
       }));
     }
   }, [state.query]);
@@ -62,6 +103,7 @@ export function useSearch() {
   return {
     state,
     updateQuery,
+    setSelectedProduct,
     executeSearch,
   };
 }

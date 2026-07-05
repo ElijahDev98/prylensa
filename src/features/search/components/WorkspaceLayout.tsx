@@ -8,31 +8,37 @@
  * -----------------------------------------------------------------------------
  */
 
+import { LAYOUT } from "@/design-system";
+
 import BestPricePanel from "./BestPricePanel";
 import ProductGallery from "./ProductGallery";
 import ProductInformation from "./ProductInformation";
 
-import { MOCK_PRODUCT } from "../data/products";
+import type { MockProduct } from "../data/products";
 
-function WorkspaceLayout() {
+interface WorkspaceLayoutProps {
+  product: MockProduct;
+}
+
+function WorkspaceLayout({ product }: WorkspaceLayoutProps) {
   return (
     <section
-      className="
+      className={`
         grid
-        gap-6
+        ${LAYOUT.workspace.gap}
         items-stretch
         lg:grid-cols-3
-      "
+      `}
     >
-      <div className="min-w-0 h-full">
-        <ProductGallery images={MOCK_PRODUCT.images} />
+      <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
+        <ProductGallery images={product.images} />
       </div>
 
-      <div className="min-w-0 h-full">
-        <ProductInformation product={MOCK_PRODUCT} />
+      <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
+        <ProductInformation product={product} />
       </div>
 
-      <div className="min-w-0 h-full">
+      <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
         <BestPricePanel />
       </div>
     </section>

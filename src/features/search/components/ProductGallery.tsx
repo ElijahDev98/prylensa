@@ -1,4 +1,5 @@
 import Card from "@/components/ui/Card";
+import { LAYOUT, SPACING } from "@/design-system";
 
 import ProductImageViewer from "./ProductImageViewer";
 import ThumbnailCarousel from "./ThumbnailCarousel";
@@ -15,8 +16,25 @@ function ProductGallery({ images }: ProductGalleryProps) {
   } = useProductGallery(images);
 
   return (
-    <Card className="p-6">
-      <div className="flex min-h-0 flex-1">
+    <Card
+      className={`
+        flex
+        ${LAYOUT.workspacePanel.fullHeight}
+        ${LAYOUT.workspacePanel.minHeight}
+        ${LAYOUT.workspacePanel.maxHeight}
+        flex-col
+        ${SPACING.panel}
+      `}
+    >
+      <div
+        className="
+          flex
+          flex-1
+          items-center
+          justify-center
+          overflow-hidden
+        "
+      >
         <ProductImageViewer image={activeImage} />
       </div>
 
