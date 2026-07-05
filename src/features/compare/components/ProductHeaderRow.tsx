@@ -76,8 +76,8 @@ function ProductHeaderRow() {
 
           <button
             type="button"
-            title="Remove product"
             aria-label="Remove product"
+            title="Remove product"
             className="
               absolute
               right-5

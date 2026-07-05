@@ -42,6 +42,8 @@ function ProductHeaderCell({ product }: ProductHeaderCellProps) {
     >
       <button
         type="button"
+        title="Remove product"
+        aria-label="Remove product"
         className="
           absolute
           right-5
