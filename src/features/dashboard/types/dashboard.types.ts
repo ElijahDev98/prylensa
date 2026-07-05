@@ -5,6 +5,8 @@
  * -----------------------------------------------------------------------------
  */
 
+import type { LucideIcon } from "lucide-react";
+
 export interface DashboardMetric {
   id: string;
 
@@ -12,5 +14,13 @@ export interface DashboardMetric {
 
   value: string;
 
-  change?: string;
+  change: string;
+
+  icon: LucideIcon;
+
+  iconBackground: string;
+
+  iconColor: string;
+
+  trendColor: string;
 }

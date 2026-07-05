@@ -4,20 +4,13 @@
  * Feature: Dashboard
  *
  * Purpose:
- * Reusable metric card displayed on the dashboard.
- *
- * Responsibilities:
- * - Display metric label.
- * - Display metric value.
- * - Display optional trend.
- *
- * Does NOT:
- * - Fetch data.
- * - Format data.
+ * Compact dashboard metric card.
  * -----------------------------------------------------------------------------
  */
 
 import Card from "@/components/ui/Card";
+
+import { TrendingDown, TrendingUp } from "lucide-react";
 
 import type { DashboardMetric } from "../types/dashboard.types";
 
@@ -26,20 +19,38 @@ interface DashboardMetricCardProps {
 }
 
 function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
+  const Icon = metric.icon;
+
+  const isPositive = metric.trendColor.includes("green");
+
   return (
     <Card
       className="
-        flex
-        flex-col
-        justify-between
-        p-6
+        rounded-3xl
+        p-5
         transition-all
         duration-200
         hover:-translate-y-1
         hover:shadow-md
       "
     >
-      <div>
+      {/* Header */}
+
+      <div className="flex items-center gap-3">
+        <div
+          className={`
+            flex
+            h-11
+            w-11
+            items-center
+            justify-center
+            rounded-2xl
+            ${metric.iconBackground}
+          `}
+        >
+          <Icon size={22} className={metric.iconColor} />
+        </div>
+
         <p
           className="
             text-sm
@@ -49,38 +60,39 @@ function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
         >
           {metric.label}
         </p>
-
-        <h2
-          className="
-            mt-3
-            text-3xl
-            font-bold
-            tracking-tight
-            text-slate-900
-          "
-        >
-          {metric.value}
-        </h2>
       </div>
 
-      {metric.change && (
-        <span
-          className="
-            mt-6
-            inline-flex
-            w-fit
-            rounded-full
-            bg-green-100
-            px-3
-            py-1
-            text-xs
-            font-semibold
-            text-green-700
-          "
-        >
-          {metric.change}
-        </span>
-      )}
+      {/* Value */}
+
+      <h2
+        className="
+          mt-5
+          text-3xl
+          font-bold
+          tracking-tight
+          text-slate-900
+        "
+      >
+        {metric.value}
+      </h2>
+
+      {/* Trend */}
+
+      <div
+        className={`
+          mt-4
+          inline-flex
+          items-center
+          gap-2
+          text-sm
+          font-medium
+          ${metric.trendColor}
+        `}
+      >
+        {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+
+        <span>{metric.change}</span>
+      </div>
     </Card>
   );
 }

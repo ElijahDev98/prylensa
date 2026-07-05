@@ -2,6 +2,20 @@
  * -----------------------------------------------------------------------------
  * File: Card.tsx
  * Shared UI Component
+ *
+ * Purpose:
+ * Generic container component.
+ *
+ * Responsibilities:
+ * - Border
+ * - Radius
+ * - Shadow
+ * - Background
+ *
+ * Does NOT:
+ * - Decide height
+ * - Decide width
+ * - Decide layout
  * -----------------------------------------------------------------------------
  */
 
@@ -22,7 +36,6 @@ function Card({
     <Component
       className={`
         flex
-        h-[400px]
         flex-col
         overflow-hidden
         rounded-3xl

@@ -10,10 +10,9 @@
  * - Provide a consistent panel appearance.
  * - Render child widget content.
  *
- * Does NOT:
- * - Fetch data.
- * - Manage state.
- * - Render business logic.
+ * Dashboard Rule:
+ * Panels size themselves according to their content.
+ * They never force equal heights.
  * -----------------------------------------------------------------------------
  */
 
@@ -29,7 +28,6 @@ function DashboardPanel({ children, className = "" }: DashboardPanelProps) {
   return (
     <Card
       className={`
-        h-full
         rounded-3xl
         p-6
         ${className}
