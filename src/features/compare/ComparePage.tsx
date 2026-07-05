@@ -4,15 +4,16 @@
  * Feature: Compare
  *
  * Purpose:
- * Entry page for the product comparison experience.
+ * Entry page for the Compare feature.
  *
  * Responsibilities:
- * - Render compare header.
- * - Render compare workspace.
+ * - Render the compare page layout.
+ * - Compose the page sections.
  *
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 

@@ -4,7 +4,15 @@
  * Feature: Compare
  *
  * Purpose:
- * Displays the comparison page heading.
+ * Displays the page heading for the Compare feature.
+ *
+ * Responsibilities:
+ * - Display title.
+ * - Display supporting description.
+ *
+ * Does NOT:
+ * - Fetch data.
+ * - Manage state.
  * -----------------------------------------------------------------------------
  */
 
@@ -19,7 +27,7 @@ function CompareHeader() {
     >
       <h1
         className="
-          text-3xl
+          text-4xl
           font-bold
           tracking-tight
           text-slate-900
@@ -31,12 +39,13 @@ function CompareHeader() {
       <p
         className="
           max-w-3xl
-          text-base
+          text-lg
+          leading-relaxed
           text-slate-500
         "
       >
         Compare prices, ratings, availability and product information across
-        multiple online stores.
+        multiple online stores to find the best deal.
       </p>
     </header>
   );
