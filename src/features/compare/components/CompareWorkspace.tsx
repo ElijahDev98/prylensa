@@ -7,16 +7,21 @@
  * Main workspace for the Compare feature.
  *
  * Responsibilities:
- * - Arrange comparison components.
+ * - Arrange comparison toolbar.
+ * - Arrange comparison panel.
+ * - Compose comparison feature components.
  *
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
-import ComparisonToolbar from "./ComparisonToolbar";
 import ComparisonPanel from "./ComparisonPanel";
+import ComparisonPanelHeader from "./ComparisonPanelHeader";
+import ComparisonToolbar from "./ComparisonToolbar";
+import ProductHeaderRow from "./ProductHeaderRow";
 
 function CompareWorkspace() {
   return (
@@ -28,39 +33,45 @@ function CompareWorkspace() {
         gap-6
       "
     >
+      {/* ---------------------------------------------------------------------- */}
+      {/* Comparison Toolbar                                                     */}
+      {/* ---------------------------------------------------------------------- */}
+
       <ComparisonToolbar />
 
-      <ComparisonPanel>
-        <div
-          className="
-            flex
-            min-h-[650px]
-            items-center
-            justify-center
-          "
-        >
-          <div className="text-center">
-            <h2
-              className="
-                text-xl
-                font-semibold
-                text-slate-900
-              "
-            >
-              Product Comparison
-            </h2>
+      {/* ---------------------------------------------------------------------- */}
+      {/* Comparison Panel                                                       */}
+      {/* ---------------------------------------------------------------------- */}
 
-            <p
-              className="
-                mt-2
-                text-sm
-                text-slate-500
-              "
-            >
-              Comparison matrix will be implemented in the next milestone.
-            </p>
-          </div>
-        </div>
+      <ComparisonPanel>
+        <ComparisonPanelHeader
+          title="Product Comparison"
+          description="Compare product pricing, availability and key features across multiple online stores."
+          actionLabel="View All"
+        />
+
+        <ProductHeaderRow />
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Phase 3.4                                                          */}
+        {/* Store Header Row                                                   */}
+        {/* ------------------------------------------------------------------ */}
+
+        {/* <StoreHeaderRow /> */}
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Phase 3.5                                                          */}
+        {/* Comparison Attribute Rows                                          */}
+        {/* ------------------------------------------------------------------ */}
+
+        {/* <ComparisonAttributeRow /> */}
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Phase 3.6                                                          */}
+        {/* Comparison Footer                                                  */}
+        {/* ------------------------------------------------------------------ */}
+
+        {/* <ComparisonFooter /> */}
       </ComparisonPanel>
     </section>
   );
