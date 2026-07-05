@@ -7,13 +7,15 @@
  * Main workspace for the Compare feature.
  *
  * Responsibilities:
- * - Reserve space for future comparison components.
+ * - Arrange comparison components.
  *
  * Does NOT:
  * - Fetch data.
  * - Manage state.
  * -----------------------------------------------------------------------------
  */
+
+import ComparisonToolbar from "./ComparisonToolbar";
 
 function CompareWorkspace() {
   return (
@@ -25,12 +27,10 @@ function CompareWorkspace() {
         gap-6
       "
     >
-      {/* Phase 3.2:
-          ComparisonToolbar
-      */}
+      <ComparisonToolbar />
 
-      {/* Phase 3.3:
-          ComparisonMatrix
+      {/* Phase 3.3
+          Comparison Matrix
       */}
     </section>
   );
