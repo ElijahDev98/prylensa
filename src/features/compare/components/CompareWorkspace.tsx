@@ -4,10 +4,10 @@
  * Feature: Compare
  *
  * Purpose:
- * Main workspace for product comparison.
+ * Main comparison workspace.
  *
  * Responsibilities:
- * - Compose comparison UI.
+ * - Arrange compare components.
  *
  * Does NOT:
  * - Fetch data.
@@ -17,43 +17,56 @@
 
 import Card from "@/components/ui/Card";
 
+import ComparisonToolbar from "./ComparisonToolbar";
+
 function CompareWorkspace() {
   return (
-    <Card
+    <section
       className="
-        p-8
+        flex
+        flex-col
+        gap-6
       "
     >
-      <div
+      <ComparisonToolbar />
+
+      <Card
         className="
-          flex
-          min-h-[500px]
-          items-center
-          justify-center
+          p-8
         "
       >
-        <div className="text-center">
-          <h2
-            className="
-              text-xl
-              font-semibold
-              text-slate-900
-            "
-          >
-            Comparison Workspace
-          </h2>
+        <div
+          className="
+            flex
+            min-h-[450px]
+            items-center
+            justify-center
+          "
+        >
+          <div className="text-center">
+            <h2
+              className="
+                text-xl
+                font-semibold
+                text-slate-900
+              "
+            >
+              Comparison Table
+            </h2>
 
-          <p
-            className="
-              mt-3
-              text-slate-500
-            "
-          >
-            The comparison engine will be implemented in the next milestone.
-          </p>
+            <p
+              className="
+                mt-3
+                text-slate-500
+              "
+            >
+              Product comparison table will be implemented in the next
+              milestone.
+            </p>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </section>
   );
 }
 
