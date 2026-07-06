@@ -4,13 +4,13 @@
  * Feature: Compare
  *
  * Purpose:
- * Provides the Comparison ViewModel to the Compare feature.
+ * Provides the Comparison ViewModel for the Compare feature.
  *
  * Responsibilities:
- * - Provide the Comparison ViewModel.
+ * - Create comparison state.
+ * - Provide comparison state.
  *
  * Does NOT:
- * - Manage comparison state.
  * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
@@ -19,15 +19,15 @@ import { createContext } from "react";
 
 import type { PropsWithChildren } from "react";
 
-import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+import useComparisonState from "../hooks/useComparisonState";
 
-interface ComparisonProviderProps extends PropsWithChildren {
-  comparison: ComparisonViewModel;
-}
+import type { ComparisonViewModel } from "../types/comparison.viewmodel";
 
 const ComparisonContext = createContext<ComparisonViewModel | null>(null);
 
-function ComparisonProvider({ comparison, children }: ComparisonProviderProps) {
+function ComparisonProvider({ children }: PropsWithChildren) {
+  const comparison = useComparisonState();
+
   return (
     <ComparisonContext.Provider value={comparison}>
       {children}
