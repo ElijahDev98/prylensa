@@ -7,23 +7,28 @@
  * Displays the available stores for each compared product.
  *
  * Responsibilities:
- * - Render the stores row within the comparison matrix.
- * - Align store cells with the product columns.
+ * - Render the stores row.
+ * - Align stores beneath each product.
  *
  * Does NOT:
+ * - Import mock data.
  * - Fetch data.
  * - Manage state.
- * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import ProductLabelCell from "./ProductLabelCell";
 import StoreHeaderCell from "./StoreHeaderCell";
 
-import { COMPARISON_PRODUCTS } from "../data/comparison-products";
-import { STORES } from "../data/stores";
+import type { ComparisonProduct } from "../types/comparison-product.types";
+import type { Store } from "../types/store.types";
 
-function StoreHeaderRow() {
+interface StoreHeaderRowProps {
+  products: ComparisonProduct[];
+  stores: Store[];
+}
+
+function StoreHeaderRow({ products, stores }: StoreHeaderRowProps) {
   return (
     <section
       className="
@@ -32,20 +37,12 @@ function StoreHeaderRow() {
         border-slate-200
       "
       style={{
-        gridTemplateColumns: `140px repeat(${COMPARISON_PRODUCTS.length}, minmax(280px, 1fr))`,
+        gridTemplateColumns: `140px repeat(${products.length}, minmax(280px, 1fr))`,
       }}
     >
-      {/* ---------------------------------------------------------------------- */}
-      {/* Label Column                                                           */}
-      {/* ---------------------------------------------------------------------- */}
-
       <ProductLabelCell label="Stores" />
 
-      {/* ---------------------------------------------------------------------- */}
-      {/* Store Columns                                                          */}
-      {/* ---------------------------------------------------------------------- */}
-
-      {COMPARISON_PRODUCTS.map((product) => (
+      {products.map((product) => (
         <div
           key={product.id}
           className="
@@ -59,7 +56,7 @@ function StoreHeaderRow() {
             last:border-r-0
           "
         >
-          {STORES.map((store) => (
+          {stores.map((store) => (
             <StoreHeaderCell key={store.id} store={store} />
           ))}
         </div>

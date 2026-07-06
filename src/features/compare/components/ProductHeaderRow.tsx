@@ -4,40 +4,38 @@
  * Feature: Compare
  *
  * Purpose:
- * Displays the product header row for the comparison matrix.
+ * Displays the compared products header row.
  *
  * Responsibilities:
- * - Arrange the product label cell.
- * - Arrange compared product header cells.
- * - Provide the comparison grid layout.
+ * - Render the product label column.
+ * - Render product header cells.
  *
  * Does NOT:
+ * - Define grid layout.
  * - Fetch data.
  * - Manage state.
- * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
+import ComparisonRow from "./ComparisonRow";
 import ProductHeaderCell from "./ProductHeaderCell";
 import ProductLabelCell from "./ProductLabelCell";
 
-import { COMPARISON_PRODUCTS } from "../data/comparison-products";
+import type { ComparisonProduct } from "../types/comparison-product.types";
 
-function ProductHeaderRow() {
+interface ProductHeaderRowProps {
+  products: ComparisonProduct[];
+}
+
+function ProductHeaderRow({ products }: ProductHeaderRowProps) {
   return (
-    <section
-      className="border-b border-slate-200"
-      style={{
-        display: "grid",
-        gridTemplateColumns: `180px repeat(${COMPARISON_PRODUCTS.length}, minmax(340px, 1fr))`,
-      }}
-    >
+    <ComparisonRow productCount={products.length}>
       <ProductLabelCell label="Products" />
 
-      {COMPARISON_PRODUCTS.map((product) => (
+      {products.map((product) => (
         <ProductHeaderCell key={product.id} product={product} />
       ))}
-    </section>
+    </ComparisonRow>
   );
 }
 

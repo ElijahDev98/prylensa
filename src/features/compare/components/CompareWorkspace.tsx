@@ -8,10 +8,11 @@
  *
  * Responsibilities:
  * - Arrange comparison components.
+ * - Retrieve comparison data.
+ * - Pass data to child components.
  *
  * Does NOT:
- * - Fetch data.
- * - Manage state.
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -20,7 +21,11 @@ import ComparisonPanel from "./ComparisonPanel";
 import ComparisonPanelHeader from "./ComparisonPanelHeader";
 import ComparisonToolbar from "./ComparisonToolbar";
 
+import useComparison from "../hooks/useComparison";
+
 function CompareWorkspace() {
+  const { products, stores } = useComparison();
+
   return (
     <section
       aria-label="Compare Workspace"
@@ -38,7 +43,7 @@ function CompareWorkspace() {
           description="Compare product pricing, availability and key features across multiple online stores."
         />
 
-        <ComparisonMatrix />
+        <ComparisonMatrix products={products} stores={stores} />
       </ComparisonPanel>
     </section>
   );
