@@ -7,11 +7,11 @@
  * Displays the comparison toolbar.
  *
  * Responsibilities:
- * - Display selected products summary.
+ * - Display comparison summary.
  * - Display comparison actions.
+ * - Consume Comparison Context.
  *
  * Does NOT:
- * - Fetch data.
  * - Manage state.
  * - Execute business logic.
  * -----------------------------------------------------------------------------
@@ -19,7 +19,17 @@
 
 import { Box, ChevronDown, Download, Plus, Store, Trash2 } from "lucide-react";
 
+import useComparisonContext from "../context/useComparisonContext";
+
 function ComparisonToolbar() {
+  const comparison = useComparisonContext();
+
+  const productCount = comparison.products.length;
+
+  const hasProducts = productCount > 0;
+
+  const canSort = productCount > 1;
+
   return (
     <section
       aria-label="Comparison Toolbar"
@@ -38,7 +48,7 @@ function ComparisonToolbar() {
       "
     >
       {/* -------------------------------------------------------------- */}
-      {/* Selected Products                                              */}
+      {/* Summary                                                        */}
       {/* -------------------------------------------------------------- */}
 
       <div className="flex items-center gap-4">
@@ -66,7 +76,7 @@ function ComparisonToolbar() {
               text-slate-900
             "
           >
-            3 Products Selected
+            {productCount} Product{productCount !== 1 ? "s" : ""} Selected
           </h2>
 
           <p
@@ -76,13 +86,13 @@ function ComparisonToolbar() {
               text-slate-500
             "
           >
-            Compare the best prices and features.
+            Compare pricing, availability and product features.
           </p>
         </div>
       </div>
 
       {/* -------------------------------------------------------------- */}
-      {/* Toolbar Actions                                                */}
+      {/* Actions                                                        */}
       {/* -------------------------------------------------------------- */}
 
       <div
@@ -95,6 +105,7 @@ function ComparisonToolbar() {
       >
         <button
           type="button"
+          disabled={!hasProducts}
           className="
             inline-flex
             items-center
@@ -110,6 +121,8 @@ function ComparisonToolbar() {
             text-slate-700
             transition-colors
             hover:bg-slate-50
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
         >
           <Store size={16} />
@@ -119,6 +132,7 @@ function ComparisonToolbar() {
 
         <button
           type="button"
+          disabled={!canSort}
           className="
             inline-flex
             items-center
@@ -134,6 +148,8 @@ function ComparisonToolbar() {
             text-slate-700
             transition-colors
             hover:bg-slate-50
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
         >
           <ChevronDown size={16} className="rotate-180" />
@@ -143,6 +159,7 @@ function ComparisonToolbar() {
 
         <button
           type="button"
+          disabled={!hasProducts}
           className="
             inline-flex
             items-center
@@ -158,6 +175,8 @@ function ComparisonToolbar() {
             text-slate-700
             transition-colors
             hover:bg-slate-50
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
         >
           <Download size={16} />
@@ -189,6 +208,8 @@ function ComparisonToolbar() {
 
         <button
           type="button"
+          disabled={!hasProducts}
+          onClick={comparison.clearComparison}
           className="
             inline-flex
             items-center
@@ -204,6 +225,8 @@ function ComparisonToolbar() {
             text-red-600
             transition-colors
             hover:bg-red-100
+            disabled:cursor-not-allowed
+            disabled:opacity-50
           "
         >
           <Trash2 size={16} />
