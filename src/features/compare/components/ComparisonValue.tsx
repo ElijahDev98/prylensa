@@ -7,30 +7,29 @@
  * Displays a single comparison value for a store.
  *
  * Responsibilities:
- * - Render store name.
- * - Render comparison value.
- * - Highlight best value.
+ * - Display the store name.
+ * - Display the comparison value.
+ * - Highlight important values.
  *
  * Does NOT:
+ * - Resolve stores.
  * - Fetch data.
  * - Manage state.
- * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import { CheckCircle2 } from "lucide-react";
 
-import { STORES } from "../data/stores";
-
+import type { Store } from "../types/store.types";
 import type { ComparisonStoreValue } from "../types/comparison-data.types";
 
 interface ComparisonValueProps {
+  store: Store;
+
   value: ComparisonStoreValue;
 }
 
-function ComparisonValue({ value }: ComparisonValueProps) {
-  const store = STORES.find((store) => store.id === value.storeId);
-
+function ComparisonValue({ store, value }: ComparisonValueProps) {
   const valueColor =
     value.highlight && value.color === "success"
       ? "text-green-600"
@@ -61,7 +60,7 @@ function ComparisonValue({ value }: ComparisonValueProps) {
           text-slate-500
         "
       >
-        {store?.name ?? value.storeId}
+        {store.name}
       </span>
 
       <div
