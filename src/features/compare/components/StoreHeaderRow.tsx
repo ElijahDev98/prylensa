@@ -7,16 +7,17 @@
  * Displays the available stores for each compared product.
  *
  * Responsibilities:
- * - Render the stores row.
- * - Align stores beneath each product.
+ * - Render the stores label column.
+ * - Render the available stores beneath each compared product.
  *
  * Does NOT:
- * - Import mock data.
+ * - Define grid layout.
  * - Fetch data.
  * - Manage state.
  * -----------------------------------------------------------------------------
  */
 
+import ComparisonRow from "./ComparisonRow";
 import ProductLabelCell from "./ProductLabelCell";
 import StoreHeaderCell from "./StoreHeaderCell";
 
@@ -30,16 +31,7 @@ interface StoreHeaderRowProps {
 
 function StoreHeaderRow({ products, stores }: StoreHeaderRowProps) {
   return (
-    <section
-      className="
-        grid
-        border-b
-        border-slate-200
-      "
-      style={{
-        gridTemplateColumns: `140px repeat(${products.length}, minmax(280px, 1fr))`,
-      }}
-    >
+    <ComparisonRow productCount={products.length}>
       <ProductLabelCell label="Stores" />
 
       {products.map((product) => (
@@ -61,7 +53,7 @@ function StoreHeaderRow({ products, stores }: StoreHeaderRowProps) {
           ))}
         </div>
       ))}
-    </section>
+    </ComparisonRow>
   );
 }
 
