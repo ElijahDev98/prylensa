@@ -2,19 +2,6 @@
  * -----------------------------------------------------------------------------
  * File: ProductHeaderCell.tsx
  * Feature: Compare
- *
- * Purpose:
- * Displays a single compared product inside the comparison matrix.
- *
- * Responsibilities:
- * - Render product thumbnail.
- * - Render product details.
- * - Render rating.
- * - Render remove action.
- *
- * Does NOT:
- * - Fetch data.
- * - Manage state.
  * -----------------------------------------------------------------------------
  */
 
@@ -30,56 +17,63 @@ function ProductHeaderCell({ product }: ProductHeaderCellProps) {
   return (
     <article
       className="
-        relative
         flex
-        items-center
-        gap-6
-        border-r
-        border-slate-200
-        p-8
-        last:border-r-0
+        px-6 py-5
+        border-r border-slate-200
+        items-center gap-4 last:border-r-0
       "
     >
-      <button
-        type="button"
-        title="Remove product"
-        aria-label="Remove product"
-        className="
-          absolute
-          right-5
-          top-5
-          rounded-full
-          p-1
-          text-slate-400
-          transition-colors
-          hover:bg-slate-100
-        "
-      >
-        <X size={16} />
-      </button>
+      {/* ------------------------------------------------------------------ */}
+      {/* Product Image                                                      */}
+      {/* ------------------------------------------------------------------ */}
 
       <div
         className="
           flex
-          h-28
-          w-24
-          shrink-0
-          items-center
-          justify-center
-          rounded-2xl
-          bg-slate-100
-          text-4xl
+          h-24 w-20
+          bg-slate-50
+          rounded-xl border border-slate-200
+          shrink-0 items-center justify-center
         "
       >
-        📱
+        <div
+          className="
+            h-16 w-12
+            bg-slate-200
+            rounded-lg
+          "
+        />
       </div>
 
-      <div className="min-w-0">
+      {/* ------------------------------------------------------------------ */}
+      {/* Product Information                                                */}
+      {/* ------------------------------------------------------------------ */}
+
+      <div
+        className="
+          flex-1
+          min-w-0
+          relative
+        "
+      >
+        <button
+          type="button"
+          aria-label={`Remove ${product.name}`}
+          className="
+            p-1
+            text-slate-400
+            rounded-full
+            transition-colors
+            absolute right-0 top-0 hover:bg-slate-100 hover:text-slate-600
+          "
+        >
+          <X size={16} />
+        </button>
+
         <h3
           className="
-            text-xl
-            font-semibold
-            text-slate-900
+            pr-8
+            text-xl font-semibold leading-tight text-slate-900
           "
         >
           {product.name}
@@ -88,8 +82,7 @@ function ProductHeaderCell({ product }: ProductHeaderCellProps) {
         <p
           className="
             mt-2
-            text-base
-            text-slate-500
+            text-sm text-slate-500
           "
         >
           {product.variant}
@@ -97,23 +90,32 @@ function ProductHeaderCell({ product }: ProductHeaderCellProps) {
 
         <div
           className="
-            mt-5
             flex
-            items-center
-            gap-2
+            mt-4
+            items-center gap-2
           "
         >
           <Star
-            size={18}
+            size={16}
             className="
-              fill-amber-400
               text-amber-400
+              fill-amber-400
             "
           />
 
-          <span className="font-medium">{product.rating}</span>
+          <span
+            className="
+              text-sm font-medium text-slate-900
+            "
+          >
+            {product.rating}
+          </span>
 
-          <span className="text-slate-500">
+          <span
+            className="
+              text-sm text-slate-500
+            "
+          >
             ({product.reviewCount.toLocaleString()} reviews)
           </span>
         </div>
