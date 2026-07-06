@@ -15,7 +15,9 @@
  * -----------------------------------------------------------------------------
  */
 
-import { createContext, PropsWithChildren } from "react";
+import { createContext } from "react";
+
+import type { PropsWithChildren } from "react";
 
 import type { ComparisonViewModel } from "../types/comparison.viewmodel";
 
