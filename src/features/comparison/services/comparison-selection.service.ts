@@ -4,12 +4,12 @@
  * Feature: Comparison Domain
  *
  * Purpose:
- * Handles comparison product selection.
+ * Encapsulates comparison selection business rules.
  *
  * Responsibilities:
- * - Add products.
- * - Remove products.
- * - Prevent duplicate products.
+ * - Add products to the comparison selection.
+ * - Remove products from the comparison selection.
+ * - Prevent duplicates.
  * - Enforce comparison limits.
  *
  * Does NOT:
@@ -18,57 +18,55 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { ComparisonProduct } from "../types/comparison-product.types";
-
 export const MAX_COMPARISON_PRODUCTS = 4;
 
 export interface SelectionResult {
   success: boolean;
-  products: ComparisonProduct[];
+
+  selectedProductIds: string[];
+
   message?: string;
 }
 
-export function addProductToComparison(
-  products: ComparisonProduct[],
-  product: ComparisonProduct,
+export function addProductToSelection(
+  selectedProductIds: string[],
+  productId: string,
 ): SelectionResult {
-  const exists = products.some((item) => item.id === product.id);
-
-  if (exists) {
+  if (selectedProductIds.includes(productId)) {
     return {
       success: false,
-      products,
-      message: "Product is already selected.",
+      selectedProductIds,
+      message: "Product is already selected for comparison.",
     };
   }
 
-  if (products.length >= MAX_COMPARISON_PRODUCTS) {
+  if (selectedProductIds.length >= MAX_COMPARISON_PRODUCTS) {
     return {
       success: false,
-      products,
-      message: `Maximum of ${MAX_COMPARISON_PRODUCTS} products can be compared.`,
+      selectedProductIds,
+      message: `You can compare a maximum of ${MAX_COMPARISON_PRODUCTS} products.`,
     };
   }
 
   return {
     success: true,
-    products: [...products, product],
+    selectedProductIds: [...selectedProductIds, productId],
   };
 }
 
-export function removeProductFromComparison(
-  products: ComparisonProduct[],
+export function removeProductFromSelection(
+  selectedProductIds: string[],
   productId: string,
 ): SelectionResult {
   return {
     success: true,
-    products: products.filter((product) => product.id !== productId),
+    selectedProductIds: selectedProductIds.filter((id) => id !== productId),
   };
 }
 
-export function clearComparisonSelection(): SelectionResult {
+export function clearSelection(): SelectionResult {
   return {
     success: true,
-    products: [],
+    selectedProductIds: [],
   };
 }
