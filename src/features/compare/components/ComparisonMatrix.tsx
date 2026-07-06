@@ -4,11 +4,12 @@
  * Feature: Compare
  *
  * Purpose:
- * Shared container for the comparison matrix.
+ * Displays the complete comparison matrix.
  *
  * Responsibilities:
- * - Provide horizontal scrolling.
- * - Arrange all comparison rows.
+ * - Render comparison headers.
+ * - Render comparison rows.
+ * - Forward comparison actions.
  *
  * Does NOT:
  * - Fetch data.
@@ -20,19 +21,13 @@ import ComparisonDataRow from "./ComparisonDataRow";
 import ProductHeaderRow from "./ProductHeaderRow";
 import StoreHeaderRow from "./StoreHeaderRow";
 
-import type { ComparisonRow } from "../types/comparison-data.types";
-import type { ComparisonProduct } from "../types/comparison-product.types";
-import type { Store } from "../types/store.types";
+import type { ComparisonViewModel } from "../types/comparison.viewmodel";
 
 interface ComparisonMatrixProps {
-  products: ComparisonProduct[];
-
-  stores: Store[];
-
-  rows: ComparisonRow[];
+  comparison: ComparisonViewModel;
 }
 
-function ComparisonMatrix({ products, stores, rows }: ComparisonMatrixProps) {
+function ComparisonMatrix({ comparison }: ComparisonMatrixProps) {
   return (
     <div
       className="
@@ -48,25 +43,31 @@ function ComparisonMatrix({ products, stores, rows }: ComparisonMatrixProps) {
         {/* Product Header                                                 */}
         {/* -------------------------------------------------------------- */}
 
-        <ProductHeaderRow products={products} />
+        <ProductHeaderRow
+          products={comparison.products}
+          onRemoveProduct={comparison.removeProduct}
+        />
 
         {/* -------------------------------------------------------------- */}
         {/* Store Header                                                   */}
         {/* -------------------------------------------------------------- */}
 
-        <StoreHeaderRow products={products} stores={stores} />
+        <StoreHeaderRow
+          products={comparison.products}
+          stores={comparison.stores}
+        />
 
         {/* -------------------------------------------------------------- */}
-        {/* Comparison Data                                                */}
+        {/* Comparison Rows                                                */}
         {/* -------------------------------------------------------------- */}
 
-        {rows.map((row) => (
-          <ComparisonDataRow key={row.id} row={row} stores={stores} />
+        {comparison.rows.map((row) => (
+          <ComparisonDataRow
+            key={row.id}
+            row={row}
+            stores={comparison.stores}
+          />
         ))}
-
-        {/* -------------------------------------------------------------- */}
-        {/* Comparison Footer (Phase 3.7)                                  */}
-        {/* -------------------------------------------------------------- */}
       </div>
     </div>
   );

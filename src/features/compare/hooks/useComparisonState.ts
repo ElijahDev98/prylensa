@@ -25,20 +25,22 @@ import {
   resetComparison,
 } from "../services/comparison.service";
 
-function useComparisonState() {
+import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+
+function useComparisonState(): ComparisonViewModel {
   const [comparison, setComparison] = useState(createComparisonState);
 
   const actions = useMemo(
     () => ({
-      removeProduct: (productId: string) => {
+      removeProduct(productId: string) {
         setComparison((previous) => removeProduct(previous, productId));
       },
 
-      clearComparison: () => {
+      clearComparison() {
         setComparison(clearComparison());
       },
 
-      resetComparison: () => {
+      resetComparison() {
         setComparison(resetComparison());
       },
     }),

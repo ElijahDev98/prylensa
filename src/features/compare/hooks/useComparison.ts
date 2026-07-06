@@ -7,18 +7,19 @@
  * Public hook for the Compare feature.
  *
  * Responsibilities:
- * - Expose comparison state.
- * - Expose comparison actions.
+ * - Expose the Comparison ViewModel.
  *
  * Does NOT:
- * - Manage React state directly.
+ * - Manage state.
  * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import useComparisonState from "./useComparisonState";
 
-function useComparison() {
+import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+
+function useComparison(): ComparisonViewModel {
   return useComparisonState();
 }
 

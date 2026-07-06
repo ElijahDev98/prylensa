@@ -8,8 +8,8 @@
  *
  * Responsibilities:
  * - Arrange comparison components.
- * - Retrieve comparison data.
- * - Pass data to child components.
+ * - Retrieve comparison ViewModel.
+ * - Pass the ViewModel to child components.
  *
  * Does NOT:
  * - Execute business logic.
@@ -24,7 +24,7 @@ import ComparisonToolbar from "./ComparisonToolbar";
 import useComparison from "../hooks/useComparison";
 
 function CompareWorkspace() {
-  const { products, stores, rows } = useComparison();
+  const comparison = useComparison();
 
   return (
     <section
@@ -43,7 +43,7 @@ function CompareWorkspace() {
           description="Compare product pricing, availability and key features across multiple online stores."
         />
 
-        <ComparisonMatrix products={products} stores={stores} rows={rows} />
+        <ComparisonMatrix comparison={comparison} />
       </ComparisonPanel>
     </section>
   );
