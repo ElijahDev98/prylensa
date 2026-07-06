@@ -1,7 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: useComparisonState.ts
- * Feature: Compare
+ * Feature: Comparison Domain
  *
  * Purpose:
  * Owns the comparison state.

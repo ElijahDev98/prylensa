@@ -1,14 +1,14 @@
 /**
  * -----------------------------------------------------------------------------
  * File: ComparisonContext.tsx
- * Feature: Compare
+ * Feature: Comparison (Domain)
  *
  * Purpose:
- * Provides the Comparison ViewModel for the Compare feature.
+ * Provides the Comparison ViewModel.
  *
  * Responsibilities:
- * - Create comparison state.
- * - Provide comparison state.
+ * - Own comparison state.
+ * - Provide comparison context.
  *
  * Does NOT:
  * - Execute business logic.

@@ -1,7 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: ComparisonProductColumn.tsx
- * Feature: Compare
+ * Feature: Compare (Presentation)
  *
  * Purpose:
  * Displays all comparison values for a single product.
@@ -19,13 +19,11 @@
 
 import ComparisonValue from "./ComparisonValue";
 
-import type { ComparisonProductValues } from "../types/comparison-data.types";
-
-import type { Store } from "../types/store.types";
+import type { ComparisonProductValues } from "@/features/comparison/types/comparison-data.types";
+import type { Store } from "@/features/comparison/types/store.types";
 
 interface ComparisonProductColumnProps {
   product: ComparisonProductValues;
-
   stores: Store[];
 }
 

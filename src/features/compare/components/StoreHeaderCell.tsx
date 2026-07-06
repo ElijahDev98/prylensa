@@ -1,11 +1,14 @@
 /**
  * -----------------------------------------------------------------------------
  * File: StoreHeaderCell.tsx
- * Feature: Compare
+ * Feature: Compare (Presentation)
+ *
+ * Purpose:
+ * Displays a store inside the comparison matrix.
  * -----------------------------------------------------------------------------
  */
 
-import type { Store } from "../types/store.types";
+import type { Store } from "@/features/comparison/types/store.types";
 
 interface StoreHeaderCellProps {
   store: Store;

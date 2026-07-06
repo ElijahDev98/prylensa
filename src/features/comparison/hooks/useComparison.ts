@@ -1,10 +1,10 @@
 /**
  * -----------------------------------------------------------------------------
  * File: useComparison.ts
- * Feature: Compare
+ * Feature: Comparison Domain
  *
  * Purpose:
- * Public hook for the Compare feature.
+ * Public hook for the Comparison domain.
  *
  * Responsibilities:
  * - Expose the Comparison ViewModel.

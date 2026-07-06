@@ -19,7 +19,7 @@
 
 import { Box, ChevronDown, Download, Plus, Store, Trash2 } from "lucide-react";
 
-import useComparisonContext from "../context/useComparisonContext";
+import useComparisonContext from "@/features/comparison/context/useComparisonContext";
 
 function ComparisonToolbar() {
   const comparison = useComparisonContext();

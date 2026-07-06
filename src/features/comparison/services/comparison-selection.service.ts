@@ -1,7 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: comparison-selection.service.ts
- * Feature: Compare
+ * Feature: Comparison Domain
  *
  * Purpose:
  * Handles comparison product selection.
@@ -24,9 +24,7 @@ export const MAX_COMPARISON_PRODUCTS = 4;
 
 export interface SelectionResult {
   success: boolean;
-
   products: ComparisonProduct[];
-
   message?: string;
 }
 

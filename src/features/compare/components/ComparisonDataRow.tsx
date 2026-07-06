@@ -1,7 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: ComparisonDataRow.tsx
- * Feature: Compare
+ * Feature: Compare (Presentation)
  *
  * Purpose:
  * Displays a reusable comparison row (Price, Rating, Availability, etc.).
@@ -21,12 +21,11 @@ import ComparisonProductColumn from "./ComparisonProductColumn";
 import ComparisonRow from "./ComparisonRow";
 import ProductLabelCell from "./ProductLabelCell";
 
-import type { ComparisonRow as ComparisonRowModel } from "../types/comparison-data.types";
-import type { Store } from "../types/store.types";
+import type { ComparisonRow as ComparisonRowModel } from "@/features/comparison/types/comparison-data.types";
+import type { Store } from "@/features/comparison/types/store.types";
 
 interface ComparisonDataRowProps {
   row: ComparisonRowModel;
-
   stores: Store[];
 }
 

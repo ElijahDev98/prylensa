@@ -22,7 +22,7 @@ import EmptyComparisonState from "./EmptyComparisonState";
 import ProductHeaderRow from "./ProductHeaderRow";
 import StoreHeaderRow from "./StoreHeaderRow";
 
-import useComparisonContext from "../context/useComparisonContext";
+import useComparisonContext from "@/features/comparison/context/useComparisonContext";
 
 function ComparisonMatrix() {
   const comparison = useComparisonContext();

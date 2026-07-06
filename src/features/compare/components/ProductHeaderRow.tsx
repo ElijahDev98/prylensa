@@ -1,19 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: ProductHeaderRow.tsx
- * Feature: Compare
- *
- * Purpose:
- * Displays the compared products header row.
- *
- * Responsibilities:
- * - Render the product label.
- * - Render product header cells.
- * - Forward remove actions.
- *
- * Does NOT:
- * - Remove products.
- * - Manage state.
+ * Feature: Compare (Presentation)
  * -----------------------------------------------------------------------------
  */
 
@@ -21,11 +9,10 @@ import ComparisonRow from "./ComparisonRow";
 import ProductHeaderCell from "./ProductHeaderCell";
 import ProductLabelCell from "./ProductLabelCell";
 
-import type { ComparisonProduct } from "../types/comparison-product.types";
+import type { ComparisonProduct } from "@/features/comparison/types/comparison-product.types";
 
 interface ProductHeaderRowProps {
   products: ComparisonProduct[];
-
   onRemoveProduct: (productId: string) => void;
 }
 

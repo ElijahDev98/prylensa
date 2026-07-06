@@ -1,21 +1,19 @@
 /**
  * -----------------------------------------------------------------------------
  * File: comparison.service.ts
- * Feature: Compare
+ * Feature: Comparison Domain
  *
  * Purpose:
  * Encapsulates all comparison business logic.
  *
  * Responsibilities:
- * - Provide comparison data.
+ * - Create comparison state.
+ * - Filter selected products.
  * - Remove products.
- * - Add products.
  * - Reset comparison.
- * - Filter comparison rows.
  *
  * NOTE:
  * This service currently uses mock data.
- * It will later delegate to the API client without affecting the UI.
  * -----------------------------------------------------------------------------
  */
 
@@ -29,41 +27,65 @@ import type { Store } from "../types/store.types";
 
 export interface ComparisonState {
   products: ComparisonProduct[];
+
+  selectedProductIds: string[];
+
   stores: Store[];
+
   rows: ComparisonRow[];
 }
 
 export function createComparisonState(): ComparisonState {
   return {
     products: COMPARISON_PRODUCTS,
+
+    selectedProductIds: COMPARISON_PRODUCTS.map((product) => product.id),
+
     stores: STORES,
+
     rows: COMPARISON_ROWS,
   };
+}
+
+export function getSelectedProducts(
+  state: ComparisonState,
+): ComparisonProduct[] {
+  return state.products.filter((product) =>
+    state.selectedProductIds.includes(product.id),
+  );
+}
+
+export function getSelectedRows(state: ComparisonState): ComparisonRow[] {
+  return state.rows.map((row) => ({
+    ...row,
+    products: row.products.filter((product) =>
+      state.selectedProductIds.includes(product.productId),
+    ),
+  }));
 }
 
 export function removeProduct(
   state: ComparisonState,
   productId: string,
 ): ComparisonState {
-  const products = state.products.filter((product) => product.id !== productId);
-
-  const rows = state.rows.map((row) => ({
-    ...row,
-    products: row.products.filter((product) => product.productId !== productId),
-  }));
-
   return {
     ...state,
-    products,
-    rows,
+
+    selectedProductIds: state.selectedProductIds.filter(
+      (id) => id !== productId,
+    ),
   };
 }
 
 export function clearComparison(): ComparisonState {
   return {
-    products: [],
+    products: COMPARISON_PRODUCTS,
+
+    selectedProductIds: [],
+
     stores: STORES,
-    rows: [],
+
+    rows: COMPARISON_ROWS,
   };
 }
 

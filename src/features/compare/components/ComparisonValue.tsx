@@ -1,31 +1,20 @@
 /**
  * -----------------------------------------------------------------------------
  * File: ComparisonValue.tsx
- * Feature: Compare
+ * Feature: Compare (Presentation)
  *
  * Purpose:
  * Displays a single comparison value for a store.
- *
- * Responsibilities:
- * - Display the store name.
- * - Display the comparison value.
- * - Highlight important values.
- *
- * Does NOT:
- * - Resolve stores.
- * - Fetch data.
- * - Manage state.
  * -----------------------------------------------------------------------------
  */
 
 import { CheckCircle2 } from "lucide-react";
 
-import type { Store } from "../types/store.types";
-import type { ComparisonStoreValue } from "../types/comparison-data.types";
+import type { Store } from "@/features/comparison/types/store.types";
+import type { ComparisonStoreValue } from "@/features/comparison/types/comparison-data.types";
 
 interface ComparisonValueProps {
   store: Store;
-
   value: ComparisonStoreValue;
 }
 

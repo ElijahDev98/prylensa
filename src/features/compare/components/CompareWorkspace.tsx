@@ -1,17 +1,17 @@
 /**
  * -----------------------------------------------------------------------------
  * File: CompareWorkspace.tsx
- * Feature: Compare
+ * Feature: Compare (Presentation)
  *
  * Purpose:
- * Main workspace for the Compare feature.
+ * Main workspace for the Compare page.
  *
  * Responsibilities:
- * - Create the Comparison ViewModel.
- * - Provide the Comparison Context.
  * - Arrange comparison components.
+ * - Compose the Compare page.
  *
  * Does NOT:
+ * - Own comparison state.
  * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
@@ -21,39 +21,31 @@ import ComparisonPanel from "./ComparisonPanel";
 import ComparisonPanelHeader from "./ComparisonPanelHeader";
 import ComparisonToolbar from "./ComparisonToolbar";
 
-import { ComparisonProvider } from "../context/ComparisonContext";
-
-import useComparison from "../hooks/useComparison";
-
 function CompareWorkspace() {
-  const comparison = useComparison();
-
   return (
-    <ComparisonProvider comparison={comparison}>
-      <section
-        aria-label="Compare Workspace"
-        className="
-          flex
-          flex-col
-          gap-6
-        "
-      >
-        <ComparisonToolbar />
+    <section
+      aria-label="Compare Workspace"
+      className="
+        flex
+        flex-col
+        gap-6
+      "
+    >
+      <ComparisonToolbar />
 
-        <ComparisonPanel>
-          <ComparisonPanelHeader
-            title="Product Comparison"
-            description="
-              Compare product pricing,
-              availability and key features
-              across multiple online stores.
-            "
-          />
+      <ComparisonPanel>
+        <ComparisonPanelHeader
+          title="Product Comparison"
+          description="
+            Compare product pricing,
+            availability and key features
+            across multiple online stores.
+          "
+        />
 
-          <ComparisonMatrix />
-        </ComparisonPanel>
-      </section>
-    </ComparisonProvider>
+        <ComparisonMatrix />
+      </ComparisonPanel>
+    </section>
   );
 }
 

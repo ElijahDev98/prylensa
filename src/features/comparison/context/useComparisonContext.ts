@@ -1,18 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: useComparisonContext.ts
- * Feature: Compare
- *
- * Purpose:
- * Provides access to the Comparison Context.
- *
- * Responsibilities:
- * - Read the Comparison Context.
- * - Ensure the Provider exists.
- *
- * Does NOT:
- * - Manage state.
- * - Execute business logic.
+ * Feature: Comparison (Domain)
  * -----------------------------------------------------------------------------
  */
 

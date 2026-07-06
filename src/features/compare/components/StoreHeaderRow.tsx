@@ -1,19 +1,7 @@
 /**
  * -----------------------------------------------------------------------------
  * File: StoreHeaderRow.tsx
- * Feature: Compare
- *
- * Purpose:
- * Displays the available stores for each compared product.
- *
- * Responsibilities:
- * - Render the stores label column.
- * - Render the available stores beneath each compared product.
- *
- * Does NOT:
- * - Define grid layout.
- * - Fetch data.
- * - Manage state.
+ * Feature: Compare (Presentation)
  * -----------------------------------------------------------------------------
  */
 
@@ -21,8 +9,8 @@ import ComparisonRow from "./ComparisonRow";
 import ProductLabelCell from "./ProductLabelCell";
 import StoreHeaderCell from "./StoreHeaderCell";
 
-import type { ComparisonProduct } from "../types/comparison-product.types";
-import type { Store } from "../types/store.types";
+import type { ComparisonProduct } from "@/features/comparison/types/comparison-product.types";
+import type { Store } from "@/features/comparison/types/store.types";
 
 interface StoreHeaderRowProps {
   products: ComparisonProduct[];
