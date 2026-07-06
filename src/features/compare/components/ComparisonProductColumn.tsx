@@ -7,26 +7,32 @@
  * Displays all comparison values for a single product.
  *
  * Responsibilities:
- * - Resolve stores.
+ * - Match comparison values with their stores.
  * - Render comparison values.
  *
  * Does NOT:
- * - Fetch data from APIs.
+ * - Import mock data.
+ * - Fetch data.
  * - Manage state.
  * -----------------------------------------------------------------------------
  */
 
 import ComparisonValue from "./ComparisonValue";
 
-import { STORES } from "../data/stores";
-
 import type { ComparisonProductValues } from "../types/comparison-data.types";
+
+import type { Store } from "../types/store.types";
+
+interface ComparisonProductColumnProps {
+  product: ComparisonProductValues;
+
+  stores: Store[];
+}
 
 function ComparisonProductColumn({
   product,
-}: {
-  product: ComparisonProductValues;
-}) {
+  stores,
+}: ComparisonProductColumnProps) {
   return (
     <div
       className="
@@ -41,13 +47,19 @@ function ComparisonProductColumn({
       "
     >
       {product.values.map((value) => {
-        const store = STORES.find((item) => item.id === value.storeId);
+        const store = stores.find((item) => item.id === value.storeId);
 
         if (!store) {
           return null;
         }
 
-        return <ComparisonValue key={store.id} store={store} value={value} />;
+        return (
+          <ComparisonValue
+            key={`${product.productId}-${store.id}`}
+            store={store}
+            value={value}
+          />
+        );
       })}
     </div>
   );
