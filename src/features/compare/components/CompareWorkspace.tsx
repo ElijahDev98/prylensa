@@ -24,7 +24,7 @@ import ComparisonToolbar from "./ComparisonToolbar";
 import useComparison from "../hooks/useComparison";
 
 function CompareWorkspace() {
-  const { products, stores } = useComparison();
+  const { products, stores, rows } = useComparison();
 
   return (
     <section
@@ -43,7 +43,7 @@ function CompareWorkspace() {
           description="Compare product pricing, availability and key features across multiple online stores."
         />
 
-        <ComparisonMatrix products={products} stores={stores} />
+        <ComparisonMatrix products={products} stores={stores} rows={rows} />
       </ComparisonPanel>
     </section>
   );
