@@ -30,12 +30,15 @@ interface WorkspaceLayoutProps {
   onCompare: (productId: string) => void;
 
   isCompared: boolean;
+
+  onViewAllPrices(): void;
 }
 
 function WorkspaceLayout({
   result,
   onCompare,
   isCompared,
+  onViewAllPrices,
 }: WorkspaceLayoutProps) {
   const { product, offers, lowestOffer } = result;
 
@@ -61,7 +64,11 @@ function WorkspaceLayout({
       </div>
 
       <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <BestPricePanel offers={offers} lowestOffer={lowestOffer} />
+        <BestPricePanel
+          offers={offers}
+          lowestOffer={lowestOffer}
+          onViewAllPrices={onViewAllPrices}
+        />
       </div>
     </section>
   );

@@ -37,6 +37,10 @@ function SearchPage() {
     executeSearch,
 
     selectResult,
+
+    offerDialogOpen,
+    openOfferDialog,
+    closeOfferDialog,
   } = useSearch();
 
   const comparison = useComparison();
@@ -75,6 +79,9 @@ function SearchPage() {
           selectedResult !== null &&
           comparison.isSelected(selectedResult.product.id)
         }
+        offerDialogOpen={offerDialogOpen}
+        onOpenOfferDialog={openOfferDialog}
+        onCloseOfferDialog={closeOfferDialog}
       />
     </section>
   );

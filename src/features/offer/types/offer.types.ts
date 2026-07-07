@@ -4,35 +4,106 @@
  * Feature: Offer Domain
  *
  * Purpose:
- * Canonical Offer model.
+ * Canonical Offer entity shared across the application.
  *
- * NOTE:
- * An Offer represents ONE product sold by ONE store.
+ * Responsibilities:
+ * - Represent a store-specific offer.
+ * - Remain independent of presentation.
+ *
+ * Does NOT:
+ * - Contain UI metadata.
+ * - Contain business logic.
  * -----------------------------------------------------------------------------
  */
 
-export type StockStatus = "in-stock" | "low-stock" | "out-of-stock";
+/**
+ * Product availability at a store.
+ */
+export type StockStatus = "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
 
+/**
+ * Supported currencies.
+ *
+ * NOTE:
+ * Additional currencies will be introduced
+ * when international stores are supported.
+ */
+export type Currency = "NGN";
+
+/**
+ * Canonical Offer entity.
+ */
 export interface Offer {
+  /**
+   * Unique offer identifier.
+   */
   id: string;
 
+  /**
+   * Product identifier.
+   */
   productId: string;
 
+  /**
+   * Store identifier.
+   */
   storeId: string;
 
+  /**
+   * Current selling price.
+   */
   currentPrice: number;
 
+  /**
+   * Previous selling price.
+   */
   previousPrice: number;
 
+  /**
+   * Discount percentage.
+   *
+   * Example:
+   * 15 = 15%
+   */
   discount: number;
 
-  stockStatus: StockStatus;
-
+  /**
+   * Shipping fee.
+   *
+   * Zero means free shipping.
+   */
   shippingFee: number;
 
+  /**
+   * Estimated delivery.
+   *
+   * Example:
+   * "Tomorrow"
+   * "2–3 Days"
+   */
   estimatedDelivery: string;
 
-  productUrl: string;
+  /**
+   * Availability.
+   */
+  stockStatus: StockStatus;
 
+  /**
+   * Last synchronization time.
+   *
+   * NOTE:
+   * Mock string for now.
+   * Later becomes ISO timestamp.
+   */
   lastUpdated: string;
+
+  /**
+   * Currency.
+   */
+  currency: Currency;
+
+  /**
+   * Direct product URL.
+   */
+  productUrl: string;
 }

@@ -1,21 +1,14 @@
 /**
  * -----------------------------------------------------------------------------
  * File: SearchWorkspace.tsx
- * Feature: Search
- *
- * Purpose:
- * Root container for the Search workspace.
- *
- * Responsibilities:
- * - Render loading, error and empty states.
- * - Pass comparison actions to the workspace layout.
  * -----------------------------------------------------------------------------
  */
 
-import WorkspaceLayout from "./WorkspaceLayout";
+import OfferDialog from "./OfferDialog";
 import SearchEmpty from "./SearchEmpty";
 import SearchError from "./SearchError";
 import SearchLoading from "./SearchLoading";
+import WorkspaceLayout from "./WorkspaceLayout";
 
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
@@ -29,6 +22,12 @@ interface SearchWorkspaceProps {
   onCompare: (productId: string) => void;
 
   isCompared: boolean;
+
+  offerDialogOpen: boolean;
+
+  onOpenOfferDialog(): void;
+
+  onCloseOfferDialog(): void;
 }
 
 function SearchWorkspace({
@@ -37,27 +36,33 @@ function SearchWorkspace({
   error,
   onCompare,
   isCompared,
+  offerDialogOpen,
+  onOpenOfferDialog,
+  onCloseOfferDialog,
 }: SearchWorkspaceProps) {
-  if (loading) {
-    return <SearchLoading />;
-  }
+  if (loading) return <SearchLoading />;
 
-  if (error) {
-    return <SearchError message={error} />;
-  }
+  if (error) return <SearchError message={error} />;
 
-  if (!result) {
-    return <SearchEmpty />;
-  }
+  if (!result) return <SearchEmpty />;
 
   return (
-    <section aria-label="Search Results Workspace" className="w-full">
-      <WorkspaceLayout
-        result={result}
-        onCompare={onCompare}
-        isCompared={isCompared}
+    <>
+      <section aria-label="Search Results Workspace" className="w-full">
+        <WorkspaceLayout
+          result={result}
+          onCompare={onCompare}
+          isCompared={isCompared}
+          onViewAllPrices={onOpenOfferDialog}
+        />
+      </section>
+
+      <OfferDialog
+        open={offerDialogOpen}
+        offers={result.offers}
+        onClose={onCloseOfferDialog}
       />
-    </section>
+    </>
   );
 }
 

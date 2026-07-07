@@ -19,9 +19,15 @@ interface BestPricePanelProps {
   offers: SearchOfferViewModel[];
 
   lowestOffer: SearchOfferViewModel | null;
+
+  onViewAllPrices(): void;
 }
 
-function BestPricePanel({ offers, lowestOffer }: BestPricePanelProps) {
+function BestPricePanel({
+  offers,
+  lowestOffer,
+  onViewAllPrices,
+}: BestPricePanelProps) {
   return (
     <Card
       as="aside"
@@ -55,6 +61,7 @@ function BestPricePanel({ offers, lowestOffer }: BestPricePanelProps) {
       <div className={SPACING.actionTop}>
         <button
           type="button"
+          onClick={onViewAllPrices}
           disabled={offers.length === 0}
           className="
             w-full
