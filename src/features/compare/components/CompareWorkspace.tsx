@@ -5,23 +5,20 @@
  *
  * Purpose:
  * Main workspace for the Compare page.
- *
- * Responsibilities:
- * - Arrange comparison components.
- * - Compose the Compare page.
- *
- * Does NOT:
- * - Own comparison state.
- * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import ComparisonMatrix from "./ComparisonMatrix";
 import ComparisonPanel from "./ComparisonPanel";
 import ComparisonPanelHeader from "./ComparisonPanelHeader";
+import ComparisonSummary from "../../comparison/components/ComparisonSummary";
 import ComparisonToolbar from "./ComparisonToolbar";
 
+import useComparisonContext from "@/features/comparison/context/useComparisonContext";
+
 function CompareWorkspace() {
+  const comparison = useComparisonContext();
+
   return (
     <section
       aria-label="Compare Workspace"
@@ -32,6 +29,11 @@ function CompareWorkspace() {
       "
     >
       <ComparisonToolbar />
+
+      <ComparisonSummary
+        productCount={comparison.products.length}
+        storeCount={comparison.stores.length}
+      />
 
       <ComparisonPanel>
         <ComparisonPanelHeader
