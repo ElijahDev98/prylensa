@@ -92,7 +92,16 @@ export const OFFERS: Offer[] = OFFER_SEEDS.flatMap((seed) =>
   STORE_VARIATIONS.map((store) => {
     const currentPrice = Math.round(seed.basePrice * store.multiplier);
 
-    const previousPrice = Math.round(currentPrice * 1.08);
+    const discount = 4 + (seed.productId.length % 8);
+
+    const previousPrice = Math.round(currentPrice / (1 - discount / 100));
+
+    const LAST_UPDATED = [
+      "2 mins ago",
+      "5 mins ago",
+      "9 mins ago",
+      "15 mins ago",
+    ] as const;
 
     return {
       id: `${seed.productId}-${store.storeId}`,
@@ -105,9 +114,9 @@ export const OFFERS: Offer[] = OFFER_SEEDS.flatMap((seed) =>
 
       previousPrice,
 
-      discount: 8,
+      discount,
 
-      stockStatus: "in-stock",
+      stockStatus: "IN_STOCK",
 
       shippingFee: store.shippingFee,
 
@@ -115,7 +124,12 @@ export const OFFERS: Offer[] = OFFER_SEEDS.flatMap((seed) =>
 
       productUrl: `https://${store.storeId}.example.com/${seed.productId}`,
 
-      lastUpdated: new Date().toISOString(),
+      lastUpdated:
+        LAST_UPDATED[
+          STORE_VARIATIONS.findIndex(({ storeId }) => storeId === store.storeId)
+        ],
+
+      currency: "NGN",
     };
   }),
 );
