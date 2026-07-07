@@ -2,6 +2,16 @@
  * -----------------------------------------------------------------------------
  * File: StoreHeaderRow.tsx
  * Feature: Compare (Presentation)
+ *
+ * Purpose:
+ * Displays the store header row of the comparison matrix.
+ *
+ * Responsibilities:
+ * - Render the available stores for each compared product.
+ *
+ * Does NOT:
+ * - Execute business logic.
+ * - Know Product domain entities.
  * -----------------------------------------------------------------------------
  */
 
@@ -9,11 +19,12 @@ import ComparisonRow from "./ComparisonRow";
 import ProductLabelCell from "./ProductLabelCell";
 import StoreHeaderCell from "./StoreHeaderCell";
 
-import type { ComparisonProduct } from "@/features/comparison/types/comparison-product.types";
+import type { ComparisonProductViewModel } from "@/features/comparison/viewmodels/comparison-product.viewmodel";
 import type { Store } from "@/features/comparison/types/store.types";
 
 interface StoreHeaderRowProps {
-  products: ComparisonProduct[];
+  products: ComparisonProductViewModel[];
+
   stores: Store[];
 }
 

@@ -21,7 +21,7 @@ function SearchEmpty() {
     <section
       className="
         flex
-        min-h-[420px]
+        min-h-105
         flex-col
         items-center
         justify-center

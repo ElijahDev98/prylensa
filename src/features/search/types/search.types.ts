@@ -4,20 +4,54 @@
  * Feature: Search
  *
  * Purpose:
- * Shared types for the Search feature.
+ * Shared Search Domain types.
  * -----------------------------------------------------------------------------
+ */
+
+import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
+
+/**
+ * ---------------------------------------------------------------------------
+ * Feedback
+ * ---------------------------------------------------------------------------
+ */
+
+export interface SearchFeedback {
+  validation?: string;
+
+  warning?: string;
+
+  error?: string;
+
+  success?: string;
+}
+
+/**
+ * ---------------------------------------------------------------------------
+ * Search State
+ * ---------------------------------------------------------------------------
  */
 
 export interface SearchState {
   query: string;
+
+  loading: boolean;
+
+  feedback: SearchFeedback;
+
+  results: SearchResultViewModel[];
+
+  selectedResult: SearchResultViewModel | null;
 }
 
-export interface UseSearchReturn {
-  state: SearchState;
-  updateQuery: (value: string) => void;
-}
+/**
+ * ---------------------------------------------------------------------------
+ * Search Input
+ * ---------------------------------------------------------------------------
+ */
 
 export interface SearchInputProps {
   value: string;
-  onChange: (value: string) => void;
+
+  onChange(value: string): void;
 }

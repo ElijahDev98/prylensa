@@ -4,64 +4,42 @@
  * Feature: Comparison Domain
  *
  * Purpose:
- * Encapsulates all comparison business logic.
+ * Owns the Comparison Domain state.
  *
  * Responsibilities:
  * - Create comparison state.
- * - Filter selected products.
+ * - Add products.
  * - Remove products.
+ * - Clear comparison.
  * - Reset comparison.
  *
  * NOTE:
- * This service currently uses mock data.
+ * Product information is no longer owned here.
  * -----------------------------------------------------------------------------
  */
 
-import { COMPARISON_PRODUCTS } from "../data/comparison-products";
-import { COMPARISON_ROWS } from "../data/comparison-rows";
-import { STORES } from "../data/stores";
-
-import type { ComparisonProduct } from "../types/comparison-product.types";
-import type { ComparisonRow } from "../types/comparison-data.types";
-import type { Store } from "../types/store.types";
-
 export interface ComparisonState {
-  products: ComparisonProduct[];
-
   selectedProductIds: string[];
-
-  stores: Store[];
-
-  rows: ComparisonRow[];
 }
 
 export function createComparisonState(): ComparisonState {
   return {
-    products: COMPARISON_PRODUCTS,
-
-    selectedProductIds: COMPARISON_PRODUCTS.map((product) => product.id),
-
-    stores: STORES,
-
-    rows: COMPARISON_ROWS,
+    selectedProductIds: [],
   };
 }
 
-export function getSelectedProducts(
+export function addProduct(
   state: ComparisonState,
-): ComparisonProduct[] {
-  return state.products.filter((product) =>
-    state.selectedProductIds.includes(product.id),
-  );
-}
+  productId: string,
+): ComparisonState {
+  if (state.selectedProductIds.includes(productId)) {
+    return state;
+  }
 
-export function getSelectedRows(state: ComparisonState): ComparisonRow[] {
-  return state.rows.map((row) => ({
-    ...row,
-    products: row.products.filter((product) =>
-      state.selectedProductIds.includes(product.productId),
-    ),
-  }));
+  return {
+    ...state,
+    selectedProductIds: [...state.selectedProductIds, productId],
+  };
 }
 
 export function removeProduct(
@@ -70,7 +48,6 @@ export function removeProduct(
 ): ComparisonState {
   return {
     ...state,
-
     selectedProductIds: state.selectedProductIds.filter(
       (id) => id !== productId,
     ),
@@ -79,13 +56,7 @@ export function removeProduct(
 
 export function clearComparison(): ComparisonState {
   return {
-    products: COMPARISON_PRODUCTS,
-
     selectedProductIds: [],
-
-    stores: STORES,
-
-    rows: COMPARISON_ROWS,
   };
 }
 

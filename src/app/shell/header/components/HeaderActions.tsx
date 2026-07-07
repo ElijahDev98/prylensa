@@ -8,6 +8,7 @@
  * -----------------------------------------------------------------------------
  */
 
+import HeaderCompare from "./HeaderCompare";
 import HeaderNotification from "./HeaderNotification";
 import HeaderProfile from "./HeaderProfile";
 import HeaderTheme from "./HeaderTheme";
@@ -26,6 +27,8 @@ function HeaderActions() {
         gap-3
       "
     >
+      <HeaderCompare />
+
       <HeaderTheme onClick={onThemeClick} />
 
       <HeaderNotification onClick={onNotificationClick} />

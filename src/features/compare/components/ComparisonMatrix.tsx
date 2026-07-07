@@ -5,15 +5,6 @@
  *
  * Purpose:
  * Displays the comparison matrix.
- *
- * Responsibilities:
- * - Render comparison headers.
- * - Render comparison rows.
- * - Display the empty state when no products exist.
- *
- * Does NOT:
- * - Fetch data.
- * - Manage state.
  * -----------------------------------------------------------------------------
  */
 
@@ -35,34 +26,24 @@ function ComparisonMatrix() {
     <div
       className="
         overflow-x-auto
+        rounded-2xl
+        border
+        border-slate-200
+        bg-white
       "
     >
-      <div
-        className="
-          min-w-[980px]
-        "
-      >
-        {/* ------------------------------------------------------------------ */}
-        {/* Product Header                                                     */}
-        {/* ------------------------------------------------------------------ */}
+      <div className="min-w-275">
+        <div className="sticky top-0 z-30 bg-white">
+          <ProductHeaderRow
+            products={comparison.products}
+            onRemoveProduct={comparison.removeProduct}
+          />
 
-        <ProductHeaderRow
-          products={comparison.products}
-          onRemoveProduct={comparison.removeProduct}
-        />
-
-        {/* ------------------------------------------------------------------ */}
-        {/* Store Header                                                       */}
-        {/* ------------------------------------------------------------------ */}
-
-        <StoreHeaderRow
-          products={comparison.products}
-          stores={comparison.stores}
-        />
-
-        {/* ------------------------------------------------------------------ */}
-        {/* Comparison Rows                                                    */}
-        {/* ------------------------------------------------------------------ */}
+          <StoreHeaderRow
+            products={comparison.products}
+            stores={comparison.stores}
+          />
+        </div>
 
         {comparison.rows.map((row) => (
           <ComparisonDataRow

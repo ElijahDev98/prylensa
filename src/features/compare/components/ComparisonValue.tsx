@@ -4,29 +4,80 @@
  * Feature: Compare (Presentation)
  *
  * Purpose:
- * Displays a single comparison value for a store.
+ * Displays one comparison value for a store.
  * -----------------------------------------------------------------------------
  */
 
 import { CheckCircle2 } from "lucide-react";
 
-import type { Store } from "@/features/comparison/types/store.types";
-import type { ComparisonStoreValue } from "@/features/comparison/types/comparison-data.types";
+import { formatAvailability } from "@/shared/utils/availability";
+import { formatCurrency } from "@/shared/utils/currency";
+import { formatPercentage } from "@/shared/utils/percentage";
+
+import type { StockStatus } from "@/features/offer";
+import type { Store } from "@/features/store";
+
+import type {
+  ComparisonRowType,
+  ComparisonStoreValueViewModel,
+} from "@/features/comparison/viewmodels/comparison-row.viewmodel";
 
 interface ComparisonValueProps {
+  rowType: ComparisonRowType;
+
   store: Store;
-  value: ComparisonStoreValue;
+
+  value: ComparisonStoreValueViewModel;
 }
 
-function ComparisonValue({ store, value }: ComparisonValueProps) {
-  const valueColor =
-    value.highlight && value.color === "success"
-      ? "text-green-600"
-      : value.highlight && value.color === "warning"
-        ? "text-amber-600"
-        : value.highlight && value.color === "danger"
-          ? "text-red-600"
-          : "text-slate-900";
+function ComparisonValue({ rowType, store, value }: ComparisonValueProps) {
+  const valueColorMap = {
+    default: "text-slate-900",
+    success: "text-green-600",
+    warning: "text-amber-600",
+    danger: "text-red-600",
+  } as const;
+
+  const valueColor = value.highlight
+    ? valueColorMap[value.color]
+    : valueColorMap.default;
+
+  function renderValue() {
+    switch (rowType) {
+      case "price":
+        return (
+          <span className={valueColor}>
+            {formatCurrency(value.value as number)}
+          </span>
+        );
+
+      case "discount":
+        return (
+          <span className={valueColor}>
+            {formatPercentage(value.value as number)}
+          </span>
+        );
+
+      case "availability": {
+        const availability = formatAvailability(value.value as StockStatus);
+
+        return (
+          <span
+            className={`
+              rounded-full
+              px-2
+              py-1
+              text-xs
+              font-semibold
+              ${availability.badgeClassName}
+            `}
+          >
+            {availability.label}
+          </span>
+        );
+      }
+    }
+  }
 
   return (
     <div
@@ -35,39 +86,62 @@ function ComparisonValue({ store, value }: ComparisonValueProps) {
         items-center
         justify-between
         gap-4
-        rounded-lg
+        rounded-xl
         px-3
-        py-2
+        py-3
         transition-colors
         hover:bg-slate-50
       "
     >
-      <span
+      {/* Store */}
+
+      <div
         className="
-          text-sm
-          font-medium
-          text-slate-500
+          flex
+          items-center
+          gap-3
+          min-w-0
         "
       >
-        {store.name}
-      </span>
+        <img
+          src={store.logoUrl}
+          alt={store.logoAlt}
+          className="
+            h-8
+            w-8
+            rounded-md
+            object-contain
+            bg-white
+            border
+            border-slate-200
+            p-1
+            shrink-0
+          "
+        />
+
+        <span
+          className="
+            truncate
+            text-sm
+            font-medium
+            text-slate-600
+          "
+        >
+          {store.name}
+        </span>
+      </div>
+
+      {/* Value */}
 
       <div
         className="
           flex
           items-center
           gap-2
+          shrink-0
         "
       >
-        <span
-          className={`
-            text-sm
-            font-semibold
-            ${valueColor}
-          `}
-        >
-          {value.value}
-        </span>
+        {renderValue()}
 
         {value.highlight && (
           <CheckCircle2 size={16} className="text-green-600" />

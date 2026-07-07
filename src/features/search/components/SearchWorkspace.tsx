@@ -7,58 +7,56 @@
  * Root container for the Search workspace.
  *
  * Responsibilities:
- * - Render workspace states.
- * - Render the product workspace.
- * - Delegate presentation to dedicated state components.
- *
- * Does NOT:
- * - Execute searches.
- * - Manage state.
- * - Fetch data.
+ * - Render loading, error and empty states.
+ * - Pass comparison actions to the workspace layout.
  * -----------------------------------------------------------------------------
  */
 
 import WorkspaceLayout from "./WorkspaceLayout";
-import SearchLoading from "./SearchLoading";
 import SearchEmpty from "./SearchEmpty";
 import SearchError from "./SearchError";
+import SearchLoading from "./SearchLoading";
 
-import type { MockProduct } from "../data/products";
+import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 interface SearchWorkspaceProps {
-  product: MockProduct | null;
+  result: SearchResultViewModel | null;
+
   loading: boolean;
+
   error: string | null;
+
+  onCompare: (productId: string) => void;
+
+  isCompared: boolean;
 }
 
-function SearchWorkspace({ product, loading, error }: SearchWorkspaceProps) {
-  /**
-   * Loading State
-   */
+function SearchWorkspace({
+  result,
+  loading,
+  error,
+  onCompare,
+  isCompared,
+}: SearchWorkspaceProps) {
   if (loading) {
     return <SearchLoading />;
   }
 
-  /**
-   * Error State
-   */
   if (error) {
     return <SearchError message={error} />;
   }
 
-  /**
-   * Empty State
-   */
-  if (!product) {
+  if (!result) {
     return <SearchEmpty />;
   }
 
-  /**
-   * Workspace
-   */
   return (
     <section aria-label="Search Results Workspace" className="w-full">
-      <WorkspaceLayout product={product} />
+      <WorkspaceLayout
+        result={result}
+        onCompare={onCompare}
+        isCompared={isCompared}
+      />
     </section>
   );
 }

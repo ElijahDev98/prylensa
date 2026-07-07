@@ -2,17 +2,6 @@
  * -----------------------------------------------------------------------------
  * File: ProductLabelCell.tsx
  * Feature: Compare
- *
- * Purpose:
- * Displays the left label column for the comparison matrix.
- *
- * Responsibilities:
- * - Render the row label.
- *
- * Does NOT:
- * - Fetch data.
- * - Manage state.
- * - Render comparison data.
  * -----------------------------------------------------------------------------
  */
 
@@ -24,23 +13,22 @@ function ProductLabelCell({ label }: ProductLabelCellProps) {
   return (
     <div
       className="
+        sticky
+        left-0
+        z-20
         flex
-        items-start
-        justify-start
+        items-center
         border-r
         border-slate-200
-        p-8
+        bg-white
+        px-6
+        py-5
+        font-semibold
+        text-slate-700
+        min-w-55
       "
     >
-      <span
-        className="
-          text-lg
-          font-semibold
-          text-slate-900
-        "
-      >
-        {label}
-      </span>
+      {label}
     </div>
   );
 }

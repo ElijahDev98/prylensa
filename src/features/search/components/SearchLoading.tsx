@@ -13,7 +13,7 @@ function SearchLoading() {
     <section
       className="
         flex
-        min-h-[420px]
+        min-h-105
         items-center
         justify-center
         rounded-2xl

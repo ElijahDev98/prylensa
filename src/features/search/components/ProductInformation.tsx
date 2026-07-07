@@ -1,18 +1,48 @@
+/**
+ * -----------------------------------------------------------------------------
+ * File: ProductInformation.tsx
+ * Feature: Search
+ *
+ * Purpose:
+ * Displays product information for the selected search result.
+ *
+ * Responsibilities:
+ * - Display product details.
+ * - Display the lowest available offer.
+ * - Forward compare actions.
+ *
+ * Does NOT:
+ * - Manage comparison state.
+ * - Fetch data.
+ * - Execute business logic.
+ * -----------------------------------------------------------------------------
+ */
+
 import Card from "@/components/ui/Card";
 import { LAYOUT, SPACING } from "@/design-system";
-
-import type { MockProduct } from "../data/products";
 
 import ProductDetailsLink from "./ProductDetailsLink";
 import ProductFeatureGrid from "./ProductFeatureGrid";
 import ProductHeader from "./ProductHeader";
 import ProductPrice from "./ProductPrice";
 
+import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
+
 interface ProductInformationProps {
-  product: MockProduct;
+  result: SearchResultViewModel;
+
+  onCompare: (productId: string) => void;
+
+  isCompared: boolean;
 }
 
-function ProductInformation({ product }: ProductInformationProps) {
+function ProductInformation({
+  result,
+  onCompare,
+  isCompared,
+}: ProductInformationProps) {
+  const { product, lowestOffer } = result;
+
   return (
     <Card
       as="article"
@@ -31,17 +61,12 @@ function ProductInformation({ product }: ProductInformationProps) {
           title={product.title}
           brand={product.brand}
           rating={product.rating}
-          reviews={product.reviews}
+          reviews={product.reviewCount}
         />
 
-        <ProductPrice
-          currentPrice={product.currentPrice}
-          previousPrice={product.previousPrice}
-          discount={product.discount}
-          currency={product.currency}
-        />
+        <ProductPrice offer={lowestOffer?.offer ?? null} />
 
-        <ProductFeatureGrid features={product.features} />
+        <ProductFeatureGrid specifications={product.specifications} />
 
         <ProductDetailsLink />
       </div>
@@ -49,22 +74,31 @@ function ProductInformation({ product }: ProductInformationProps) {
       <div className={SPACING.actionTop}>
         <button
           type="button"
-          className="
+          onClick={() => onCompare(product.id)}
+          disabled={isCompared}
+          className={`
             w-full
             rounded-2xl
-            bg-blue-600
             py-3
             font-medium
             text-white
             transition-colors
             duration-200
-            hover:bg-blue-700
             focus:outline-none
             focus:ring-2
-            focus:ring-blue-200
-          "
+
+            ${
+              isCompared
+                ? "cursor-not-allowed bg-slate-400"
+                : `
+                  bg-blue-600
+                  hover:bg-blue-700
+                  focus:ring-blue-200
+                `
+            }
+          `}
         >
-          Compare Prices
+          {isCompared ? "Added to Compare" : "Compare Prices"}
         </button>
       </div>
     </Card>

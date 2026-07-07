@@ -4,23 +4,24 @@
  * Feature: Comparison Domain
  *
  * Purpose:
- * Public hook for the Comparison domain.
+ * Public API for consuming the Comparison Domain.
  *
  * Responsibilities:
- * - Expose the Comparison ViewModel.
+ * - Expose comparison state.
+ * - Expose comparison actions.
  *
  * Does NOT:
- * - Manage state.
+ * - Own state.
  * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
-import useComparisonState from "./useComparisonState";
+import useComparisonContext from "../context/useComparisonContext";
 
 import type { ComparisonViewModel } from "../types/comparison.viewmodel";
 
 function useComparison(): ComparisonViewModel {
-  return useComparisonState();
+  return useComparisonContext();
 }
 
 export default useComparison;

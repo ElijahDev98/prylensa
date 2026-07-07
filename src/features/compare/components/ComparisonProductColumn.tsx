@@ -8,26 +8,34 @@
  *
  * Responsibilities:
  * - Match comparison values with their stores.
+ * - Forward the comparison row type.
  * - Render comparison values.
  *
  * Does NOT:
- * - Import mock data.
- * - Fetch data.
- * - Manage state.
+ * - Execute business logic.
+ * - Format business values.
  * -----------------------------------------------------------------------------
  */
 
 import ComparisonValue from "./ComparisonValue";
 
-import type { ComparisonProductValues } from "@/features/comparison/types/comparison-data.types";
-import type { Store } from "@/features/comparison/types/store.types";
+import type {
+  ComparisonProductValuesViewModel,
+  ComparisonRowType,
+} from "@/features/comparison/viewmodels/comparison-row.viewmodel";
+
+import type { Store } from "@/features/store";
 
 interface ComparisonProductColumnProps {
-  product: ComparisonProductValues;
+  rowType: ComparisonRowType;
+
+  product: ComparisonProductValuesViewModel;
+
   stores: Store[];
 }
 
 function ComparisonProductColumn({
+  rowType,
   product,
   stores,
 }: ComparisonProductColumnProps) {
@@ -54,6 +62,7 @@ function ComparisonProductColumn({
         return (
           <ComparisonValue
             key={`${product.productId}-${store.id}`}
+            rowType={rowType}
             store={store}
             value={value}
           />

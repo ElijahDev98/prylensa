@@ -7,22 +7,13 @@
  * Entry point for the Search feature.
  *
  * Responsibilities:
- * - Compose the Search experience.
- * - Connect feature state to presentation components.
- * - Manage product selection.
- *
- * Architecture:
- * SearchPage
- *      ↓
- * useSearch()
- *      ↓
- * SearchToolbar
- * SearchResultList
- * SearchWorkspace
+ * - Connect Search and Comparison domains.
+ * - Compose Search presentation.
+ * - Own feature-level orchestration.
  * -----------------------------------------------------------------------------
  */
 
-import { DEFAULT_PRODUCT } from "./data/products";
+import useComparison from "@/features/comparison/hooks/useComparison";
 
 import {
   SearchResultList,
@@ -31,12 +22,24 @@ import {
   WelcomeSection,
 } from "./components";
 
-import { useSearch } from "./hooks/useSearch";
+import useSearch from "./hooks/useSearch";
 
 function SearchPage() {
-  const { state, updateQuery, executeSearch, setSelectedProduct } = useSearch();
+  const {
+    query,
+    loading,
+    feedback,
 
-  const currentProduct = state.selectedProduct ?? DEFAULT_PRODUCT;
+    results,
+    selectedResult,
+
+    updateQuery,
+    executeSearch,
+
+    selectResult,
+  } = useSearch();
+
+  const comparison = useComparison();
 
   return (
     <section
@@ -52,21 +55,26 @@ function SearchPage() {
       <WelcomeSection />
 
       <SearchToolbar
-        query={state.query}
+        query={query}
         onQueryChange={updateQuery}
         onSearch={executeSearch}
       />
 
       <SearchResultList
-        products={state.products}
-        selectedProduct={state.selectedProduct}
-        onSelectProduct={setSelectedProduct}
+        results={results}
+        selectedResult={selectedResult}
+        onSelectResult={selectResult}
       />
 
       <SearchWorkspace
-        product={currentProduct}
-        loading={state.loading}
-        error={state.error}
+        result={selectedResult}
+        loading={loading}
+        error={feedback.error ?? null}
+        onCompare={comparison.addProduct}
+        isCompared={
+          selectedResult !== null &&
+          comparison.isSelected(selectedResult.product.id)
+        }
       />
     </section>
   );

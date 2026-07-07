@@ -1,29 +1,34 @@
 /**
  * -----------------------------------------------------------------------------
  * File: HeaderCompare.tsx
- * Application Shell
+ * Feature: Application Shell
  *
  * Purpose:
- * Displays the Compare badge inside the application header.
- *
- * Responsibilities:
- * - Read comparison state.
- * - Display CompareBadge.
- *
- * Does NOT:
- * - Manage comparison state.
- * - Execute business logic.
+ * Displays the Compare badge.
  * -----------------------------------------------------------------------------
  */
 
+import { useNavigate } from "react-router-dom";
+
 import CompareBadge from "@/shared/components/CompareBadge";
 
-import useComparisonContext from "@/features/compare/context/useComparisonContext";
+import useComparison from "@/features/comparison/hooks/useComparison";
 
 function HeaderCompare() {
-  const comparison = useComparisonContext();
+  const comparison = useComparison();
 
-  return <CompareBadge count={comparison.products.length} />;
+  const navigate = useNavigate();
+
+  return (
+    <button
+      type="button"
+      title="Compare items"
+      onClick={() => navigate("/compare")}
+      className="rounded-xl"
+    >
+      <CompareBadge count={comparison.selectedCount} />
+    </button>
+  );
 }
 
 export default HeaderCompare;

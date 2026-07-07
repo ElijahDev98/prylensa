@@ -1,9 +1,27 @@
+/**
+ * -----------------------------------------------------------------------------
+ * File: BestPricePanel.tsx
+ * Feature: Search
+ *
+ * Purpose:
+ * Displays the best available offer for the selected product.
+ * -----------------------------------------------------------------------------
+ */
+
 import Card from "@/components/ui/Card";
 import { LAYOUT, SPACING } from "@/design-system";
 
 import BestOfferCard from "./BestOfferCard";
 
-function BestPricePanel() {
+import type { SearchOfferViewModel } from "../viewmodels/search.viewmodel";
+
+interface BestPricePanelProps {
+  offers: SearchOfferViewModel[];
+
+  lowestOffer: SearchOfferViewModel | null;
+}
+
+function BestPricePanel({ offers, lowestOffer }: BestPricePanelProps) {
   return (
     <Card
       as="aside"
@@ -20,7 +38,15 @@ function BestPricePanel() {
         <h2 className="text-lg font-semibold text-slate-900">Best Price</h2>
 
         <div className="mt-6">
-          <BestOfferCard store="Jumia" price={1899000} currency="NGN" />
+          {lowestOffer ? (
+            <BestOfferCard
+              store={lowestOffer.store.name}
+              price={lowestOffer.offer.currentPrice}
+              currency="NGN"
+            />
+          ) : (
+            <p className="text-sm text-slate-500">No offers available.</p>
+          )}
         </div>
       </div>
 
@@ -29,6 +55,7 @@ function BestPricePanel() {
       <div className={SPACING.actionTop}>
         <button
           type="button"
+          disabled={offers.length === 0}
           className="
             w-full
             rounded-2xl
@@ -40,12 +67,14 @@ function BestPricePanel() {
             transition-colors
             duration-200
             hover:bg-slate-100
+            disabled:cursor-not-allowed
+            disabled:opacity-50
             focus:outline-none
             focus:ring-2
             focus:ring-slate-200
           "
         >
-          View All Prices
+          View All Prices ({offers.length})
         </button>
       </div>
     </Card>

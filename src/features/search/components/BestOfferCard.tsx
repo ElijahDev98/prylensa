@@ -25,7 +25,7 @@ function BestOfferCard({ store, price, currency }: BestOfferCardProps) {
     <section
       className="
         rounded-2xl
-        bg-gradient-to-br
+        bg-linear-to-br
         from-blue-600
         to-blue-700
         p-5

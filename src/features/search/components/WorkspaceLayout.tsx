@@ -4,7 +4,15 @@
  * Feature: Search
  *
  * Purpose:
- * Defines the three-column workspace layout.
+ * Defines the three-column Search workspace.
+ *
+ * Responsibilities:
+ * - Arrange workspace panels.
+ * - Delegate rendering to child components.
+ *
+ * Does NOT:
+ * - Manage state.
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -14,13 +22,23 @@ import BestPricePanel from "./BestPricePanel";
 import ProductGallery from "./ProductGallery";
 import ProductInformation from "./ProductInformation";
 
-import type { MockProduct } from "../data/products";
+import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 interface WorkspaceLayoutProps {
-  product: MockProduct;
+  result: SearchResultViewModel;
+
+  onCompare: (productId: string) => void;
+
+  isCompared: boolean;
 }
 
-function WorkspaceLayout({ product }: WorkspaceLayoutProps) {
+function WorkspaceLayout({
+  result,
+  onCompare,
+  isCompared,
+}: WorkspaceLayoutProps) {
+  const { product, offers, lowestOffer } = result;
+
   return (
     <section
       className={`
@@ -35,11 +53,15 @@ function WorkspaceLayout({ product }: WorkspaceLayoutProps) {
       </div>
 
       <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <ProductInformation product={product} />
+        <ProductInformation
+          result={result}
+          onCompare={onCompare}
+          isCompared={isCompared}
+        />
       </div>
 
       <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <BestPricePanel />
+        <BestPricePanel offers={offers} lowestOffer={lowestOffer} />
       </div>
     </section>
   );

@@ -4,16 +4,16 @@
  * Feature: Compare (Presentation)
  *
  * Purpose:
- * Displays a reusable comparison row (Price, Rating, Availability, etc.).
+ * Displays a reusable comparison row (Price, Discount, Availability, etc.).
  *
  * Responsibilities:
  * - Render the row label.
+ * - Forward the row type.
  * - Render one comparison column per product.
  *
  * Does NOT:
- * - Fetch data.
- * - Manage state.
  * - Execute business logic.
+ * - Format business values.
  * -----------------------------------------------------------------------------
  */
 
@@ -21,11 +21,12 @@ import ComparisonProductColumn from "./ComparisonProductColumn";
 import ComparisonRow from "./ComparisonRow";
 import ProductLabelCell from "./ProductLabelCell";
 
-import type { ComparisonRow as ComparisonRowModel } from "@/features/comparison/types/comparison-data.types";
-import type { Store } from "@/features/comparison/types/store.types";
+import type { ComparisonRowViewModel } from "@/features/comparison/viewmodels/comparison-row.viewmodel";
+import type { Store } from "@/features/store";
 
 interface ComparisonDataRowProps {
-  row: ComparisonRowModel;
+  row: ComparisonRowViewModel;
+
   stores: Store[];
 }
 
@@ -37,6 +38,7 @@ function ComparisonDataRow({ row, stores }: ComparisonDataRowProps) {
       {row.products.map((product) => (
         <ComparisonProductColumn
           key={product.productId}
+          rowType={row.type}
           product={product}
           stores={stores}
         />

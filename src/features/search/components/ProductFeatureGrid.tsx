@@ -2,19 +2,16 @@
  * -----------------------------------------------------------------------------
  * File: ProductFeatureGrid.tsx
  * Feature: Search
- *
- * Purpose:
- * Displays a compact summary of the product highlights.
  * -----------------------------------------------------------------------------
  */
 
-import type { ProductFeature } from "../data/products";
+import type { ProductSpecification } from "@/features/product/types/product.types";
 
 interface ProductFeatureGridProps {
-  features: ProductFeature[];
+  specifications: ProductSpecification[];
 }
 
-function ProductFeatureGrid({ features }: ProductFeatureGridProps) {
+function ProductFeatureGrid({ specifications }: ProductFeatureGridProps) {
   return (
     <section className="mt-5">
       <p
@@ -24,7 +21,7 @@ function ProductFeatureGrid({ features }: ProductFeatureGridProps) {
           text-slate-600
         "
       >
-        {features.map((feature) => feature.label).join(" • ")}
+        {specifications.map((specification) => specification.value).join(" • ")}
       </p>
     </section>
   );

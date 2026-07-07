@@ -4,106 +4,132 @@
  * Feature: Search
  *
  * Purpose:
- * Centralized state management for the Search feature.
+ * Owns Search feature state.
+ *
+ * Responsibilities:
+ * - Manage search query.
+ * - Execute searches.
+ * - Manage selected search result.
+ * - Delegate business logic to the Search Service.
+ *
+ * Does NOT:
+ * - Render UI.
+ * - Know Product, Offer or Store implementation.
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
-import type { MockProduct } from "../data/products";
 import { searchProducts } from "../services/search.service";
 
-export interface SearchState {
-  query: string;
+import type { SearchState } from "../types/search.types";
+import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
-  products: MockProduct[];
+function createInitialState(): SearchState {
+  return {
+    query: "",
 
-  selectedProduct: MockProduct | null;
+    loading: false,
 
-  loading: boolean;
+    feedback: {},
 
-  error: string | null;
+    /**
+     * Do not show any products
+     * until the user searches.
+     */
+    results: [],
+
+    /**
+     * No product selected initially.
+     */
+    selectedResult: null,
+  };
 }
 
-const INITIAL_STATE: SearchState = {
-  query: "",
+function useSearch() {
+  const [state, setState] = useState(createInitialState);
 
-  products: [],
-
-  selectedProduct: null,
-
-  loading: false,
-
-  error: null,
-};
-
-const MINIMUM_SEARCH_LENGTH = 2;
-
-export function useSearch() {
-  const [state, setState] = useState<SearchState>(INITIAL_STATE);
-
+  /**
+   * Update the search query only.
+   */
   const updateQuery = useCallback((query: string) => {
     setState((previous) => ({
       ...previous,
+
       query,
     }));
   }, []);
 
-  const setSelectedProduct = useCallback((product: MockProduct) => {
+  /**
+   * Execute the search using
+   * the current query.
+   */
+  const executeSearch = useCallback(() => {
+    setState((previous) => {
+      const results = searchProducts(previous.query);
+
+      return {
+        ...previous,
+
+        results,
+
+        /**
+         * Automatically display the first
+         * matching product in the workspace.
+         */
+        selectedResult: results.length > 0 ? results[0] : null,
+
+        feedback:
+          results.length === 0
+            ? {
+                warning: "No matching products found.",
+              }
+            : {},
+      };
+    });
+  }, []);
+
+  /**
+   * Select a different search result.
+   */
+  const selectResult = useCallback((result: SearchResultViewModel) => {
     setState((previous) => ({
       ...previous,
-      selectedProduct: product,
+
+      selectedResult: result,
     }));
   }, []);
 
-  const executeSearch = useCallback(async () => {
-    const keyword = state.query.trim();
+  /**
+   * Clear the selected result.
+   */
+  const clearSelection = useCallback(() => {
+    setState((previous) => ({
+      ...previous,
 
-    /**
-     * Prevent invalid searches.
-     */
-    if (keyword.length < MINIMUM_SEARCH_LENGTH) {
-      setState((previous) => ({
-        ...previous,
-        products: [],
-        loading: false,
-        error: null,
-      }));
-
-      return;
-    }
-
-    try {
-      setState((previous) => ({
-        ...previous,
-        loading: true,
-        error: null,
-      }));
-
-      const products = await searchProducts(keyword);
-
-      setState((previous) => ({
-        ...previous,
-
-        products,
-
-        selectedProduct: products.length > 0 ? products[0] : null,
-
-        loading: false,
-      }));
-    } catch {
-      setState((previous) => ({
-        ...previous,
-        loading: false,
-        error: "Unable to search products.",
-      }));
-    }
-  }, [state.query]);
+      selectedResult: null,
+    }));
+  }, []);
 
   return {
-    state,
+    query: state.query,
+
+    loading: state.loading,
+
+    feedback: state.feedback,
+
+    results: state.results,
+
+    selectedResult: state.selectedResult,
+
     updateQuery,
-    setSelectedProduct,
+
     executeSearch,
+
+    selectResult,
+
+    clearSelection,
   };
 }
+
+export default useSearch;

@@ -26,14 +26,14 @@ interface ComparisonRowProps extends PropsWithChildren {
 function ComparisonRow({ productCount, children }: ComparisonRowProps) {
   return (
     <section
+      style={{
+        gridTemplateColumns: `220px repeat(${productCount}, minmax(0,1fr))`,
+      }}
       className="
         grid
-        border-b
-        border-slate-200
+        bg-white
+        border-b border-slate-200
       "
-      style={{
-        gridTemplateColumns: `140px repeat(${productCount}, minmax(280px, 1fr))`,
-      }}
     >
       {children}
     </section>

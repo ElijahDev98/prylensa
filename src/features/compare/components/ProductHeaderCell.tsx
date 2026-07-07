@@ -1,27 +1,27 @@
 /**
  * -----------------------------------------------------------------------------
  * File: ProductHeaderCell.tsx
- * Feature: Compare
+ * Feature: Compare (Presentation)
  *
  * Purpose:
- * Displays the product header inside the comparison matrix.
+ * Displays a product header within the comparison matrix.
  *
  * Responsibilities:
- * - Display product information.
- * - Notify parent when the remove button is clicked.
+ * - Render comparison product information.
+ * - Raise remove events.
  *
  * Does NOT:
- * - Remove products directly.
- * - Manage state.
+ * - Know Product entities.
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import { Star, X } from "lucide-react";
 
-import type { ComparisonProduct } from "../types/comparison-product.types";
+import type { ComparisonProductViewModel } from "@/features/comparison/viewmodels/comparison-product.viewmodel";
 
 interface ProductHeaderCellProps {
-  product: ComparisonProduct;
+  product: ComparisonProductViewModel;
 
   onRemove: (productId: string) => void;
 }
@@ -50,23 +50,32 @@ function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
           shrink-0
           items-center
           justify-center
+          overflow-hidden
           rounded-xl
           border
           border-slate-200
           bg-slate-50
         "
       >
-        <div
-          className="
-            h-16
-            w-12
-            rounded-lg
-            bg-slate-200
-          "
-        />
+        {product.imageUrl ? (
+          <img
+            src={product.imageUrl}
+            alt={product.imageAlt}
+            className="h-full w-full object-contain"
+          />
+        ) : (
+          <div
+            className="
+              h-16
+              w-12
+              rounded-lg
+              bg-slate-200
+            "
+          />
+        )}
       </div>
 
-      {/* Product Info */}
+      {/* Product Information */}
 
       <div
         className="
@@ -77,7 +86,7 @@ function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
       >
         <button
           type="button"
-          aria-label={`Remove ${product.name}`}
+          aria-label={`Remove ${product.title}`}
           onClick={() => onRemove(product.id)}
           className="
             absolute
@@ -103,7 +112,7 @@ function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
             text-slate-900
           "
         >
-          {product.name}
+          {product.title}
         </h3>
 
         <p
@@ -113,7 +122,7 @@ function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
             text-slate-500
           "
         >
-          {product.variant}
+          {product.subtitle}
         </p>
 
         <div
