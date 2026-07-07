@@ -20,7 +20,6 @@ import { Scale } from "lucide-react";
 
 interface CompareBadgeProps {
   count: number;
-
   onClick?: () => void;
 }
 
@@ -29,10 +28,17 @@ function CompareBadge({ count, onClick }: CompareBadgeProps) {
     return null;
   }
 
+  const isInteractive = typeof onClick === "function";
+  const Component = isInteractive ? "button" : "div";
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <Component
+      {...(isInteractive
+        ? {
+            type: "button" as const,
+            onClick,
+          }
+        : {})}
       className="
         relative
         inline-flex
@@ -77,7 +83,7 @@ function CompareBadge({ count, onClick }: CompareBadgeProps) {
       >
         {count}
       </span>
-    </button>
+    </Component>
   );
 }
 
