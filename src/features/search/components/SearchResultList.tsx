@@ -4,17 +4,22 @@
  * Feature: Search
  *
  * Purpose:
- * Displays available search results.
+ * Displays the available search results.
  *
  * Responsibilities:
  * - Render SearchResultViewModel items.
  * - Highlight the selected result.
- * - Notify parent when a result is selected.
+ * - Notify the parent when a result is selected.
  *
- * Does NOT:
- * - Fetch data.
- * - Manage state.
- * - Execute business logic.
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchResultViewModel
+ *
+ * Notes:
+ * - This is a pure presentation component.
+ * - It must never access domain models.
+ * - It must never perform business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -22,9 +27,7 @@ import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 interface SearchResultListProps {
   results: SearchResultViewModel[];
-
   selectedResult: SearchResultViewModel | null;
-
   onSelectResult: (result: SearchResultViewModel) => void;
 }
 
@@ -38,22 +41,13 @@ function SearchResultList({
   }
 
   return (
-    <section
-      aria-label="Search Results"
-      className="
-        flex
-        flex-col
-        gap-3
-      "
-    >
+    <section aria-label="Search Results" className="flex flex-col gap-3">
       {results.map((result) => {
-        const { product, lowestOffer } = result;
-
-        const isSelected = selectedResult?.product.id === product.id;
+        const isSelected = selectedResult?.id === result.id;
 
         return (
           <button
-            key={product.id}
+            key={result.id}
             type="button"
             onClick={() => onSelectResult(result)}
             className={`
@@ -64,7 +58,6 @@ function SearchResultList({
               text-left
               transition-all
               duration-200
-
               ${
                 isSelected
                   ? "border-blue-500 bg-blue-50"
@@ -72,13 +65,13 @@ function SearchResultList({
               }
             `}
           >
-            <div className="font-semibold text-slate-900">{product.title}</div>
+            <div className="font-semibold text-slate-900">{result.title}</div>
 
-            <div className="mt-1 text-sm text-slate-500">{product.brand}</div>
+            <div className="mt-1 text-sm text-slate-500">{result.brand}</div>
 
-            {lowestOffer && (
+            {result.lowestOffer && (
               <div className="mt-2 font-medium text-blue-600">
-                ₦{lowestOffer.offer.currentPrice.toLocaleString()}
+                {result.lowestOffer.currentPriceLabel}
               </div>
             )}
           </button>
