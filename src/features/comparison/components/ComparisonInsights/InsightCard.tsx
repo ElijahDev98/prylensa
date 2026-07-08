@@ -7,16 +7,17 @@
  * Displays a single AI-generated comparison insight.
  *
  * Responsibilities:
- * - Present an individual AI insight.
- * - Visually distinguish insight severity.
- * - Maintain dashboard consistency.
+ * - Present AI insight information.
+ * - Display the primary business value.
+ * - Display AI recommendation.
+ * - Apply severity styling.
  *
  * Does NOT:
  * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
-import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, Lightbulb } from "lucide-react";
 
 import type { ComparisonInsightViewModel } from "@/features/comparison/viewmodels/comparison-insight.viewmodel";
 
@@ -25,42 +26,38 @@ interface InsightCardProps {
 }
 
 function InsightCard({ insight }: InsightCardProps) {
-  function renderIcon() {
-    switch (insight.severity) {
-      case "success":
-        return <CheckCircle2 size={22} className="text-emerald-600" />;
-
-      case "warning":
-        return <AlertTriangle size={22} className="text-amber-600" />;
-
-      default:
-        return <Info size={22} className="text-blue-600" />;
-    }
-  }
-
-  function accentClasses() {
+  function getSeverityStyles() {
     switch (insight.severity) {
       case "success":
         return {
+          icon: <CheckCircle2 size={22} className="text-emerald-600" />,
+
+          accent: "bg-emerald-50",
+
           border: "border-emerald-100",
-          background: "bg-emerald-50",
         };
 
       case "warning":
         return {
+          icon: <AlertTriangle size={22} className="text-amber-600" />,
+
+          accent: "bg-amber-50",
+
           border: "border-amber-100",
-          background: "bg-amber-50",
         };
 
       default:
         return {
+          icon: <Info size={22} className="text-blue-600" />,
+
+          accent: "bg-blue-50",
+
           border: "border-blue-100",
-          background: "bg-blue-50",
         };
     }
   }
 
-  const accent = accentClasses();
+  const severity = getSeverityStyles();
 
   return (
     <article
@@ -79,22 +76,18 @@ function InsightCard({ insight }: InsightCardProps) {
       "
     >
       <div className="flex">
-        {/* ------------------------------------------------------------- */}
-        {/* Severity Accent */}
-        {/* ------------------------------------------------------------- */}
+        {/* Accent */}
 
         <div
           className={`
             w-1.5
-            ${accent.background}
+            ${severity.accent}
           `}
         />
 
-        {/* ------------------------------------------------------------- */}
-        {/* Content */}
-        {/* ------------------------------------------------------------- */}
-
         <div className="flex flex-1 gap-5 p-6">
+          {/* Icon */}
+
           <div
             className={`
               flex
@@ -105,14 +98,16 @@ function InsightCard({ insight }: InsightCardProps) {
               justify-center
               rounded-2xl
               border
-              ${accent.border}
-              ${accent.background}
+              ${severity.accent}
+              ${severity.border}
             `}
           >
-            {renderIcon()}
+            {severity.icon}
           </div>
 
-          <div className="min-w-0 flex-1">
+          <div className="flex-1">
+            {/* Title */}
+
             <h3
               className="
                 text-lg
@@ -124,15 +119,88 @@ function InsightCard({ insight }: InsightCardProps) {
               {insight.title}
             </h3>
 
+            {/* Metric */}
+
+            <div
+              className="
+                mt-5
+                rounded-2xl
+                bg-slate-50
+                p-4
+              "
+            >
+              <p
+                className="
+                  text-xs
+                  font-semibold
+                  uppercase
+                  tracking-widest
+                  text-slate-500
+                "
+              >
+                {insight.valueLabel}
+              </p>
+
+              <p
+                className="
+                  mt-2
+                  text-3xl
+                  font-bold
+                  text-slate-900
+                "
+              >
+                ₦{insight.value.toLocaleString()}
+              </p>
+            </div>
+
+            {/* Description */}
+
             <p
               className="
-                mt-3
+                mt-5
                 leading-7
                 text-slate-600
               "
             >
               {insight.description}
             </p>
+
+            {/* Recommendation */}
+
+            <div
+              className="
+                mt-6
+                rounded-2xl
+                border
+                border-slate-200
+                bg-slate-50
+                p-4
+              "
+            >
+              <div className="flex items-center gap-2">
+                <Lightbulb size={18} className="text-amber-500" />
+
+                <span
+                  className="
+                    text-sm
+                    font-semibold
+                    text-slate-800
+                  "
+                >
+                  AI Recommendation
+                </span>
+              </div>
+
+              <p
+                className="
+                  mt-3
+                  leading-7
+                  text-slate-600
+                "
+              >
+                {insight.recommendationText}
+              </p>
+            </div>
           </div>
         </div>
       </div>
