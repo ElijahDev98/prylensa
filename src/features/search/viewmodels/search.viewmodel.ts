@@ -4,27 +4,37 @@
  * Feature: Search
  *
  * Purpose:
- * UI model returned by the Search Domain.
+ * Presentation models consumed exclusively by the Search UI.
  *
- * NOTE:
- * This is the only model consumed by the Search presentation layer.
+ * Rule:
+ * Do not expose Product, Offer or Store domain models.
  * -----------------------------------------------------------------------------
  */
 
-import type { Product } from "@/features/product";
-import type { Offer } from "@/features/offer";
-import type { Store } from "@/features/store";
-
 export interface SearchOfferViewModel {
-  offer: Offer;
-
-  store: Store;
+  id: string;
+  storeId: string;
+  storeName: string;
+  currentPrice: number;
+  currentPriceLabel: string;
+  originalPrice?: number;
+  originalPriceLabel?: string;
+  discountPercentage?: number;
+  inStock: boolean;
+  productUrl: string;
 }
 
 export interface SearchResultViewModel {
-  product: Product;
+  id: string;
+  title: string;
+  brand: string;
+  category: string;
 
-  offers: SearchOfferViewModel[];
+  thumbnail: string;
+
+  offerCount: number;
 
   lowestOffer: SearchOfferViewModel | null;
+
+  hasOffers: boolean;
 }
