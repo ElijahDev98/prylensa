@@ -23,25 +23,28 @@ import type {
   ComparisonRecommendation,
 } from "./comparison-types";
 
-const PRICE_WEIGHT = 0.5;
+const PRICE_WEIGHT = 0.55;
 
-const DISCOUNT_WEIGHT = 0.3;
+const DISCOUNT_WEIGHT = 0.25;
 
 const AVAILABILITY_WEIGHT = 0.2;
 
 function calculatePriceScore(
   offer: AnalysisOffer,
+  lowestPrice: number,
   highestPrice: number,
 ): number {
-  if (offer.price === undefined || highestPrice <= 0) {
+  if (offer.price === undefined || highestPrice <= lowestPrice) {
     return 0;
   }
 
-  return (highestPrice - offer.price) / highestPrice;
+  return (highestPrice - offer.price) / (highestPrice - lowestPrice);
 }
 
 function calculateDiscountScore(offer: AnalysisOffer): number {
-  return (offer.discount ?? 0) / 100;
+  const discount = Math.min(offer.discount ?? 0, 50);
+
+  return discount / 50;
 }
 
 function calculateAvailabilityScore(offer: AnalysisOffer): number {
@@ -50,13 +53,15 @@ function calculateAvailabilityScore(offer: AnalysisOffer): number {
 
 export function calculateOfferScore(
   offer: AnalysisOffer,
+  lowestPrice: number,
   highestPrice: number,
 ): number {
-  return (
-    calculatePriceScore(offer, highestPrice) * PRICE_WEIGHT +
+  const score =
+    calculatePriceScore(offer, lowestPrice, highestPrice) * PRICE_WEIGHT +
     calculateDiscountScore(offer) * DISCOUNT_WEIGHT +
-    calculateAvailabilityScore(offer) * AVAILABILITY_WEIGHT
-  );
+    calculateAvailabilityScore(offer) * AVAILABILITY_WEIGHT;
+
+  return Math.max(0, Math.min(score, 1));
 }
 
 export function buildRecommendation(
@@ -66,14 +71,24 @@ export function buildRecommendation(
     return undefined;
   }
 
-  const highestPrice = Math.max(...offers.map((offer) => offer.price ?? 0));
+  const prices = offers
+    .map((offer) => offer.price)
+    .filter((price): price is number => price !== undefined);
+
+  if (prices.length === 0) {
+    return undefined;
+  }
+
+  const lowestPrice = Math.min(...prices);
+
+  const highestPrice = Math.max(...prices);
 
   let recommendation: ComparisonRecommendation | undefined;
 
   for (const offer of offers) {
-    const score = calculateOfferScore(offer, highestPrice);
+    const score = calculateOfferScore(offer, lowestPrice, highestPrice);
 
-    if (!recommendation || score > recommendation.score) {
+    if (recommendation === undefined || score > recommendation.score) {
       recommendation = {
         offer,
 
