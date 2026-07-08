@@ -24,6 +24,14 @@ export const STORES: Store[] = [
     logoUrl: "/stores/jumia.svg",
 
     logoAlt: "Jumia",
+
+    trustScore: 92,
+
+    rating: 4.5,
+
+    reviewCount: 185342,
+
+    verified: true,
   },
 
   {
@@ -36,6 +44,14 @@ export const STORES: Store[] = [
     logoUrl: "/stores/konga.svg",
 
     logoAlt: "Konga",
+
+    trustScore: 88,
+
+    rating: 4.4,
+
+    reviewCount: 142518,
+
+    verified: true,
   },
 
   {
@@ -48,6 +64,14 @@ export const STORES: Store[] = [
     logoUrl: "/stores/slot.svg",
 
     logoAlt: "Slot",
+
+    trustScore: 90,
+
+    rating: 4.6,
+
+    reviewCount: 76354,
+
+    verified: true,
   },
 
   {
@@ -60,5 +84,13 @@ export const STORES: Store[] = [
     logoUrl: "/stores/amazon.svg",
 
     logoAlt: "Amazon",
+
+    trustScore: 98,
+
+    rating: 4.8,
+
+    reviewCount: 2431851,
+
+    verified: true,
   },
 ];

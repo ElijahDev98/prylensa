@@ -37,4 +37,30 @@ export interface Store {
    * Logo alternative text.
    */
   logoAlt: string;
+
+  /**
+   * Trust score used by the comparison engine.
+   *
+   * Range:
+   * 0 - 100
+   */
+  trustScore: number;
+
+  /**
+   * Average customer rating.
+   *
+   * Range:
+   * 0 - 5
+   */
+  rating: number;
+
+  /**
+   * Number of customer reviews.
+   */
+  reviewCount: number;
+
+  /**
+   * Whether the retailer is officially verified.
+   */
+  verified: boolean;
 }
