@@ -20,11 +20,16 @@
 
 import type { Store } from "@/features/store/types/store.types";
 
+import { buildStoresIntelligence } from "@/features/store/services/store-intelligence.service";
+
 import type { ComparisonRowModel } from "../../models/comparison-row.model";
 
 import { normalizeComparisonRows } from "./comparison-normalizer";
+
 import { buildComparisonSummary } from "./comparison-metrics";
+
 import { buildRecommendation } from "./comparison-ranking";
+
 import { buildComparisonInsights } from "./comparison-insights";
 
 import type { ComparisonAnalysisResult } from "./comparison-types";
@@ -50,12 +55,18 @@ export function analyzeComparison(
 
   /**
    * Step 3
-   * Build recommendation.
+   * Build store intelligence.
    */
-  const recommendation = buildRecommendation(offers, stores);
+  const storeIntelligence = buildStoresIntelligence(stores);
 
   /**
    * Step 4
+   * Build recommendation.
+   */
+  const recommendation = buildRecommendation(offers, storeIntelligence);
+
+  /**
+   * Step 5
    * Generate business insights.
    */
   const insights = buildComparisonInsights(summary, recommendation);
