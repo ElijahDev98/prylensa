@@ -28,6 +28,12 @@ export function buildComparisonInsights(
 ): ComparisonInsight[] {
   const insights: ComparisonInsight[] = [];
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Potential Savings
+   * ---------------------------------------------------------------------------
+   */
+
   if (summary.potentialSavings > 0) {
     insights.push({
       id: "potential-savings",
@@ -37,6 +43,8 @@ export function buildComparisonInsights(
       severity: "success",
 
       value: summary.potentialSavings,
+
+      metricType: "currency",
 
       valueLabel: "Potential Savings",
 
@@ -50,6 +58,12 @@ export function buildComparisonInsights(
     });
   }
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Best Overall Offer
+   * ---------------------------------------------------------------------------
+   */
+
   if (recommendation) {
     insights.push({
       id: "best-offer",
@@ -58,7 +72,9 @@ export function buildComparisonInsights(
 
       severity: "success",
 
-      value: recommendation.score,
+      value: recommendation.score * 100,
+
+      metricType: "percentage",
 
       valueLabel: "Recommendation Score",
 
@@ -74,6 +90,12 @@ export function buildComparisonInsights(
     });
   }
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Price Spread
+   * ---------------------------------------------------------------------------
+   */
+
   if (summary.priceSpread > 0) {
     insights.push({
       id: "price-spread",
@@ -83,6 +105,8 @@ export function buildComparisonInsights(
       severity: "info",
 
       value: summary.priceSpread,
+
+      metricType: "currency",
 
       valueLabel: "Price Spread",
 
@@ -96,6 +120,12 @@ export function buildComparisonInsights(
     });
   }
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Average Market Price
+   * ---------------------------------------------------------------------------
+   */
+
   if (summary.averagePrice > 0) {
     insights.push({
       id: "average-price",
@@ -105,6 +135,8 @@ export function buildComparisonInsights(
       severity: "info",
 
       value: summary.averagePrice,
+
+      metricType: "currency",
 
       valueLabel: "Average Market Price",
 
