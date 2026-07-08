@@ -8,6 +8,7 @@
  *
  * Responsibilities:
  * - Convert Product and Offer domain models into ViewModels.
+ * - Convert Product images into presentation models.
  * - Convert Product specifications into presentation models.
  * - Centralize presentation formatting.
  *
@@ -20,13 +21,13 @@
  *   ↓
  * Search Mapper
  *   ↓
- * ViewModel
+ * Search ViewModel
  *   ↓
  * Domain Models
  *
  * Notes:
  * - Stateless.
- * - Never expose domain models to the UI.
+ * - Never expose domain models to the presentation layer.
  * -----------------------------------------------------------------------------
  */
 
@@ -34,6 +35,7 @@ import type { Offer } from "@/features/offer";
 import type { Product } from "@/features/product";
 
 import type {
+  ProductImageViewModel,
   ProductSpecificationViewModel,
   SearchOfferViewModel,
   SearchResultViewModel,
@@ -44,7 +46,20 @@ import type {
  */
 export class SearchMapper {
   /**
-   * Maps Product specifications into presentation models.
+   * Maps product images into presentation models.
+   */
+  private static toImageViewModels(
+    images: Product["images"],
+  ): ProductImageViewModel[] {
+    return images.map((image) => ({
+      id: image.id,
+      url: image.url,
+      alt: image.alt,
+    }));
+  }
+
+  /**
+   * Maps product specifications into presentation models.
    */
   private static toSpecificationViewModels(
     specifications: Product["specifications"],
@@ -57,7 +72,7 @@ export class SearchMapper {
   }
 
   /**
-   * Maps an Offer into a presentation model.
+   * Maps a domain Offer into a SearchOfferViewModel.
    */
   public static toOfferViewModel(
     offer: Offer,
@@ -65,17 +80,13 @@ export class SearchMapper {
   ): SearchOfferViewModel {
     return {
       id: offer.id,
-
       storeId: offer.storeId,
-
       storeName,
 
       currentPrice: offer.currentPrice,
-
       currentPriceLabel: `₦${offer.currentPrice.toLocaleString()}`,
 
       originalPrice: offer.previousPrice,
-
       originalPriceLabel:
         offer.previousPrice > 0
           ? `₦${offer.previousPrice.toLocaleString()}`
@@ -115,6 +126,8 @@ export class SearchMapper {
       category: product.category,
 
       thumbnail: product.images[0]?.url ?? "",
+
+      images: this.toImageViewModels(product.images),
 
       rating: product.rating,
 
