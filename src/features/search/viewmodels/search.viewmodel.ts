@@ -23,6 +23,17 @@
  */
 
 /**
+ * Presentation model representing a product image.
+ */
+export interface ProductImageViewModel {
+  id: string;
+
+  url: string;
+
+  alt: string;
+}
+
+/**
  * Presentation model representing a product specification.
  */
 export interface ProductSpecificationViewModel {
@@ -71,6 +82,11 @@ export interface SearchResultViewModel {
   category: string;
 
   thumbnail: string;
+
+  /**
+   * Complete image collection used by ProductGallery.
+   */
+  images: ProductImageViewModel[];
 
   rating: number;
 
