@@ -18,14 +18,13 @@
  * -----------------------------------------------------------------------------
  */
 
+import type { Store } from "@/features/store/types/store.types";
+
 import type { ComparisonRowModel } from "../../models/comparison-row.model";
 
 import { normalizeComparisonRows } from "./comparison-normalizer";
-
 import { buildComparisonSummary } from "./comparison-metrics";
-
 import { buildRecommendation } from "./comparison-ranking";
-
 import { buildComparisonInsights } from "./comparison-insights";
 
 import type { ComparisonAnalysisResult } from "./comparison-types";
@@ -35,6 +34,7 @@ import type { ComparisonAnalysisResult } from "./comparison-types";
  */
 export function analyzeComparison(
   rows: ComparisonRowModel[],
+  stores: Store[],
 ): ComparisonAnalysisResult {
   /**
    * Step 1
@@ -52,7 +52,7 @@ export function analyzeComparison(
    * Step 3
    * Build recommendation.
    */
-  const recommendation = buildRecommendation(offers);
+  const recommendation = buildRecommendation(offers, stores);
 
   /**
    * Step 4
