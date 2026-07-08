@@ -7,9 +7,9 @@
  * Maps Product and Offer domain entities into Search presentation models.
  *
  * Responsibilities:
- * - Convert Product and Offer domain models into presentation ViewModels.
- * - Perform all presentation formatting.
- * - Ensure UI components never consume domain models directly.
+ * - Convert Product and Offer domain models into ViewModels.
+ * - Convert Product specifications into presentation models.
+ * - Centralize presentation formatting.
  *
  * Architecture:
  * UI
@@ -20,14 +20,13 @@
  *   ↓
  * Search Mapper
  *   ↓
- * Search ViewModel
+ * ViewModel
  *   ↓
  * Domain Models
  *
  * Notes:
- * - This mapper must remain stateless.
- * - All presentation formatting belongs here.
- * - Never return domain entities to the UI.
+ * - Stateless.
+ * - Never expose domain models to the UI.
  * -----------------------------------------------------------------------------
  */
 
@@ -35,6 +34,7 @@ import type { Offer } from "@/features/offer";
 import type { Product } from "@/features/product";
 
 import type {
+  ProductSpecificationViewModel,
   SearchOfferViewModel,
   SearchResultViewModel,
 } from "../viewmodels/search.viewmodel";
@@ -44,11 +44,20 @@ import type {
  */
 export class SearchMapper {
   /**
-   * Converts a domain Offer into a SearchOfferViewModel.
-   *
-   * @param offer Domain offer.
-   * @param storeName Resolved store name.
-   * @returns Presentation-ready offer.
+   * Maps Product specifications into presentation models.
+   */
+  private static toSpecificationViewModels(
+    specifications: Product["specifications"],
+  ): ProductSpecificationViewModel[] {
+    return specifications.map((specification) => ({
+      id: specification.id,
+      name: specification.name,
+      value: specification.value,
+    }));
+  }
+
+  /**
+   * Maps an Offer into a presentation model.
    */
   public static toOfferViewModel(
     offer: Offer,
@@ -81,12 +90,7 @@ export class SearchMapper {
   }
 
   /**
-   * Converts a Product and its Offers into a SearchResultViewModel.
-   *
-   * @param product Product domain model.
-   * @param offers Product offers.
-   * @param resolveStoreName Store name resolver.
-   * @returns Presentation-ready search result.
+   * Maps a Product and its Offers into a SearchResultViewModel.
    */
   public static toSearchResultViewModel(
     product: Product,
@@ -111,6 +115,12 @@ export class SearchMapper {
       category: product.category,
 
       thumbnail: product.images[0]?.url ?? "",
+
+      rating: product.rating,
+
+      reviewCount: product.reviewCount,
+
+      specifications: this.toSpecificationViewModels(product.specifications),
 
       offerCount: offerViewModels.length,
 

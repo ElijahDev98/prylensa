@@ -5,6 +5,20 @@
  *
  * Purpose:
  * Displays the best available offer for the selected product.
+ *
+ * Responsibilities:
+ * - Display the lowest available offer.
+ * - Provide access to all available offers.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchOfferViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - Must consume SearchOfferViewModel only.
+ * - No domain model access.
  * -----------------------------------------------------------------------------
  */
 
@@ -46,8 +60,8 @@ function BestPricePanel({
         <div className="mt-6">
           {lowestOffer ? (
             <BestOfferCard
-              store={lowestOffer.store.name}
-              price={lowestOffer.offer.currentPrice}
+              store={lowestOffer.storeName}
+              price={lowestOffer.currentPrice}
               currency="NGN"
             />
           ) : (

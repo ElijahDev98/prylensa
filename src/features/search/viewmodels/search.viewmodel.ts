@@ -23,9 +23,18 @@
  */
 
 /**
- * Represents a single offer displayed by the Search feature.
- *
- * All values are presentation-ready.
+ * Presentation model representing a product specification.
+ */
+export interface ProductSpecificationViewModel {
+  id: string;
+
+  name: string;
+
+  value: string;
+}
+
+/**
+ * Presentation model representing a store offer.
  */
 export interface SearchOfferViewModel {
   id: string;
@@ -50,9 +59,7 @@ export interface SearchOfferViewModel {
 }
 
 /**
- * Represents a searchable product displayed by the Search feature.
- *
- * This is the only model presentation components should consume.
+ * Presentation model representing a searchable product.
  */
 export interface SearchResultViewModel {
   id: string;
@@ -65,19 +72,17 @@ export interface SearchResultViewModel {
 
   thumbnail: string;
 
+  rating: number;
+
+  reviewCount: number;
+
+  specifications: ProductSpecificationViewModel[];
+
   offerCount: number;
 
   hasOffers: boolean;
 
-  /**
-   * Lowest priced offer.
-   */
   lowestOffer: SearchOfferViewModel | null;
 
-  /**
-   * All presentation-ready offers.
-   *
-   * Used by the Offer Dialog and any future offer-related UI.
-   */
   offers: SearchOfferViewModel[];
 }
