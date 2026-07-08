@@ -4,14 +4,30 @@
  * Feature: Search
  *
  * Purpose:
- * Displays pricing information from the lowest available offer.
+ * Displays pricing information for the selected product.
+ *
+ * Responsibilities:
+ * - Render pricing information.
+ * - Render discount information.
+ * - Render savings information.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchOfferViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - Consumes only SearchOfferViewModel.
+ * - No business logic.
+ * - No domain model dependencies.
  * -----------------------------------------------------------------------------
  */
 
-import type { Offer } from "@/features/offer/types/offer.types";
+import type { SearchOfferViewModel } from "../viewmodels/search.viewmodel";
 
 interface ProductPriceProps {
-  offer: Offer | null;
+  offer: SearchOfferViewModel | null;
 }
 
 function ProductPrice({ offer }: ProductPriceProps) {
@@ -23,43 +39,44 @@ function ProductPrice({ offer }: ProductPriceProps) {
     );
   }
 
-  const formatter = new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    maximumFractionDigits: 0,
-  });
+  const savings =
+    (offer.originalPrice ?? offer.currentPrice) - offer.currentPrice;
 
   return (
     <section className="mt-8 space-y-3">
       <div className="flex items-center gap-3">
         <h3 className="text-3xl font-bold text-slate-900">
-          {formatter.format(offer.currentPrice)}
+          {offer.currentPriceLabel}
         </h3>
 
-        <span
-          className="
-            rounded-full
-            bg-green-100
-            px-3
-            py-1
-            text-sm
-            font-semibold
-            text-green-700
-          "
-        >
-          -{offer.discount}%
-        </span>
+        {offer.discountPercentage !== undefined && (
+          <span
+            className="
+              rounded-full
+              bg-green-100
+              px-3
+              py-1
+              text-sm
+              font-semibold
+              text-green-700
+            "
+          >
+            -{offer.discountPercentage}%
+          </span>
+        )}
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className="text-base text-slate-400 line-through">
-          {formatter.format(offer.previousPrice)}
-        </span>
+      {offer.originalPriceLabel && (
+        <div className="flex items-center gap-3">
+          <span className="text-base text-slate-400 line-through">
+            {offer.originalPriceLabel}
+          </span>
 
-        <span className="text-sm text-slate-500">
-          Save {formatter.format(offer.previousPrice - offer.currentPrice)}
-        </span>
-      </div>
+          <span className="text-sm text-slate-500">
+            Save ₦{savings.toLocaleString()}
+          </span>
+        </div>
+      )}
     </section>
   );
 }

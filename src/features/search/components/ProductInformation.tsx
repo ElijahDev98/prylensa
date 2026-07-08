@@ -4,17 +4,23 @@
  * Feature: Search
  *
  * Purpose:
- * Displays product information for the selected search result.
+ * Displays the product information for the selected search result.
  *
  * Responsibilities:
  * - Display product details.
- * - Display the lowest available offer.
- * - Forward compare actions.
+ * - Display the best available offer.
+ * - Display product specifications.
+ * - Forward comparison requests.
  *
- * Does NOT:
- * - Manage comparison state.
- * - Fetch data.
- * - Execute business logic.
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchResultViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - Must never consume Product domain models.
+ * - Must never execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -41,8 +47,6 @@ function ProductInformation({
   onCompare,
   isCompared,
 }: ProductInformationProps) {
-  const { product, lowestOffer } = result;
-
   return (
     <Card
       as="article"
@@ -58,15 +62,15 @@ function ProductInformation({
     >
       <div className="flex-1">
         <ProductHeader
-          title={product.title}
-          brand={product.brand}
-          rating={product.rating}
-          reviews={product.reviewCount}
+          title={result.title}
+          brand={result.brand}
+          rating={result.rating}
+          reviews={result.reviewCount}
         />
 
-        <ProductPrice offer={lowestOffer?.offer ?? null} />
+        <ProductPrice offer={result.lowestOffer} />
 
-        <ProductFeatureGrid specifications={product.specifications} />
+        <ProductFeatureGrid specifications={result.specifications} />
 
         <ProductDetailsLink />
       </div>
@@ -74,7 +78,7 @@ function ProductInformation({
       <div className={SPACING.actionTop}>
         <button
           type="button"
-          onClick={() => onCompare(product.id)}
+          onClick={() => onCompare(result.id)}
           disabled={isCompared}
           className={`
             w-full
