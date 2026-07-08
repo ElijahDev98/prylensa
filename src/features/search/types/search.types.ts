@@ -4,18 +4,26 @@
  * Feature: Search
  *
  * Purpose:
- * Shared Search Domain types.
+ * Defines shared Search feature types.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * Hook
+ *   ↓
+ * Service
+ *
+ * Notes:
+ * - Keep this file UI-agnostic.
+ * - Only include state owned by the Search feature.
  * -----------------------------------------------------------------------------
  */
 
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 /**
- * ---------------------------------------------------------------------------
- * Feedback
- * ---------------------------------------------------------------------------
+ * Search feedback displayed to the user.
  */
-
 export interface SearchFeedback {
   validation?: string;
 
@@ -27,29 +35,57 @@ export interface SearchFeedback {
 }
 
 /**
- * ---------------------------------------------------------------------------
- * Search State
- * ---------------------------------------------------------------------------
+ * Supported search sort options.
+ *
+ * Future:
+ * Additional options can be introduced without modifying
+ * presentation components.
  */
+export type SearchSortOption = "relevance" | "lowest-price" | "highest-price";
 
+/**
+ * Search feature state.
+ */
 export interface SearchState {
+  /**
+   * Current search query.
+   */
   query: string;
 
+  /**
+   * Indicates whether a search operation is in progress.
+   */
   loading: boolean;
 
+  /**
+   * User-facing feedback.
+   */
   feedback: SearchFeedback;
 
+  /**
+   * Current search results.
+   */
   results: SearchResultViewModel[];
 
+  /**
+   * Currently selected search result.
+   */
   selectedResult: SearchResultViewModel | null;
+
+  /**
+   * Recent search history.
+   */
+  recentSearches: string[];
+
+  /**
+   * Current sort option.
+   */
+  sort: SearchSortOption;
 }
 
 /**
- * ---------------------------------------------------------------------------
- * Search Input
- * ---------------------------------------------------------------------------
+ * Search input props.
  */
-
 export interface SearchInputProps {
   value: string;
 
