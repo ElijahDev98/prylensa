@@ -41,6 +41,7 @@ import { orderProducts } from "../services/comparison-product-order.service";
 
 import { getComparisonRows } from "../services/comparison-row.service";
 
+import { toComparisonInsightViewModels } from "../mappers/comparison-insight.mapper";
 import { toComparisonProductViewModels } from "../mappers/comparison.mapper";
 import { toComparisonRecommendationViewModel } from "../mappers/comparison-recommendation.mapper";
 import { toComparisonRowViewModels } from "../mappers/comparison-row.mapper";
@@ -182,7 +183,10 @@ function useComparisonState(): ComparisonViewModel {
       ? EMPTY_RECOMMENDATION
       : toComparisonRecommendationViewModel(analysis.recommendation);
 
-  const insights = analysis.insights ?? EMPTY_INSIGHTS;
+  const insights =
+    analysis.insights.length === 0
+      ? EMPTY_INSIGHTS
+      : toComparisonInsightViewModels(analysis.insights);
 
   /**
    * ---------------------------------------------------------------------------
