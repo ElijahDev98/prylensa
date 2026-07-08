@@ -5,29 +5,25 @@
  *
  * Purpose:
  * Determines the best comparison offer.
- *
- * Responsibilities:
- * - Score offers.
- * - Rank offers.
- * - Recommend the best offer.
- *
- * Does NOT:
- * - Normalize comparison rows.
- * - Calculate metrics.
- * - Generate insights.
  * -----------------------------------------------------------------------------
  */
+
+import type { Store } from "@/features/store/types/store.types";
+
+import { buildStoresIntelligence } from "@/features/store/services/store-intelligence.service";
 
 import type {
   AnalysisOffer,
   ComparisonRecommendation,
 } from "./comparison-types";
 
-const PRICE_WEIGHT = 0.55;
+const PRICE_WEIGHT = 0.45;
 
-const DISCOUNT_WEIGHT = 0.25;
+const DISCOUNT_WEIGHT = 0.2;
 
 const AVAILABILITY_WEIGHT = 0.2;
+
+const STORE_WEIGHT = 0.15;
 
 function calculatePriceScore(
   offer: AnalysisOffer,
@@ -42,30 +38,48 @@ function calculatePriceScore(
 }
 
 function calculateDiscountScore(offer: AnalysisOffer): number {
-  const discount = Math.min(offer.discount ?? 0, 50);
-
-  return discount / 50;
+  return Math.min(offer.discount ?? 0, 50) / 50;
 }
 
 function calculateAvailabilityScore(offer: AnalysisOffer): number {
   return offer.availability === "IN_STOCK" ? 1 : 0;
 }
 
+function calculateStoreScore(
+  offer: AnalysisOffer,
+  stores: Map<
+    string,
+    ReturnType<typeof buildStoresIntelligence> extends Map<string, infer T>
+      ? T
+      : never
+  >,
+): number {
+  return stores.get(offer.storeId)?.score ?? 0;
+}
+
 export function calculateOfferScore(
   offer: AnalysisOffer,
   lowestPrice: number,
   highestPrice: number,
+  stores: Map<
+    string,
+    ReturnType<typeof buildStoresIntelligence> extends Map<string, infer T>
+      ? T
+      : never
+  >,
 ): number {
   const score =
     calculatePriceScore(offer, lowestPrice, highestPrice) * PRICE_WEIGHT +
     calculateDiscountScore(offer) * DISCOUNT_WEIGHT +
-    calculateAvailabilityScore(offer) * AVAILABILITY_WEIGHT;
+    calculateAvailabilityScore(offer) * AVAILABILITY_WEIGHT +
+    calculateStoreScore(offer, stores) * STORE_WEIGHT;
 
-  return Math.max(0, Math.min(score, 1));
+  return Math.min(1, Math.max(0, score));
 }
 
 export function buildRecommendation(
   offers: AnalysisOffer[],
+  stores: Store[],
 ): ComparisonRecommendation | undefined {
   if (offers.length === 0) {
     return undefined;
@@ -83,10 +97,17 @@ export function buildRecommendation(
 
   const highestPrice = Math.max(...prices);
 
+  const intelligence = buildStoresIntelligence(stores);
+
   let recommendation: ComparisonRecommendation | undefined;
 
   for (const offer of offers) {
-    const score = calculateOfferScore(offer, lowestPrice, highestPrice);
+    const score = calculateOfferScore(
+      offer,
+      lowestPrice,
+      highestPrice,
+      intelligence,
+    );
 
     if (recommendation === undefined || score > recommendation.score) {
       recommendation = {
