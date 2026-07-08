@@ -57,6 +57,25 @@ function InsightCard({ insight }: InsightCardProps) {
     }
   }
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Value Formatting
+   * ---------------------------------------------------------------------------
+   */
+
+  function formatValue(): string {
+    switch (insight.metricType) {
+      case "currency":
+        return `₦${Math.round(insight.value).toLocaleString()}`;
+
+      case "percentage":
+        return `${insight.value.toFixed(1)}%`;
+
+      default:
+        return insight.value.toLocaleString();
+    }
+  }
+
   const severity = getSeverityStyles();
 
   return (
@@ -149,7 +168,7 @@ function InsightCard({ insight }: InsightCardProps) {
                   text-slate-900
                 "
               >
-                ₦{insight.value.toLocaleString()}
+                {formatValue()}
               </p>
             </div>
 

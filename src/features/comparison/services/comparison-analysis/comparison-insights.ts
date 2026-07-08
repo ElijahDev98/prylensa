@@ -5,16 +5,16 @@
  *
  * Purpose:
  * Produces structured business insights.
- *
- * Responsibilities:
- * - Generate comparison insight models.
- * - Translate analytical results into actionable business insights.
- *
- * Does NOT:
- * - Render UI.
- * - Format presentation components.
  * -----------------------------------------------------------------------------
  */
+
+let title: string;
+
+let severity: ComparisonInsight["severity"];
+
+let description: string;
+
+let recommendationText: string;
 
 import type {
   ComparisonInsight,
@@ -22,132 +22,221 @@ import type {
   ComparisonSummary,
 } from "./comparison-types";
 
+function buildSavingsInsight(
+  summary: ComparisonSummary,
+): ComparisonInsight | undefined {
+  if (summary.potentialSavings <= 0) {
+    return undefined;
+  }
+
+  if (summary.potentialSavings >= 100_000) {
+    title = "Excellent Savings Opportunity";
+
+    description = `You can save approximately ₦${summary.potentialSavings.toLocaleString()} by choosing the lowest-priced retailer instead of the most expensive option.`;
+
+    recommendationText =
+      "This price difference is substantial. Purchasing from the recommended retailer provides excellent value.";
+  } else if (summary.potentialSavings >= 50_000) {
+    title = "Good Savings Opportunity";
+
+    description = `Current retailer prices differ by about ₦${summary.potentialSavings.toLocaleString()}, creating a worthwhile saving opportunity.`;
+
+    recommendationText =
+      "Compare retailers before checkout to avoid paying significantly more.";
+  } else {
+    title = "Limited Savings Available";
+
+    severity = "info";
+
+    description =
+      "Retail prices are relatively close, resulting in modest savings.";
+
+    recommendationText =
+      "Choose the retailer offering the best delivery, warranty or customer experience.";
+  }
+
+  return {
+    id: "potential-savings",
+
+    type: "potential-savings",
+
+    severity,
+
+    value: summary.potentialSavings,
+
+    metricType: "currency",
+
+    valueLabel: "Potential Savings",
+
+    title,
+
+    description,
+
+    recommendationText,
+  };
+}
+
+function buildRecommendationInsight(
+  recommendation: ComparisonRecommendation,
+): ComparisonInsight {
+  const score = recommendation.score * 100;
+
+  let title = "Best Available Option";
+  let description = "No retailer significantly outperforms the others.";
+
+  let recommendationText =
+    "Compare seller reputation and delivery options before purchasing.";
+
+  if (score >= 80) {
+    title = "Excellent Buying Opportunity";
+
+    description =
+      "The recommended offer clearly outperforms competing retailers across price, discount and availability.";
+
+    recommendationText =
+      "This is an excellent time to purchase from the recommended retailer.";
+  } else if (score >= 60) {
+    title = "Recommended Purchase";
+
+    description =
+      "The recommended retailer provides the strongest overall value.";
+
+    recommendationText =
+      "Proceed with the recommended retailer for the best balance of price and availability.";
+  }
+
+  return {
+    id: "best-offer",
+
+    type: "best-offer",
+
+    severity: "success",
+
+    value: score,
+
+    metricType: "percentage",
+
+    valueLabel: "Recommendation Score",
+
+    title,
+
+    description,
+
+    recommendationText,
+
+    recommendation,
+  };
+}
+
+function buildPriceSpreadInsight(
+  summary: ComparisonSummary,
+): ComparisonInsight | undefined {
+  if (summary.priceSpread <= 0) {
+    return undefined;
+  }
+
+  let title = "Stable Market Pricing";
+  let description = "Retail prices remain relatively consistent.";
+
+  let recommendationText =
+    "Choose a retailer based on service quality rather than price.";
+
+  let severity: ComparisonInsight["severity"] = "info";
+
+  if (summary.priceSpread >= 100_000) {
+    title = "Significant Price Differences";
+
+    severity = "warning";
+
+    description = `Prices differ by approximately ₦${summary.priceSpread.toLocaleString()} across retailers.`;
+
+    recommendationText =
+      "Always compare prices before purchasing to avoid unnecessary spending.";
+  } else if (summary.priceSpread >= 40_000) {
+    title = "Moderate Price Variation";
+
+    description = `Retail prices vary by about ₦${summary.priceSpread.toLocaleString()}.`;
+
+    recommendationText =
+      "Price comparison is recommended before making a purchase.";
+  }
+
+  return {
+    id: "price-spread",
+
+    type: "price-spread",
+
+    severity,
+
+    value: summary.priceSpread,
+
+    metricType: "currency",
+
+    valueLabel: "Price Spread",
+
+    title,
+
+    description,
+
+    recommendationText,
+  };
+}
+
+function buildAveragePriceInsight(
+  summary: ComparisonSummary,
+): ComparisonInsight | undefined {
+  if (summary.averagePrice <= 0) {
+    return undefined;
+  }
+
+  return {
+    id: "average-price",
+
+    type: "average-price",
+
+    severity: "info",
+
+    value: summary.averagePrice,
+
+    metricType: "currency",
+
+    valueLabel: "Average Market Price",
+
+    title: "Market Price Benchmark",
+
+    description: `The current average selling price across all compared retailers is ₦${Math.round(summary.averagePrice).toLocaleString()}.`,
+
+    recommendationText:
+      "Use this average as a benchmark when evaluating future offers.",
+  };
+}
+
 export function buildComparisonInsights(
   summary: ComparisonSummary,
   recommendation?: ComparisonRecommendation,
 ): ComparisonInsight[] {
   const insights: ComparisonInsight[] = [];
 
-  /**
-   * ---------------------------------------------------------------------------
-   * Potential Savings
-   * ---------------------------------------------------------------------------
-   */
+  const savingsInsight = buildSavingsInsight(summary);
 
-  if (summary.potentialSavings > 0) {
-    insights.push({
-      id: "potential-savings",
-
-      type: "potential-savings",
-
-      severity: "success",
-
-      value: summary.potentialSavings,
-
-      metricType: "currency",
-
-      valueLabel: "Potential Savings",
-
-      title: "Savings Opportunity",
-
-      description:
-        "A significant price difference exists between the lowest and highest available offers.",
-
-      recommendationText:
-        "Purchase from the lowest-priced retailer to maximize your savings.",
-    });
+  if (savingsInsight) {
+    insights.push(savingsInsight);
   }
-
-  /**
-   * ---------------------------------------------------------------------------
-   * Best Overall Offer
-   * ---------------------------------------------------------------------------
-   */
 
   if (recommendation) {
-    insights.push({
-      id: "best-offer",
-
-      type: "best-offer",
-
-      severity: "success",
-
-      value: recommendation.score * 100,
-
-      metricType: "percentage",
-
-      valueLabel: "Recommendation Score",
-
-      title: "Best Overall Offer",
-
-      description:
-        "The comparison engine identified the strongest overall offer using price, discount and stock availability.",
-
-      recommendationText:
-        "Choose the recommended retailer for the best overall purchasing value.",
-
-      recommendation,
-    });
+    insights.push(buildRecommendationInsight(recommendation));
   }
 
-  /**
-   * ---------------------------------------------------------------------------
-   * Price Spread
-   * ---------------------------------------------------------------------------
-   */
+  const spreadInsight = buildPriceSpreadInsight(summary);
 
-  if (summary.priceSpread > 0) {
-    insights.push({
-      id: "price-spread",
-
-      type: "price-spread",
-
-      severity: "info",
-
-      value: summary.priceSpread,
-
-      metricType: "currency",
-
-      valueLabel: "Price Spread",
-
-      title: "Price Variation Detected",
-
-      description:
-        "Prices vary noticeably across retailers for the selected products.",
-
-      recommendationText:
-        "Compare prices carefully before purchasing because retailers are not equally priced.",
-    });
+  if (spreadInsight) {
+    insights.push(spreadInsight);
   }
 
-  /**
-   * ---------------------------------------------------------------------------
-   * Average Market Price
-   * ---------------------------------------------------------------------------
-   */
+  const averageInsight = buildAveragePriceInsight(summary);
 
-  if (summary.averagePrice > 0) {
-    insights.push({
-      id: "average-price",
-
-      type: "average-price",
-
-      severity: "info",
-
-      value: summary.averagePrice,
-
-      metricType: "currency",
-
-      valueLabel: "Average Market Price",
-
-      title: "Market Price Overview",
-
-      description:
-        "The average market price provides a useful benchmark for evaluating current offers.",
-
-      recommendationText:
-        "Use the market average as a reference when deciding whether an offer represents good value.",
-    });
+  if (averageInsight) {
+    insights.push(averageInsight);
   }
 
   return insights;
