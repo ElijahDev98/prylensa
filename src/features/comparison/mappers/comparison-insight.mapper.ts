@@ -39,6 +39,8 @@ export function toComparisonInsightViewModel(
 
     value: insight.value,
 
+    metricType: insight.metricType,
+
     valueLabel: insight.valueLabel,
 
     recommendationText: insight.recommendationText,
