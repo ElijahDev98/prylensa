@@ -4,37 +4,48 @@
  * Feature: Search
  *
  * Purpose:
- * Search orchestrator.
+ * Provides the business logic for the Search feature.
  *
  * Responsibilities:
- * - Search products.
+ * - Execute product searches.
  * - Resolve product offers.
- * - Resolve store information.
- * - Build SearchResultViewModel.
+ * - Delegate ViewModel creation to SearchMapper.
  *
- * Does NOT:
- * - Manage React state.
- * - Render UI.
+ * Architecture:
+ * UI
+ *   ↓
+ * Hook
+ *   ↓
+ * Search Service
+ *   ↓
+ * Search Mapper
+ *   ↓
+ * ViewModel
+ *   ↓
+ * Domain Model
+ *
+ * Notes:
+ * - This service must never construct ViewModels directly.
+ * - All presentation mapping belongs in SearchMapper.
  * -----------------------------------------------------------------------------
  */
 
 import { getProducts } from "@/features/product";
+import { getOffersByProductId } from "@/features/offer";
 
-import { getLowestOffer, getOffersByProductId } from "@/features/offer";
+import { SearchMapper } from "../mappers/search.mapper";
 
-import { getStoreById } from "@/features/store";
+import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
-import type {
-  SearchOfferViewModel,
-  SearchResultViewModel,
-} from "../viewmodels/search.viewmodel";
-
+/**
+ * Searches products by keyword.
+ *
+ * @param query User search query.
+ * @returns SearchResultViewModel collection.
+ */
 export function searchProducts(query: string): SearchResultViewModel[] {
   const keyword = query.trim().toLowerCase();
 
-  /**
-   * Empty query.
-   */
   if (keyword.length < 2) {
     return [];
   }
@@ -45,33 +56,10 @@ export function searchProducts(query: string): SearchResultViewModel[] {
         product.title.toLowerCase().includes(keyword) ||
         product.brand.toLowerCase().includes(keyword),
     )
-    .map((product) => {
-      const offers: SearchOfferViewModel[] = getOffersByProductId(product.id)
-        .map((offer) => {
-          const store = getStoreById(offer.storeId);
-
-          if (!store) {
-            return null;
-          }
-
-          return {
-            offer,
-            store,
-          };
-        })
-        .filter((offer): offer is SearchOfferViewModel => offer !== null);
-
-      const lowestOfferEntity = getLowestOffer(product.id);
-
-      const lowestOffer =
-        offers.find((item) => item.offer.id === lowestOfferEntity?.id) ?? null;
-
-      return {
+    .map((product) =>
+      SearchMapper.toSearchResultViewModel(
         product,
-
-        offers,
-
-        lowestOffer,
-      };
-    });
+        getOffersByProductId(product.id),
+      ),
+    );
 }
