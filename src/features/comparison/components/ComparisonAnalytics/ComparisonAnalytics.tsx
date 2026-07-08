@@ -4,58 +4,71 @@
  * Feature: Comparison
  *
  * Purpose:
- * Displays analytics dashboard for the comparison.
+ * Displays visual analytics for the current comparison.
+ *
+ * Responsibilities:
+ * - Consume Comparison ViewModel.
+ * - Render reusable chart components.
+ *
+ * Does NOT:
+ * - Calculate analytics.
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import { BarChartCard } from "@/components/ui/charts";
 
-import AnalyticsStats from "./AnalyticsStats";
-
 import useComparison from "@/features/comparison/hooks/useComparison";
 
 function ComparisonAnalytics() {
-  const comparison = useComparison();
+  const { analytics } = useComparison();
 
-  if (comparison.analytics.prices.length === 0) {
+  if (analytics.prices.length === 0) {
     return null;
   }
 
   return (
-    <section className="space-y-8">
-      <header>
+    <section
+      className="
+        space-y-6
+      "
+    >
+      <header
+        className="
+          space-y-2
+        "
+      >
         <h2
           className="
             text-2xl
             font-bold
+            tracking-tight
             text-slate-900
           "
         >
-          Price Analytics
+          Price Distribution
         </h2>
 
-        <p className="text-slate-500">
-          Compare pricing across available stores.
+        <p
+          className="
+            max-w-2xl
+            text-sm
+            leading-6
+            text-slate-500
+          "
+        >
+          Compare the lowest available market price for each selected product
+          across supported online stores.
         </p>
       </header>
 
-      <div
-        className="
-          grid
-          gap-6
-          xl:grid-cols-[2fr_1fr]
-        "
-      >
-        <BarChartCard
-          title="Price Distribution"
-          description="Current product prices by store."
-          data={comparison.analytics.prices}
-          xKey="storeName"
-          yKey="price"
-        />
-
-        <AnalyticsStats />
-      </div>
+      <BarChartCard
+        title="Lowest Market Price"
+        description="Each bar represents the best available price for a compared product."
+        data={analytics.prices}
+        xKey="productName"
+        yKey="price"
+      />
     </section>
   );
 }
