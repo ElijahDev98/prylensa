@@ -7,7 +7,8 @@
  * Defines the public API exposed by the Comparison Domain.
  *
  * Responsibilities:
- * - Expose presentation ViewModels.
+ * - Expose comparison presentation data.
+ * - Expose comparison preference state.
  * - Expose comparison actions.
  *
  * Does NOT:
@@ -17,16 +18,17 @@
 
 import type { Store } from "@/features/store/types/store.types";
 
-import type { ComparisonProductViewModel } from "../viewmodels/comparison-product.viewmodel";
-import type { ComparisonRowViewModel } from "../viewmodels/comparison-row.viewmodel";
-
 import type {
   ComparisonInsight,
   ComparisonRecommendation,
   ComparisonSummary,
 } from "../services/comparison-analysis";
 
-export interface ComparisonViewModel {
+import type { ComparisonPreferencesViewModel } from "../viewmodels/comparison-preferences.viewmodel";
+import type { ComparisonProductViewModel } from "../viewmodels/comparison-product.viewmodel";
+import type { ComparisonRowViewModel } from "../viewmodels/comparison-row.viewmodel";
+
+export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   /**
    * Products prepared for the Compare presentation.
    */
