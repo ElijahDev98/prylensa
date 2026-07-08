@@ -7,9 +7,20 @@
  * Entry point for the Search feature.
  *
  * Responsibilities:
- * - Connect Search and Comparison domains.
- * - Compose Search presentation.
- * - Own feature-level orchestration.
+ * - Compose the Search feature.
+ * - Connect Search and Comparison features.
+ * - Delegate business operations to hooks.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * useSearch()
+ *   ↓
+ * Search Service
+ *
+ * Notes:
+ * - This page should remain a composition root.
+ * - No business logic should be implemented here.
  * -----------------------------------------------------------------------------
  */
 
@@ -76,8 +87,7 @@ function SearchPage() {
         error={feedback.error ?? null}
         onCompare={comparison.addProduct}
         isCompared={
-          selectedResult !== null &&
-          comparison.isSelected(selectedResult.product.id)
+          selectedResult !== null && comparison.isSelected(selectedResult.id)
         }
         offerDialogOpen={offerDialogOpen}
         onOpenOfferDialog={openOfferDialog}

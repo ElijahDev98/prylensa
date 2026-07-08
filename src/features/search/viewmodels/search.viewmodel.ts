@@ -16,16 +16,15 @@
  * Domain Model
  *
  * Rules:
- * - Do not expose Product, Offer or Store domain models.
- * - All presentation components must consume these interfaces only.
- * * Future Changes:
- * - Additional presentation fields should be added here rather than exposing
- *   domain models to the UI.
+ * - Never expose Product, Offer or Store domain models.
+ * - Components must consume ViewModels only.
+ * - Presentation formatting belongs in the Mapper layer.
  * -----------------------------------------------------------------------------
  */
 
 /**
  * Represents a single offer displayed by the Search feature.
+ *
  * All values are presentation-ready.
  */
 export interface SearchOfferViewModel {
@@ -52,6 +51,7 @@ export interface SearchOfferViewModel {
 
 /**
  * Represents a searchable product displayed by the Search feature.
+ *
  * This is the only model presentation components should consume.
  */
 export interface SearchResultViewModel {
@@ -69,5 +69,15 @@ export interface SearchResultViewModel {
 
   hasOffers: boolean;
 
+  /**
+   * Lowest priced offer.
+   */
   lowestOffer: SearchOfferViewModel | null;
+
+  /**
+   * All presentation-ready offers.
+   *
+   * Used by the Offer Dialog and any future offer-related UI.
+   */
+  offers: SearchOfferViewModel[];
 }
