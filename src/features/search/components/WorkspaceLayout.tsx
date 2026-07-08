@@ -10,9 +10,15 @@
  * - Arrange workspace panels.
  * - Delegate rendering to child components.
  *
- * Does NOT:
- * - Manage state.
- * - Execute business logic.
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchResultViewModel
+ *
+ * Notes:
+ * - Pure layout component.
+ * - Must never access Product domain models.
+ * - Must never execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -40,7 +46,7 @@ function WorkspaceLayout({
   isCompared,
   onViewAllPrices,
 }: WorkspaceLayoutProps) {
-  const { product, offers, lowestOffer } = result;
+  const { images, offers, lowestOffer } = result;
 
   return (
     <section
@@ -52,7 +58,7 @@ function WorkspaceLayout({
       `}
     >
       <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <ProductGallery images={product.images} />
+        <ProductGallery images={images} />
       </div>
 
       <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
