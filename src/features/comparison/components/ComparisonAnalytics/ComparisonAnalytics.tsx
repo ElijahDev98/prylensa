@@ -4,19 +4,13 @@
  * Feature: Comparison
  *
  * Purpose:
- * Displays visual analytics for the current comparison.
- *
- * Responsibilities:
- * - Consume Comparison ViewModel.
- * - Render reusable chart components.
- *
- * Does NOT:
- * - Calculate analytics.
- * - Execute business logic.
+ * Displays analytics dashboard for the comparison.
  * -----------------------------------------------------------------------------
  */
 
 import { BarChartCard } from "@/components/ui/charts";
+
+import AnalyticsStats from "./AnalyticsStats";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
@@ -28,7 +22,7 @@ function ComparisonAnalytics() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-8">
       <header>
         <h2
           className="
@@ -40,22 +34,28 @@ function ComparisonAnalytics() {
           Price Analytics
         </h2>
 
-        <p
-          className="
-            text-slate-500
-          "
-        >
-          Visual comparison of prices across stores.
+        <p className="text-slate-500">
+          Compare pricing across available stores.
         </p>
       </header>
 
-      <BarChartCard
-        title="Price Distribution"
-        description="Current product prices by store."
-        data={comparison.analytics.prices}
-        xKey="storeName"
-        yKey="price"
-      />
+      <div
+        className="
+          grid
+          gap-6
+          xl:grid-cols-[2fr_1fr]
+        "
+      >
+        <BarChartCard
+          title="Price Distribution"
+          description="Current product prices by store."
+          data={comparison.analytics.prices}
+          xKey="storeName"
+          yKey="price"
+        />
+
+        <AnalyticsStats />
+      </div>
     </section>
   );
 }

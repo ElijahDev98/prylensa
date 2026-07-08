@@ -21,7 +21,7 @@ import type { PropsWithChildren } from "react";
 
 import useComparisonState from "../hooks/useComparisonState";
 
-import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+import type { ComparisonViewModel } from "../viewmodels/comparison.viewmodel";
 
 const ComparisonContext = createContext<ComparisonViewModel | null>(null);
 

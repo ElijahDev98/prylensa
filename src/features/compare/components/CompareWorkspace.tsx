@@ -8,7 +8,7 @@
  *
  * Responsibilities:
  * - Compose comparison presentation.
- * - Distribute ViewModel data.
+ * - Arrange workspace sections.
  *
  * Does NOT:
  * - Execute business logic.
@@ -16,40 +16,74 @@
  * -----------------------------------------------------------------------------
  */
 
+import BestOfferCard from "../../comparison/components/BestOffer";
+import ComparisonAnalytics from "../../comparison/components/ComparisonAnalytics";
+import ComparisonInsights from "../../comparison/components/ComparisonInsights";
 import ComparisonMatrix from "./ComparisonMatrix";
 import ComparisonPanel from "./ComparisonPanel";
 import ComparisonPanelHeader from "./ComparisonPanelHeader";
 import ComparisonSummary from "../../comparison/components/ComparisonSummary";
 import ComparisonToolbar from "./ComparisonToolbar";
-
-import useComparisonContext from "@/features/comparison/context/useComparisonContext";
+import RecommendationPanel from "../../comparison/components/RecommendationPanel";
 
 function CompareWorkspace() {
-  const { products, stores, summary } = useComparisonContext();
-
   return (
     <section
       aria-label="Compare Workspace"
       className="
         flex
         flex-col
-        gap-6
+        gap-8
       "
     >
+      {/* ------------------------------------------------------------------ */}
+      {/* Toolbar */}
+      {/* ------------------------------------------------------------------ */}
+
       <ComparisonToolbar />
 
-      <ComparisonSummary
-        productCount={products.length}
-        storeCount={stores.length}
-        summary={summary}
-      />
+      {/* ------------------------------------------------------------------ */}
+      {/* AI Recommendation */}
+      {/* ------------------------------------------------------------------ */}
+
+      <RecommendationPanel />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Summary */}
+      {/* ------------------------------------------------------------------ */}
+
+      <ComparisonSummary />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Best Offer */}
+      {/* ------------------------------------------------------------------ */}
+
+      <BestOfferCard />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Analytics */}
+      {/* ------------------------------------------------------------------ */}
+
+      <ComparisonAnalytics />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* AI Insights */}
+      {/* ------------------------------------------------------------------ */}
+
+      <ComparisonInsights />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Comparison Matrix */}
+      {/* ------------------------------------------------------------------ */}
 
       <ComparisonPanel>
         <ComparisonPanelHeader
           title="Product Comparison"
           description="
             Compare product pricing,
-            availability and key features
+            availability,
+            discounts,
+            and stock status
             across multiple online stores.
           "
         />

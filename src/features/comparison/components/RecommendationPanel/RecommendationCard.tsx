@@ -154,7 +154,7 @@ function RecommendationCard() {
         </div>
 
         <ul className="space-y-3">
-          {recommendation.reasons.map((reason) => (
+          {recommendation.reasons.map((reason: string) => (
             <RecommendationReason key={reason} reason={reason} />
           ))}
         </ul>

@@ -13,14 +13,15 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { StoreViewModel } from "@/features/store/viewmodels/store.viewmodel";
+import type { StoreViewModel } from "@/features/store";
 
+import type { ComparisonAnalyticsViewModel } from "../viewmodels/comparison-analytics.viewmodel";
+import type { ComparisonInsightViewModel } from "../viewmodels/comparison-insight.viewmodel";
+import type { ComparisonPreferencesViewModel } from "../viewmodels/comparison-preferences.viewmodel";
 import type { ComparisonProductViewModel } from "../viewmodels/comparison-product.viewmodel";
 import type { ComparisonRowViewModel } from "../viewmodels/comparison-row.viewmodel";
-import type { RecommendationViewModel } from "../viewmodels/recommendation.viewmodel";
-import type { ComparisonInsightViewModel } from "../viewmodels/comparison-insight.viewmodel";
 import type { ComparisonSummaryViewModel } from "../viewmodels/comparison-summary.viewmodel";
-import type { ComparisonPreferencesViewModel } from "../viewmodels/comparison-preferences.viewmodel";
+import type { RecommendationViewModel } from "../viewmodels/recommendation.viewmodel";
 
 export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   /**
@@ -29,36 +30,39 @@ export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   products: ComparisonProductViewModel[];
 
   /**
-   * Rows displayed by the comparison matrix.
+   * Comparison matrix rows.
    */
   rows: ComparisonRowViewModel[];
 
   /**
-   * All available stores.
+   * Available stores.
    */
   stores: StoreViewModel[];
 
   /**
-   * Number of selected products.
+   * Analytics used by charts.
    */
-  selectedCount: number;
+  analytics: ComparisonAnalyticsViewModel;
 
   /**
-   * Comparison summary.
+   * Summary cards.
    */
   summary: ComparisonSummaryViewModel;
 
   /**
-   * Recommendation.
-   *
-   * Always available.
+   * Recommendation panel.
    */
   recommendation: RecommendationViewModel;
 
   /**
-   * Comparison insights.
+   * AI insights.
    */
   insights: ComparisonInsightViewModel[];
+
+  /**
+   * Selected product count.
+   */
+  selectedCount: number;
 
   /**
    * Product actions.
@@ -74,7 +78,7 @@ export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   resetComparison(): void;
 
   /**
-   * Export actions.
+   * Export comparison.
    */
   exportComparison(): void;
 }

@@ -42,24 +42,21 @@ import { orderProducts } from "../services/comparison-product-order.service";
 import { getComparisonRows } from "../services/comparison-row.service";
 
 import { toComparisonProductViewModels } from "../mappers/comparison.mapper";
-
+import { toComparisonRecommendationViewModel } from "../mappers/comparison-recommendation.mapper";
 import { toComparisonRowViewModels } from "../mappers/comparison-row.mapper";
+import { toComparisonSummaryViewModel } from "../mappers/comparison-summary.mapper";
 
 import useComparisonPreferences from "./useComparisonPreferences";
 
 import { EMPTY_ANALYTICS } from "../viewmodels/comparison-analytics.viewmodel";
-
 import { EMPTY_INSIGHTS } from "../viewmodels/comparison-insight.viewmodel";
-
 import { EMPTY_RECOMMENDATION } from "../viewmodels/recommendation.viewmodel";
-
 import { EMPTY_SUMMARY } from "../viewmodels/comparison-summary.viewmodel";
 
 import { getProductsByIds } from "@/features/product";
-
 import { getStores } from "@/features/store/services/store.service";
 
-import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+import type { ComparisonViewModel } from "../viewmodels/comparison.viewmodel";
 
 function useComparisonState(): ComparisonViewModel {
   /**
@@ -175,9 +172,15 @@ function useComparisonState(): ComparisonViewModel {
 
   const stableAnalytics = analytics ?? EMPTY_ANALYTICS;
 
-  const summary = analysis.summary ?? EMPTY_SUMMARY;
+  const summary =
+    analysis.summary == null
+      ? EMPTY_SUMMARY
+      : toComparisonSummaryViewModel(analysis.summary, orderedProducts.length);
 
-  const recommendation = analysis.recommendation ?? EMPTY_RECOMMENDATION;
+  const recommendation =
+    analysis.recommendation == null
+      ? EMPTY_RECOMMENDATION
+      : toComparisonRecommendationViewModel(analysis.recommendation);
 
   const insights = analysis.insights ?? EMPTY_INSIGHTS;
 
@@ -216,10 +219,6 @@ function useComparisonState(): ComparisonViewModel {
 
     rows,
 
-    /**
-     * Always expose every store so the
-     * Store Filter can display the full list.
-     */
     stores,
 
     analytics: stableAnalytics,
