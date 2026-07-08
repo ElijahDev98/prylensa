@@ -4,7 +4,14 @@
  * Feature: Comparison Domain
  *
  * Purpose:
- * Presentation model for comparison recommendations.
+ * Presentation model representing the best comparison recommendation.
+ *
+ * Responsibilities:
+ * - Provide everything required by the presentation layer.
+ * - Keep UI independent from business models.
+ *
+ * Does NOT:
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -20,33 +27,81 @@ export interface RecommendationViewModel {
   description: string;
 
   /**
-   * Reasons supporting the recommendation.
+   * Recommended store.
    */
-  reasons: string[];
+  storeId: string;
 
   /**
-   * Confidence score (0–100).
+   * Store display name.
+   */
+  storeName: string;
+
+  /**
+   * Recommended product.
+   */
+  productId: string;
+
+  /**
+   * Product display name.
+   */
+  productTitle: string;
+
+  /**
+   * Recommended price.
+   */
+  price: number;
+
+  /**
+   * Available discount.
+   */
+  discount: number;
+
+  /**
+   * Product availability.
+   */
+  availability: string;
+
+  /**
+   * Recommendation confidence.
    */
   confidence: number;
 
   /**
-   * Estimated savings amount.
+   * Estimated savings.
    */
   savings: number;
+
+  /**
+   * Recommendation reasons.
+   */
+  reasons: string[];
 }
 
 /**
- * Default recommendation used when no comparison
- * recommendation is available.
+ * Empty recommendation.
  */
 export const EMPTY_RECOMMENDATION: RecommendationViewModel = {
-  title: "No Recommendation",
+  title: "",
 
-  description: "Select at least one product to generate a recommendation.",
+  description: "",
 
-  reasons: [],
+  storeId: "",
+
+  storeName: "",
+
+  productId: "",
+
+  productTitle: "",
+
+  price: 0,
+
+  discount: 0,
+
+  availability: "",
 
   confidence: 0,
 
   savings: 0,
+
+  reasons: [],
 };

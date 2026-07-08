@@ -5,12 +5,20 @@
  *
  * Purpose:
  * Determines the best comparison offer.
+ *
+ * Responsibilities:
+ * - Score offers.
+ * - Rank offers.
+ * - Recommend the best offer.
+ *
+ * Does NOT:
+ * - Access Store services.
+ * - Build Store Intelligence.
+ * - Generate insights.
  * -----------------------------------------------------------------------------
  */
 
-import type { Store } from "@/features/store/types/store.types";
-
-import { buildStoresIntelligence } from "@/features/store/services/store-intelligence.service";
+import type { StoreIntelligence } from "@/features/store/services/store-intelligence.service";
 
 import type {
   AnalysisOffer,
@@ -47,39 +55,29 @@ function calculateAvailabilityScore(offer: AnalysisOffer): number {
 
 function calculateStoreScore(
   offer: AnalysisOffer,
-  stores: Map<
-    string,
-    ReturnType<typeof buildStoresIntelligence> extends Map<string, infer T>
-      ? T
-      : never
-  >,
+  intelligence: Map<string, StoreIntelligence>,
 ): number {
-  return stores.get(offer.storeId)?.score ?? 0;
+  return intelligence.get(offer.storeId)?.score ?? 0;
 }
 
 export function calculateOfferScore(
   offer: AnalysisOffer,
   lowestPrice: number,
   highestPrice: number,
-  stores: Map<
-    string,
-    ReturnType<typeof buildStoresIntelligence> extends Map<string, infer T>
-      ? T
-      : never
-  >,
+  intelligence: Map<string, StoreIntelligence>,
 ): number {
   const score =
     calculatePriceScore(offer, lowestPrice, highestPrice) * PRICE_WEIGHT +
     calculateDiscountScore(offer) * DISCOUNT_WEIGHT +
     calculateAvailabilityScore(offer) * AVAILABILITY_WEIGHT +
-    calculateStoreScore(offer, stores) * STORE_WEIGHT;
+    calculateStoreScore(offer, intelligence) * STORE_WEIGHT;
 
-  return Math.min(1, Math.max(0, score));
+  return Math.max(0, Math.min(score, 1));
 }
 
 export function buildRecommendation(
   offers: AnalysisOffer[],
-  stores: Store[],
+  intelligence: Map<string, StoreIntelligence>,
 ): ComparisonRecommendation | undefined {
   if (offers.length === 0) {
     return undefined;
@@ -96,8 +94,6 @@ export function buildRecommendation(
   const lowestPrice = Math.min(...prices);
 
   const highestPrice = Math.max(...prices);
-
-  const intelligence = buildStoresIntelligence(stores);
 
   let recommendation: ComparisonRecommendation | undefined;
 

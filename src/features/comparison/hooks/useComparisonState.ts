@@ -54,8 +54,11 @@ import { EMPTY_INSIGHTS } from "../viewmodels/comparison-insight.viewmodel";
 import { EMPTY_RECOMMENDATION } from "../viewmodels/recommendation.viewmodel";
 import { EMPTY_SUMMARY } from "../viewmodels/comparison-summary.viewmodel";
 
-import { getProductsByIds } from "@/features/product";
-import { getStores } from "@/features/store/services/store.service";
+import { getProductById, getProductsByIds } from "@/features/product";
+import {
+  getStoreById,
+  getStores,
+} from "@/features/store/services/store.service";
 
 import type { ComparisonViewModel } from "../viewmodels/comparison.viewmodel";
 
@@ -155,7 +158,7 @@ function useComparisonState(): ComparisonViewModel {
    * ---------------------------------------------------------------------------
    */
 
-  const analysis = analyzeComparison(rowModels);
+  const analysis = analyzeComparison(rowModels, visibleStores);
 
   /**
    * ---------------------------------------------------------------------------
@@ -181,7 +184,23 @@ function useComparisonState(): ComparisonViewModel {
   const recommendation =
     analysis.recommendation == null
       ? EMPTY_RECOMMENDATION
-      : toComparisonRecommendationViewModel(analysis.recommendation);
+      : (() => {
+          const recommendedProduct = getProductById(
+            analysis.recommendation.offer.productId,
+          );
+
+          const recommendedStore = getStoreById(
+            analysis.recommendation.offer.storeId,
+          );
+
+          return toComparisonRecommendationViewModel({
+            recommendation: analysis.recommendation,
+
+            product: recommendedProduct,
+
+            store: recommendedStore,
+          });
+        })();
 
   const insights =
     analysis.insights.length === 0

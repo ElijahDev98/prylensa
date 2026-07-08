@@ -10,14 +10,17 @@
  * - Display comparison summary.
  * - Display comparison actions.
  * - Consume Comparison Context.
+ * - Navigate users to Search when adding products.
  *
  * Does NOT:
- * - Manage state.
+ * - Manage comparison state.
  * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import { Box, Download, Plus, Trash2 } from "lucide-react";
+
+import { useNavigate } from "react-router-dom";
 
 import ComparisonSortMenu from "./ComparisonSortMenu";
 import ComparisonStoreMenu from "./ComparisonStoreMenu";
@@ -27,11 +30,17 @@ import useComparisonContext from "@/features/comparison/context/useComparisonCon
 function ComparisonToolbar() {
   const comparison = useComparisonContext();
 
+  const navigate = useNavigate();
+
   const productCount = comparison.products.length;
 
   const hasProducts = productCount > 0;
 
   const canSort = productCount > 1;
+
+  function handleAddProduct() {
+    navigate("/search");
+  }
 
   return (
     <section
@@ -107,15 +116,9 @@ function ComparisonToolbar() {
           gap-3
         "
       >
-        {/* Stores */}
-
         <ComparisonStoreMenu disabled={!hasProducts} />
 
-        {/* Sort */}
-
         <ComparisonSortMenu disabled={!canSort} />
-
-        {/* Export */}
 
         <button
           type="button"
@@ -144,10 +147,9 @@ function ComparisonToolbar() {
           Export
         </button>
 
-        {/* Add Product */}
-
         <button
           type="button"
+          onClick={handleAddProduct}
           className="
             inline-flex
             items-center
@@ -168,8 +170,6 @@ function ComparisonToolbar() {
           <Plus size={16} />
           Add Product
         </button>
-
-        {/* Clear */}
 
         <button
           type="button"

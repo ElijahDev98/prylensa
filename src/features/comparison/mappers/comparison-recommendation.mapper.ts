@@ -9,27 +9,39 @@
  * Responsibilities:
  * - Convert business recommendation models.
  * - Produce RecommendationViewModels.
- * - Keep presentation independent of business models.
- *
- * Does NOT:
- * - Execute business logic.
- * - Rank offers.
- * - Calculate scores.
+ * - Keep presentation independent from business models.
  * -----------------------------------------------------------------------------
  */
+
+import type { Product } from "@/features/product/types/product.types";
+
+import type { Store } from "@/features/store/types/store.types";
 
 import type { ComparisonRecommendation } from "../services/comparison-analysis/comparison-types";
 
 import type { RecommendationViewModel } from "../viewmodels/recommendation.viewmodel";
 
-export function toComparisonRecommendationViewModel(
-  recommendation: ComparisonRecommendation,
-): RecommendationViewModel {
-  const price = recommendation.offer.price ?? 0;
+interface RecommendationMapperInput {
+  recommendation: ComparisonRecommendation;
 
-  const discount = recommendation.offer.discount ?? 0;
+  product?: Product;
 
-  const inStock = recommendation.offer.availability === "IN_STOCK";
+  store?: Store;
+}
+
+export function toComparisonRecommendationViewModel({
+  recommendation,
+  product,
+  store,
+}: RecommendationMapperInput): RecommendationViewModel {
+  const offer = recommendation.offer;
+
+  const price = offer.price ?? 0;
+
+  const discount = offer.discount ?? 0;
+
+  const availability =
+    offer.availability === "IN_STOCK" ? "In Stock" : "Out of Stock";
 
   const reasons: string[] = [];
 
@@ -41,7 +53,7 @@ export function toComparisonRecommendationViewModel(
     reasons.push(`${discount}% discount available`);
   }
 
-  if (inStock) {
+  if (offer.availability === "IN_STOCK") {
     reasons.push("Currently in stock");
   }
 
@@ -55,10 +67,24 @@ export function toComparisonRecommendationViewModel(
     description:
       "This offer provides the strongest balance of price, discount and availability.",
 
-    reasons,
+    storeId: offer.storeId,
+
+    storeName: store?.name ?? "Unknown Store",
+
+    productId: offer.productId,
+
+    productTitle: product?.title ?? "Unknown Product",
+
+    price,
+
+    discount,
+
+    availability,
 
     confidence: Math.round(recommendation.score * 100),
 
     savings: price,
+
+    reasons,
   };
 }

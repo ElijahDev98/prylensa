@@ -18,7 +18,7 @@
 
 import useComparisonContext from "../context/useComparisonContext";
 
-import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+import type { ComparisonViewModel } from "../viewmodels/comparison.viewmodel";
 
 function useComparison(): ComparisonViewModel {
   return useComparisonContext();
