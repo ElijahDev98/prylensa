@@ -4,7 +4,15 @@
  * Feature: Comparison
  *
  * Purpose:
- * Displays a single AI insight.
+ * Displays a single AI-generated comparison insight.
+ *
+ * Responsibilities:
+ * - Present an individual AI insight.
+ * - Visually distinguish insight severity.
+ * - Maintain dashboard consistency.
+ *
+ * Does NOT:
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -20,49 +28,112 @@ function InsightCard({ insight }: InsightCardProps) {
   function renderIcon() {
     switch (insight.severity) {
       case "success":
-        return <CheckCircle2 size={20} className="text-emerald-600" />;
+        return <CheckCircle2 size={22} className="text-emerald-600" />;
 
       case "warning":
-        return <AlertTriangle size={20} className="text-amber-600" />;
+        return <AlertTriangle size={22} className="text-amber-600" />;
 
       default:
-        return <Info size={20} className="text-blue-600" />;
+        return <Info size={22} className="text-blue-600" />;
     }
   }
+
+  function accentClasses() {
+    switch (insight.severity) {
+      case "success":
+        return {
+          border: "border-emerald-100",
+          background: "bg-emerald-50",
+        };
+
+      case "warning":
+        return {
+          border: "border-amber-100",
+          background: "bg-amber-50",
+        };
+
+      default:
+        return {
+          border: "border-blue-100",
+          background: "bg-blue-50",
+        };
+    }
+  }
+
+  const accent = accentClasses();
 
   return (
     <article
       className="
-        rounded-2xl
+        group
+        overflow-hidden
+        rounded-3xl
         border
         border-slate-200
         bg-white
-        p-5
         shadow-sm
+        transition-all
+        duration-300
+        hover:-translate-y-0.5
+        hover:shadow-lg
       "
     >
-      <div className="flex gap-4">
-        {renderIcon()}
+      <div className="flex">
+        {/* ------------------------------------------------------------- */}
+        {/* Severity Accent */}
+        {/* ------------------------------------------------------------- */}
 
-        <div>
-          <h3
-            className="
-              font-semibold
-              text-slate-900
-            "
-          >
-            {insight.title}
-          </h3>
+        <div
+          className={`
+            w-1.5
+            ${accent.background}
+          `}
+        />
 
-          <p
-            className="
-              mt-2
-              text-sm
-              text-slate-600
-            "
+        {/* ------------------------------------------------------------- */}
+        {/* Content */}
+        {/* ------------------------------------------------------------- */}
+
+        <div className="flex flex-1 gap-5 p-6">
+          <div
+            className={`
+              flex
+              h-12
+              w-12
+              shrink-0
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              ${accent.border}
+              ${accent.background}
+            `}
           >
-            {insight.description}
-          </p>
+            {renderIcon()}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h3
+              className="
+                text-lg
+                font-semibold
+                tracking-tight
+                text-slate-900
+              "
+            >
+              {insight.title}
+            </h3>
+
+            <p
+              className="
+                mt-3
+                leading-7
+                text-slate-600
+              "
+            >
+              {insight.description}
+            </p>
+          </div>
         </div>
       </div>
     </article>

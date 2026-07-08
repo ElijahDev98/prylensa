@@ -9,6 +9,8 @@ import InsightCard from "./InsightCard";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
+import type { ComparisonInsightViewModel } from "../../viewmodels/comparison-insight.viewmodel";
+
 function ComparisonInsights() {
   const comparison = useComparison();
 
@@ -45,7 +47,7 @@ function ComparisonInsights() {
           lg:grid-cols-2
         "
       >
-        {comparison.insights.map((insight) => (
+        {comparison.insights.map((insight: ComparisonInsightViewModel) => (
           <InsightCard key={insight.id} insight={insight} />
         ))}
       </div>
