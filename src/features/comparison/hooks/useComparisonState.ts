@@ -162,7 +162,7 @@ function useComparisonState(): ComparisonViewModel {
    * ---------------------------------------------------------------------------
    */
 
-  const analytics = buildComparisonAnalytics(rowModels);
+  const analytics = buildComparisonAnalytics(orderedProducts, rowModels);
 
   /**
    * ---------------------------------------------------------------------------
