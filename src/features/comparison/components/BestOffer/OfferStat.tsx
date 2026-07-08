@@ -2,6 +2,16 @@
  * -----------------------------------------------------------------------------
  * File: OfferStat.tsx
  * Feature: Comparison
+ *
+ * Purpose:
+ * Displays a key statistic for the recommended offer.
+ *
+ * Responsibilities:
+ * - Present a single offer metric.
+ * - Maintain a consistent dashboard appearance.
+ *
+ * Does NOT:
+ * - Execute business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -13,30 +23,65 @@ interface OfferStatProps {
 
 function OfferStat({ label, value }: OfferStatProps) {
   return (
-    <div>
-      <p
-        className="
-          text-xs
-          font-medium
-          uppercase
-          tracking-wide
-          text-slate-500
-        "
-      >
-        {label}
-      </p>
+    <article
+      className="
+        group
+        flex
+        h-full
+        flex-col
+        justify-between
+        rounded-2xl
+        border
+        border-slate-200
+        bg-slate-50
+        p-5
+        transition-all
+        duration-300
+        hover:-translate-y-0.5
+        hover:border-slate-300
+        hover:bg-white
+        hover:shadow-md
+      "
+    >
+      <div>
+        <p
+          className="
+            text-xs
+            font-semibold
+            uppercase
+            tracking-widest
+            text-slate-500
+          "
+        >
+          {label}
+        </p>
+
+        <div
+          className="
+            mt-2
+            h-px
+            w-8
+            bg-slate-200
+            transition-all
+            duration-300
+            group-hover:w-12
+          "
+        />
+      </div>
 
       <p
         className="
-          mt-1
-          text-lg
-          font-semibold
+          mt-6
+          wrap-break-word
+          text-2xl
+          font-bold
+          tracking-tight
           text-slate-900
         "
       >
         {value}
       </p>
-    </div>
+    </article>
   );
 }
 
