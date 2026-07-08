@@ -106,7 +106,9 @@ export type ComparisonInsightType =
  * Structured business insight.
  *
  * NOTE:
- * No presentation text belongs here.
+ * Produced by the Comparison Analysis engine.
+ * This model represents analytical intelligence,
+ * not presentation.
  */
 export interface ComparisonInsight {
   /**
@@ -125,12 +127,37 @@ export interface ComparisonInsight {
   severity: ComparisonInsightSeverity;
 
   /**
-   * Associated business value.
+   * Primary business value.
    */
   value: number;
 
   /**
-   * Optional recommendation.
+   * Human-readable title.
+   */
+  title: string;
+
+  /**
+   * Explanation of the insight.
+   */
+  description: string;
+
+  /**
+   * Label describing the primary value.
+   *
+   * Example:
+   * - Potential Savings
+   * - Price Spread
+   * - Average Price
+   */
+  valueLabel: string;
+
+  /**
+   * Suggested action for the user.
+   */
+  recommendationText: string;
+
+  /**
+   * Optional recommended offer.
    */
   recommendation?: ComparisonRecommendation;
 }

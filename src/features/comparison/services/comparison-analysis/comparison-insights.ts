@@ -8,11 +8,11 @@
  *
  * Responsibilities:
  * - Generate comparison insight models.
+ * - Translate analytical results into actionable business insights.
  *
  * Does NOT:
  * - Render UI.
- * - Format values.
- * - Produce presentation text.
+ * - Format presentation components.
  * -----------------------------------------------------------------------------
  */
 
@@ -37,6 +37,16 @@ export function buildComparisonInsights(
       severity: "success",
 
       value: summary.potentialSavings,
+
+      valueLabel: "Potential Savings",
+
+      title: "Savings Opportunity",
+
+      description:
+        "A significant price difference exists between the lowest and highest available offers.",
+
+      recommendationText:
+        "Purchase from the lowest-priced retailer to maximize your savings.",
     });
   }
 
@@ -49,6 +59,16 @@ export function buildComparisonInsights(
       severity: "success",
 
       value: recommendation.score,
+
+      valueLabel: "Recommendation Score",
+
+      title: "Best Overall Offer",
+
+      description:
+        "The comparison engine identified the strongest overall offer using price, discount and stock availability.",
+
+      recommendationText:
+        "Choose the recommended retailer for the best overall purchasing value.",
 
       recommendation,
     });
@@ -63,6 +83,16 @@ export function buildComparisonInsights(
       severity: "info",
 
       value: summary.priceSpread,
+
+      valueLabel: "Price Spread",
+
+      title: "Price Variation Detected",
+
+      description:
+        "Prices vary noticeably across retailers for the selected products.",
+
+      recommendationText:
+        "Compare prices carefully before purchasing because retailers are not equally priced.",
     });
   }
 
@@ -75,6 +105,16 @@ export function buildComparisonInsights(
       severity: "info",
 
       value: summary.averagePrice,
+
+      valueLabel: "Average Market Price",
+
+      title: "Market Price Overview",
+
+      description:
+        "The average market price provides a useful benchmark for evaluating current offers.",
+
+      recommendationText:
+        "Use the market average as a reference when deciding whether an offer represents good value.",
     });
   }
 
