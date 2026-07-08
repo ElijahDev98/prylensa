@@ -17,6 +17,11 @@
 
 export type ComparisonInsightSeverity = "success" | "info" | "warning";
 
+/**
+ * Describes how the insight value should be presented.
+ */
+export type ComparisonInsightMetricType = "currency" | "percentage" | "number";
+
 export interface ComparisonInsightViewModel {
   /**
    * Stable identifier.
@@ -44,10 +49,16 @@ export interface ComparisonInsightViewModel {
   value: number;
 
   /**
+   * Defines how the value should be formatted.
+   */
+  metricType: ComparisonInsightMetricType;
+
+  /**
    * Label describing the value.
    *
    * Example:
    * - Potential Savings
+   * - Recommendation Score
    * - Price Spread
    * - Average Market Price
    */
