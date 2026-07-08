@@ -22,142 +22,231 @@ function RecommendationCard() {
   return (
     <article
       className="
+        overflow-hidden
         rounded-3xl
         border
         border-blue-100
         bg-linear-to-br
         from-blue-50
         to-white
-        p-8
+        shadow-sm
+        transition-shadow
+        duration-300
+        hover:shadow-lg
       "
     >
-      <div className="flex items-center gap-4">
-        <div
-          className="
-            rounded-2xl
-            bg-amber-100
-            p-3
-          "
-        >
-          <Trophy size={26} className="text-amber-600" />
-        </div>
+      <div className="p-8">
+        {/* ------------------------------------------------------------------ */}
+        {/* Header */}
+        {/* ------------------------------------------------------------------ */}
 
-        <div>
-          <p
+        <header className="flex items-start gap-4">
+          <div
             className="
-              text-sm
-              font-medium
-              text-blue-600
+              flex
+              h-14
+              w-14
+              items-center
+              justify-center
+              rounded-2xl
+              bg-amber-100
+              shadow-xs
             "
           >
-            AI Recommendation
-          </p>
-
-          <h3
-            className="
-              mt-1
-              text-2xl
-              font-bold
-              text-slate-900
-            "
-          >
-            {recommendation.title}
-          </h3>
-        </div>
-      </div>
-
-      <p
-        className="
-          mt-6
-          text-slate-600
-        "
-      >
-        {recommendation.description}
-      </p>
-
-      <div
-        className="
-          mt-8
-          grid
-          gap-4
-          md:grid-cols-2
-        "
-      >
-        <div
-          className="
-            rounded-2xl
-            bg-white
-            p-5
-            shadow-sm
-          "
-        >
-          <div className="flex items-center gap-2">
-            <BadgeCheck size={18} className="text-blue-600" />
-
-            <span className="text-sm font-medium">Confidence</span>
+            <Trophy size={28} className="text-amber-600" />
           </div>
 
-          <p
-            className="
-              mt-3
-              text-3xl
-              font-bold
-              text-slate-900
-            "
-          >
-            {recommendation.confidence}%
-          </p>
-        </div>
+          <div className="flex-1">
+            <p
+              className="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-blue-600
+              "
+            >
+              AI Recommendation
+            </p>
+
+            <h3
+              className="
+                mt-1
+                text-2xl
+                font-bold
+                tracking-tight
+                text-slate-900
+              "
+            >
+              {recommendation.title}
+            </h3>
+
+            <p
+              className="
+                mt-3
+                max-w-3xl
+                leading-7
+                text-slate-600
+              "
+            >
+              {recommendation.description}
+            </p>
+          </div>
+        </header>
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Divider */}
+        {/* ------------------------------------------------------------------ */}
 
         <div
           className="
-            rounded-2xl
-            bg-white
-            p-5
-            shadow-sm
+            my-8
+            border-t
+            border-slate-200
+          "
+        />
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Metrics */}
+        {/* ------------------------------------------------------------------ */}
+
+        <section
+          className="
+            grid
+            gap-5
+            md:grid-cols-2
           "
         >
-          <div className="flex items-center gap-2">
-            <PiggyBank size={18} className="text-emerald-600" />
-
-            <span className="text-sm font-medium">Estimated Savings</span>
-          </div>
-
-          <p
+          <article
             className="
-              mt-3
-              text-3xl
-              font-bold
-              text-emerald-600
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              p-6
+              shadow-sm
+              transition-all
+              duration-200
+              hover:-translate-y-0.5
+              hover:shadow-md
             "
           >
-            ₦{comparison.summary.estimatedSavings.toLocaleString()}
-          </p>
-        </div>
-      </div>
+            <div className="flex items-center gap-2">
+              <BadgeCheck size={18} className="text-blue-600" />
 
-      <div className="mt-10">
-        <div className="mb-4 flex items-center gap-2">
-          <Sparkles size={18} className="text-blue-600" />
+              <span
+                className="
+                  text-sm
+                  font-semibold
+                  text-slate-700
+                "
+              >
+                Confidence
+              </span>
+            </div>
 
-          <h4
+            <p
+              className="
+                mt-4
+                text-4xl
+                font-bold
+                tracking-tight
+                text-slate-900
+              "
+            >
+              {recommendation.confidence}%
+            </p>
+
+            <p
+              className="
+                mt-2
+                text-sm
+                text-slate-500
+              "
+            >
+              AI confidence score based on the comparison analysis.
+            </p>
+          </article>
+
+          <article
             className="
-              text-sm
-              font-semibold
-              uppercase
-              tracking-wide
-              text-slate-700
+              rounded-2xl
+              border
+              border-emerald-100
+              bg-white
+              p-6
+              shadow-sm
+              transition-all
+              duration-200
+              hover:-translate-y-0.5
+              hover:shadow-md
             "
           >
-            Why this recommendation?
-          </h4>
-        </div>
+            <div className="flex items-center gap-2">
+              <PiggyBank size={18} className="text-emerald-600" />
 
-        <ul className="space-y-3">
-          {recommendation.reasons.map((reason: string) => (
-            <RecommendationReason key={reason} reason={reason} />
-          ))}
-        </ul>
+              <span
+                className="
+                  text-sm
+                  font-semibold
+                  text-slate-700
+                "
+              >
+                Estimated Savings
+              </span>
+            </div>
+
+            <p
+              className="
+                mt-4
+                text-4xl
+                font-bold
+                tracking-tight
+                text-emerald-600
+              "
+            >
+              ₦{comparison.summary.estimatedSavings.toLocaleString()}
+            </p>
+
+            <p
+              className="
+                mt-2
+                text-sm
+                text-slate-500
+              "
+            >
+              Potential savings compared with the highest available price.
+            </p>
+          </article>
+        </section>
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Reasons */}
+        {/* ------------------------------------------------------------------ */}
+
+        <section className="mt-10">
+          <header className="mb-5 flex items-center gap-2">
+            <Sparkles size={18} className="text-blue-600" />
+
+            <h4
+              className="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-slate-700
+              "
+            >
+              Why this recommendation?
+            </h4>
+          </header>
+
+          <ul className="space-y-2">
+            {recommendation.reasons.map((reason: string) => (
+              <RecommendationReason key={reason} reason={reason} />
+            ))}
+          </ul>
+        </section>
       </div>
     </article>
   );
