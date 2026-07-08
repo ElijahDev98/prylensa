@@ -2,16 +2,36 @@
  * -----------------------------------------------------------------------------
  * File: ProductFeatureGrid.tsx
  * Feature: Search
+ *
+ * Purpose:
+ * Displays a concise summary of the selected product specifications.
+ *
+ * Responsibilities:
+ * - Render product specifications.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * ProductSpecificationViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - Must never depend on Product domain models.
+ * - Performs no business logic.
  * -----------------------------------------------------------------------------
  */
 
-import type { ProductSpecification } from "@/features/product/types/product.types";
+import type { ProductSpecificationViewModel } from "../viewmodels/search.viewmodel";
 
 interface ProductFeatureGridProps {
-  specifications: ProductSpecification[];
+  specifications: ProductSpecificationViewModel[];
 }
 
 function ProductFeatureGrid({ specifications }: ProductFeatureGridProps) {
+  if (specifications.length === 0) {
+    return null;
+  }
+
   return (
     <section className="mt-5">
       <p
