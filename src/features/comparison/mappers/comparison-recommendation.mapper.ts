@@ -9,12 +9,16 @@
  * Responsibilities:
  * - Convert business recommendation models.
  * - Produce RecommendationViewModels.
- * - Keep presentation independent from business models.
+ * - Keep presentation independent of business models.
+ *
+ * Does NOT:
+ * - Execute business logic.
+ * - Rank offers.
+ * - Calculate scores.
  * -----------------------------------------------------------------------------
  */
 
 import type { Product } from "@/features/product/types/product.types";
-
 import type { Store } from "@/features/store/types/store.types";
 
 import type { ComparisonRecommendation } from "../services/comparison-analysis/comparison-types";
@@ -40,8 +44,15 @@ export function toComparisonRecommendationViewModel({
 
   const discount = offer.discount ?? 0;
 
-  const availability =
-    offer.availability === "IN_STOCK" ? "In Stock" : "Out of Stock";
+  const inStock = offer.availability === "IN_STOCK";
+
+  const availability = inStock ? "In Stock" : "Out of Stock";
+
+  const storeName = store?.name ?? "Unknown Store";
+
+  const productTitle = product?.title ?? "Unknown Product";
+
+  const confidence = Math.round(recommendation.score * 100);
 
   const reasons: string[] = [];
 
@@ -53,27 +64,37 @@ export function toComparisonRecommendationViewModel({
     reasons.push(`${discount}% discount available`);
   }
 
-  if (offer.availability === "IN_STOCK") {
+  if (inStock) {
     reasons.push("Currently in stock");
   }
 
-  if (reasons.length === 0) {
-    reasons.push("Best overall score among compared offers");
+  if (confidence >= 90) {
+    reasons.push("Excellent overall recommendation score");
   }
 
-  return {
-    title: "Best Overall Recommendation",
+  if (reasons.length === 0) {
+    reasons.push("Best overall offer among compared products");
+  }
 
-    description:
-      "This offer provides the strongest balance of price, discount and availability.",
+  const title = `Buy from ${storeName}`;
+
+  const description =
+    discount > 0
+      ? `${productTitle} is available from ${storeName} for ₦${price.toLocaleString()} with a ${discount}% discount. This offer achieved the highest overall recommendation score after evaluating price, discount, availability and retailer quality.`
+      : `${productTitle} is available from ${storeName} for ₦${price.toLocaleString()}. This offer achieved the highest overall recommendation score after evaluating price, availability and retailer quality.`;
+
+  return {
+    title,
+
+    description,
 
     storeId: offer.storeId,
 
-    storeName: store?.name ?? "Unknown Store",
+    storeName,
 
     productId: offer.productId,
 
-    productTitle: product?.title ?? "Unknown Product",
+    productTitle,
 
     price,
 
@@ -81,7 +102,7 @@ export function toComparisonRecommendationViewModel({
 
     availability,
 
-    confidence: Math.round(recommendation.score * 100),
+    confidence,
 
     savings: price,
 
