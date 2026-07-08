@@ -103,6 +103,14 @@ export type ComparisonInsightType =
   "potential-savings" | "best-offer" | "price-spread" | "average-price";
 
 /**
+ * Defines how an insight value should be interpreted.
+ *
+ * This enables the presentation layer to render
+ * values correctly without making business assumptions.
+ */
+export type ComparisonInsightMetricType = "currency" | "percentage" | "number";
+
+/**
  * Structured business insight.
  *
  * NOTE:
@@ -132,6 +140,11 @@ export interface ComparisonInsight {
   value: number;
 
   /**
+   * Describes how the value should be interpreted.
+   */
+  metricType: ComparisonInsightMetricType;
+
+  /**
    * Human-readable title.
    */
   title: string;
@@ -143,11 +156,6 @@ export interface ComparisonInsight {
 
   /**
    * Label describing the primary value.
-   *
-   * Example:
-   * - Potential Savings
-   * - Price Spread
-   * - Average Price
    */
   valueLabel: string;
 
