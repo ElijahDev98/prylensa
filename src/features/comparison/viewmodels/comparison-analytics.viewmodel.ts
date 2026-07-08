@@ -5,39 +5,68 @@
  *
  * Purpose:
  * Presentation model for comparison analytics.
+ *
+ * Responsibilities:
+ * - Represent analytics ready for visualization.
+ * - Keep chart components presentation-only.
  * -----------------------------------------------------------------------------
  */
 
+/**
+ * Analytics point representing a single compared product.
+ */
 export interface ComparisonPricePointViewModel {
-  storeId: string;
+  /**
+   * Product identifier.
+   */
+  productId: string;
 
-  storeName: string;
+  /**
+   * Product display name.
+   */
+  productName: string;
 
+  /**
+   * Best available price across visible stores.
+   */
   price: number;
+
+  /**
+   * Indicates the lowest-priced product.
+   */
+  isLowest: boolean;
+
+  /**
+   * Indicates the highest-priced product.
+   */
+  isHighest: boolean;
 }
 
 export interface ComparisonAnalyticsViewModel {
   /**
-   * Price distribution by store.
+   * Product price distribution.
    */
   prices: ComparisonPricePointViewModel[];
 
   /**
-   * Lowest price.
+   * Lowest available price.
    */
   lowestPrice: number;
 
   /**
-   * Highest price.
+   * Highest available price.
    */
   highestPrice: number;
 
   /**
-   * Average price.
+   * Average product price.
    */
   averagePrice: number;
 }
 
+/**
+ * Empty analytics.
+ */
 export const EMPTY_ANALYTICS: ComparisonAnalyticsViewModel = {
   prices: [],
 
