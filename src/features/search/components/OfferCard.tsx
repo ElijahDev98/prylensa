@@ -7,14 +7,20 @@
  * Displays a single store offer.
  *
  * Responsibilities:
- * - Render one offer.
+ * - Render one SearchOfferViewModel.
  * - Display pricing.
  * - Display stock status.
- * - Display visit store action.
+ * - Navigate to the merchant product page.
  *
- * Does NOT:
- * - Manage state.
- * - Fetch data.
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchOfferViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - Must never access domain models.
+ * - All formatting is supplied by the SearchMapper.
  * -----------------------------------------------------------------------------
  */
 
@@ -24,17 +30,7 @@ interface OfferCardProps {
   offer: SearchOfferViewModel;
 }
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
 function OfferCard({ offer }: OfferCardProps) {
-  const { store, offer: productOffer } = offer;
-
   return (
     <article
       className="
@@ -47,43 +43,36 @@ function OfferCard({ offer }: OfferCardProps) {
       "
     >
       <div className="flex items-start justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <img
-            src={store.logoUrl}
-            alt={store.logoAlt}
-            className="
-              h-12
-              w-12
-              rounded-lg
-              border
-              border-slate-200
-              bg-white
-              object-contain
-              p-2
-            "
-          />
+        <div>
+          <h3 className="font-semibold text-slate-900">{offer.storeName}</h3>
 
-          <div>
-            <h3 className="font-semibold text-slate-900">{store.name}</h3>
-
-            <p className="text-sm text-slate-500">{productOffer.stockStatus}</p>
-          </div>
+          <p className="text-sm text-slate-500">
+            {offer.inStock ? "In Stock" : "Out of Stock"}
+          </p>
         </div>
 
         <div className="text-right">
           <p className="text-2xl font-bold text-blue-600">
-            {formatPrice(productOffer.currentPrice)}
+            {offer.currentPriceLabel}
           </p>
 
-          <p className="text-sm text-green-600">
-            Save {productOffer.discount}%
-          </p>
+          {offer.discountPercentage !== undefined && (
+            <p className="text-sm text-green-600">
+              Save {offer.discountPercentage}%
+            </p>
+          )}
+
+          {offer.originalPriceLabel && (
+            <p className="text-sm text-slate-400 line-through">
+              {offer.originalPriceLabel}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="mt-5 flex justify-end">
         <a
-          href={store.website}
+          href={offer.productUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="

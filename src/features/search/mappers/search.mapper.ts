@@ -7,8 +7,9 @@
  * Maps Product and Offer domain entities into Search presentation models.
  *
  * Responsibilities:
- * - Convert domain entities into presentation-ready ViewModels.
- * - Keep formatting and presentation transformations out of the UI.
+ * - Convert Product and Offer domain models into presentation ViewModels.
+ * - Perform all presentation formatting.
+ * - Ensure UI components never consume domain models directly.
  *
  * Architecture:
  * UI
@@ -19,13 +20,14 @@
  *   ↓
  * Search Mapper
  *   ↓
- * ViewModel
+ * Search ViewModel
  *   ↓
  * Domain Models
  *
  * Notes:
- * - This class must remain stateless.
- * - Components must never perform these mappings themselves.
+ * - This mapper must remain stateless.
+ * - All presentation formatting belongs here.
+ * - Never return domain entities to the UI.
  * -----------------------------------------------------------------------------
  */
 
@@ -37,9 +39,16 @@ import type {
   SearchResultViewModel,
 } from "../viewmodels/search.viewmodel";
 
+/**
+ * Search presentation mapper.
+ */
 export class SearchMapper {
   /**
-   * Maps a domain Offer into a SearchOfferViewModel.
+   * Converts a domain Offer into a SearchOfferViewModel.
+   *
+   * @param offer Domain offer.
+   * @param storeName Resolved store name.
+   * @returns Presentation-ready offer.
    */
   public static toOfferViewModel(
     offer: Offer,
@@ -47,14 +56,21 @@ export class SearchMapper {
   ): SearchOfferViewModel {
     return {
       id: offer.id,
+
       storeId: offer.storeId,
+
       storeName,
 
       currentPrice: offer.currentPrice,
+
       currentPriceLabel: `₦${offer.currentPrice.toLocaleString()}`,
 
       originalPrice: offer.previousPrice,
-      originalPriceLabel: `₦${offer.previousPrice.toLocaleString()}`,
+
+      originalPriceLabel:
+        offer.previousPrice > 0
+          ? `₦${offer.previousPrice.toLocaleString()}`
+          : undefined,
 
       discountPercentage: offer.discount,
 
@@ -65,7 +81,12 @@ export class SearchMapper {
   }
 
   /**
-   * Maps a Product and its Offers into a SearchResultViewModel.
+   * Converts a Product and its Offers into a SearchResultViewModel.
+   *
+   * @param product Product domain model.
+   * @param offers Product offers.
+   * @param resolveStoreName Store name resolver.
+   * @returns Presentation-ready search result.
    */
   public static toSearchResultViewModel(
     product: Product,
@@ -73,16 +94,12 @@ export class SearchMapper {
     resolveStoreName: (storeId: string) => string,
   ): SearchResultViewModel {
     const sortedOffers = [...offers].sort(
-      (a, b) => a.currentPrice - b.currentPrice,
+      (left, right) => left.currentPrice - right.currentPrice,
     );
 
-    const lowestOffer =
-      sortedOffers.length > 0
-        ? this.toOfferViewModel(
-            sortedOffers[0],
-            resolveStoreName(sortedOffers[0].storeId),
-          )
-        : null;
+    const offerViewModels = sortedOffers.map((offer) =>
+      this.toOfferViewModel(offer, resolveStoreName(offer.storeId)),
+    );
 
     return {
       id: product.id,
@@ -95,11 +112,13 @@ export class SearchMapper {
 
       thumbnail: product.images[0]?.url ?? "",
 
-      offerCount: sortedOffers.length,
+      offerCount: offerViewModels.length,
 
-      hasOffers: sortedOffers.length > 0,
+      hasOffers: offerViewModels.length > 0,
 
-      lowestOffer,
+      lowestOffer: offerViewModels.length > 0 ? offerViewModels[0] : null,
+
+      offers: offerViewModels,
     };
   }
 }

@@ -7,10 +7,18 @@
  * Displays all available offers.
  *
  * Responsibilities:
- * - Render a list of OfferCards.
+ * - Render a collection of OfferCards.
+ * - Delegate offer presentation to OfferCard.
  *
- * Does NOT:
- * - Execute business logic.
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchOfferViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
+ * - No domain model dependencies.
  * -----------------------------------------------------------------------------
  */
 
@@ -36,7 +44,7 @@ function OfferList({ offers }: OfferListProps) {
       "
     >
       {offers.map((offer) => (
-        <OfferCard key={offer.offer.id} offer={offer} />
+        <OfferCard key={offer.id} offer={offer} />
       ))}
     </div>
   );
