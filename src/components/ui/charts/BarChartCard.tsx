@@ -4,16 +4,7 @@
  * Layer: Shared UI
  *
  * Purpose:
- * Reusable responsive bar chart.
- *
- * Responsibilities:
- * - Render categorical bar charts.
- * - Display formatted tooltips.
- * - Remain presentation-only.
- *
- * Does NOT:
- * - Execute business logic.
- * - Know comparison rules.
+ * Shared responsive bar chart component.
  * -----------------------------------------------------------------------------
  */
 
@@ -22,6 +13,7 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  Label,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -47,11 +39,7 @@ function formatCurrency(value: number) {
 }
 
 function truncateLabel(label: string) {
-  if (label.length <= 18) {
-    return label;
-  }
-
-  return `${label.slice(0, 18)}…`;
+  return label.length > 18 ? `${label.slice(0, 18)}…` : label;
 }
 
 function BarChartCard<T extends object>({
@@ -63,54 +51,83 @@ function BarChartCard<T extends object>({
 }: BarChartCardProps<T>) {
   return (
     <ChartCard title={title} description={description}>
-      <div
-        className="
-          h-80
-          w-full
-        "
-      >
+      <div className="h-96 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
             margin={{
-              top: 12,
-              right: 20,
-              left: 8,
-              bottom: 24,
+              top: 20,
+              right: 24,
+              left: 24,
+              bottom: 36,
             }}
           >
             <CartesianGrid
-              stroke="#E2E8F0"
+              stroke="#E5E7EB"
               strokeDasharray="4 4"
               vertical={false}
             />
 
             <XAxis
               dataKey={String(xKey)}
+              interval={0}
+              height={70}
               tickFormatter={(value) => truncateLabel(String(value))}
               tick={{
-                fontSize: 12,
+                fontSize: 16,
+                fontWeight: 500,
+                fill: "#475569",
               }}
-              interval={0}
-            />
+            >
+              <Label
+                value="Compared Products"
+                position="insideBottom"
+                offset={-10}
+                style={{
+                  fill: "#334155",
+                  fontSize: 16,
+                  fontWeight: 600,
+                }}
+              />
+            </XAxis>
 
             <YAxis
+              width={95}
               tickFormatter={(value) => formatCurrency(Number(value))}
               tick={{
-                fontSize: 12,
+                fontSize: 13,
+                fontWeight: 500,
+                fill: "#475569",
               }}
-            />
+            >
+              <Label
+                value="Price (₦)"
+                angle={-90}
+                position="insideLeft"
+                style={{
+                  fill: "#334155",
+                  fontSize: 16,
+                  fontWeight: 600,
+                }}
+              />
+            </YAxis>
 
             <Tooltip
               formatter={(value) => formatCurrency(Number(value))}
+              cursor={{
+                fill: "rgba(15,23,42,0.04)",
+              }}
               contentStyle={{
-                borderRadius: 12,
+                borderRadius: 14,
                 border: "1px solid #E2E8F0",
-                boxShadow: "0 10px 30px rgba(15,23,42,0.08)",
+                boxShadow: "0 12px 32px rgba(15,23,42,0.10)",
+              }}
+              labelStyle={{
+                fontWeight: 600,
               }}
             />
 
-            <Bar dataKey={String(yKey)} radius={[8, 8, 0, 0]}>
+            <Bar dataKey={String(yKey)} radius={[10, 10, 0, 0]}>
               {data.map((entry, index) => {
                 const item = entry as {
                   isLowest?: boolean;
