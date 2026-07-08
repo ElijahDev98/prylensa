@@ -11,13 +11,17 @@
  * - Compose comparison preferences.
  * - Resolve Product entities.
  * - Resolve Store entities.
+ * - Order products.
+ * - Apply comparison preferences.
  * - Build Comparison business models.
  * - Execute Comparison Intelligence.
+ * - Execute Comparison Analytics.
+ * - Export comparison data.
  * - Map business models into presentation ViewModels.
  * -----------------------------------------------------------------------------
  */
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import {
   addProduct,
@@ -27,34 +31,59 @@ import {
   resetComparison,
 } from "../services/comparison.service";
 
-import { getComparisonRows } from "../services/comparison-row.service";
-
 import { analyzeComparison } from "../services/comparison-analysis";
 
+import { buildComparisonAnalytics } from "../services/comparison-analytics.service";
+
+import { exportComparison } from "../services/comparison-export.service";
+
+import { orderProducts } from "../services/comparison-product-order.service";
+
+import { getComparisonRows } from "../services/comparison-row.service";
+
 import { toComparisonProductViewModels } from "../mappers/comparison.mapper";
+
 import { toComparisonRowViewModels } from "../mappers/comparison-row.mapper";
 
 import useComparisonPreferences from "./useComparisonPreferences";
 
+import { EMPTY_ANALYTICS } from "../viewmodels/comparison-analytics.viewmodel";
+
+import { EMPTY_INSIGHTS } from "../viewmodels/comparison-insight.viewmodel";
+
+import { EMPTY_RECOMMENDATION } from "../viewmodels/recommendation.viewmodel";
+
+import { EMPTY_SUMMARY } from "../viewmodels/comparison-summary.viewmodel";
+
 import { getProductsByIds } from "@/features/product";
+
 import { getStores } from "@/features/store/services/store.service";
 
 import type { ComparisonViewModel } from "../types/comparison.viewmodel";
 
 function useComparisonState(): ComparisonViewModel {
   /**
-   * Comparison state.
+   * ---------------------------------------------------------------------------
+   * Comparison State
+   * ---------------------------------------------------------------------------
    */
+
   const [comparison, setComparison] = useState(createComparisonState);
 
   /**
-   * Comparison preferences.
+   * ---------------------------------------------------------------------------
+   * Comparison Preferences
+   * ---------------------------------------------------------------------------
    */
+
   const preferences = useComparisonPreferences();
 
   /**
-   * Comparison actions.
+   * ---------------------------------------------------------------------------
+   * Comparison Actions
+   * ---------------------------------------------------------------------------
    */
+
   const actions = useMemo(
     () => ({
       addProduct(productId: string) {
@@ -81,46 +110,129 @@ function useComparisonState(): ComparisonViewModel {
   );
 
   /**
-   * Domain entities.
+   * ---------------------------------------------------------------------------
+   * Domain Entities
+   * ---------------------------------------------------------------------------
    */
-  const productEntities = getProductsByIds(comparison.selectedProductIds);
 
   const stores = getStores();
 
+  const productEntities = getProductsByIds(comparison.selectedProductIds);
+
   /**
-   * Business comparison rows.
+   * ---------------------------------------------------------------------------
+   * Ordered Products
+   * ---------------------------------------------------------------------------
    */
+
+  const orderedProducts = orderProducts(productEntities, preferences.sortBy);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Visible Stores
+   * ---------------------------------------------------------------------------
+   */
+
+  const visibleStores =
+    preferences.selectedStoreIds.length === 0
+      ? stores
+      : stores.filter((store) =>
+          preferences.selectedStoreIds.includes(store.id),
+        );
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Business Models
+   * ---------------------------------------------------------------------------
+   */
+
   const rowModels = getComparisonRows({
-    products: productEntities,
-    stores,
+    products: orderedProducts,
+    stores: visibleStores,
   });
 
   /**
-   * Comparison intelligence.
+   * ---------------------------------------------------------------------------
+   * Comparison Intelligence
+   * ---------------------------------------------------------------------------
    */
+
   const analysis = analyzeComparison(rowModels);
 
   /**
-   * Presentation ViewModels.
+   * ---------------------------------------------------------------------------
+   * Comparison Analytics
+   * ---------------------------------------------------------------------------
    */
-  const products = toComparisonProductViewModels(productEntities);
+
+  const analytics = buildComparisonAnalytics(rowModels);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Stable ViewModels
+   * ---------------------------------------------------------------------------
+   */
+
+  const stableAnalytics = analytics ?? EMPTY_ANALYTICS;
+
+  const summary = analysis.summary ?? EMPTY_SUMMARY;
+
+  const recommendation = analysis.recommendation ?? EMPTY_RECOMMENDATION;
+
+  const insights = analysis.insights ?? EMPTY_INSIGHTS;
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Presentation ViewModels
+   * ---------------------------------------------------------------------------
+   */
+
+  const products = toComparisonProductViewModels(orderedProducts);
 
   const rows = toComparisonRowViewModels(rowModels);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Utility Actions
+   * ---------------------------------------------------------------------------
+   */
+
+  const handleExportComparison = useCallback(() => {
+    exportComparison({
+      products,
+      rows,
+      stores: visibleStores,
+    });
+  }, [products, rows, visibleStores]);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Public ViewModel
+   * ---------------------------------------------------------------------------
+   */
 
   return {
     products,
 
     rows,
 
+    /**
+     * Always expose every store so the
+     * Store Filter can display the full list.
+     */
     stores,
 
-    summary: analysis.summary,
+    analytics: stableAnalytics,
 
-    recommendation: analysis.recommendation,
+    summary,
 
-    insights: analysis.insights,
+    recommendation,
+
+    insights,
 
     selectedCount: comparison.selectedProductIds.length,
+
+    exportComparison: handleExportComparison,
 
     ...preferences,
 

@@ -5,6 +5,14 @@
  *
  * Purpose:
  * Main workspace for the Compare page.
+ *
+ * Responsibilities:
+ * - Compose comparison presentation.
+ * - Distribute ViewModel data.
+ *
+ * Does NOT:
+ * - Execute business logic.
+ * - Fetch data.
  * -----------------------------------------------------------------------------
  */
 
@@ -17,7 +25,7 @@ import ComparisonToolbar from "./ComparisonToolbar";
 import useComparisonContext from "@/features/comparison/context/useComparisonContext";
 
 function CompareWorkspace() {
-  const comparison = useComparisonContext();
+  const { products, stores, summary } = useComparisonContext();
 
   return (
     <section
@@ -31,8 +39,9 @@ function CompareWorkspace() {
       <ComparisonToolbar />
 
       <ComparisonSummary
-        productCount={comparison.products.length}
-        storeCount={comparison.stores.length}
+        productCount={products.length}
+        storeCount={stores.length}
+        summary={summary}
       />
 
       <ComparisonPanel>

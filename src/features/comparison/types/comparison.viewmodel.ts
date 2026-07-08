@@ -4,60 +4,39 @@
  * Feature: Comparison Domain
  *
  * Purpose:
- * Defines the public API exposed by the Comparison Domain.
+ * Public ViewModel exposed by the Comparison Domain.
  *
  * Responsibilities:
- * - Expose comparison presentation data.
- * - Expose comparison preference state.
+ * - Expose presentation data.
  * - Expose comparison actions.
- *
- * Does NOT:
- * - Contain implementation.
+ * - Hide business models.
  * -----------------------------------------------------------------------------
  */
 
-import type { Store } from "@/features/store/types/store.types";
+import type { StoreViewModel } from "@/features/store/viewmodels/store.viewmodel";
 
-import type {
-  ComparisonInsight,
-  ComparisonRecommendation,
-  ComparisonSummary,
-} from "../services/comparison-analysis";
-
-import type { ComparisonPreferencesViewModel } from "../viewmodels/comparison-preferences.viewmodel";
 import type { ComparisonProductViewModel } from "../viewmodels/comparison-product.viewmodel";
 import type { ComparisonRowViewModel } from "../viewmodels/comparison-row.viewmodel";
+import type { RecommendationViewModel } from "../viewmodels/recommendation.viewmodel";
+import type { ComparisonInsightViewModel } from "../viewmodels/comparison-insight.viewmodel";
+import type { ComparisonSummaryViewModel } from "../viewmodels/comparison-summary.viewmodel";
+import type { ComparisonPreferencesViewModel } from "../viewmodels/comparison-preferences.viewmodel";
 
 export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   /**
-   * Products prepared for the Compare presentation.
+   * Products currently being compared.
    */
   products: ComparisonProductViewModel[];
 
   /**
-   * Comparison rows prepared for the Compare presentation.
+   * Rows displayed by the comparison matrix.
    */
   rows: ComparisonRowViewModel[];
 
   /**
-   * Available stores.
+   * All available stores.
    */
-  stores: Store[];
-
-  /**
-   * Numerical comparison summary.
-   */
-  summary: ComparisonSummary;
-
-  /**
-   * Recommended offer.
-   */
-  recommendation?: ComparisonRecommendation;
-
-  /**
-   * Structured business insights.
-   */
-  insights: ComparisonInsight[];
+  stores: StoreViewModel[];
 
   /**
    * Number of selected products.
@@ -65,27 +44,37 @@ export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   selectedCount: number;
 
   /**
-   * Add a product to the comparison.
+   * Comparison summary.
+   */
+  summary: ComparisonSummaryViewModel;
+
+  /**
+   * Recommendation.
+   *
+   * Always available.
+   */
+  recommendation: RecommendationViewModel;
+
+  /**
+   * Comparison insights.
+   */
+  insights: ComparisonInsightViewModel[];
+
+  /**
+   * Product actions.
    */
   addProduct(productId: string): void;
 
-  /**
-   * Remove a product from the comparison.
-   */
   removeProduct(productId: string): void;
 
-  /**
-   * Returns true if the product is already selected.
-   */
   isSelected(productId: string): boolean;
 
-  /**
-   * Remove every product from the comparison.
-   */
   clearComparison(): void;
 
-  /**
-   * Restore the comparison to its initial state.
-   */
   resetComparison(): void;
+
+  /**
+   * Export actions.
+   */
+  exportComparison(): void;
 }

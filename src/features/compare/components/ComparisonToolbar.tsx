@@ -17,7 +17,10 @@
  * -----------------------------------------------------------------------------
  */
 
-import { Box, ChevronDown, Download, Plus, Store, Trash2 } from "lucide-react";
+import { Box, Download, Plus, Trash2 } from "lucide-react";
+
+import ComparisonSortMenu from "./ComparisonSortMenu";
+import ComparisonStoreMenu from "./ComparisonStoreMenu";
 
 import useComparisonContext from "@/features/comparison/context/useComparisonContext";
 
@@ -47,9 +50,9 @@ function ComparisonToolbar() {
         lg:justify-between
       "
     >
-      {/* -------------------------------------------------------------- */}
-      {/* Summary                                                        */}
-      {/* -------------------------------------------------------------- */}
+      {/* --------------------------------------------------------------------- */}
+      {/* Summary                                                               */}
+      {/* --------------------------------------------------------------------- */}
 
       <div className="flex items-center gap-4">
         <div
@@ -76,7 +79,8 @@ function ComparisonToolbar() {
               text-slate-900
             "
           >
-            {productCount} Product{productCount !== 1 ? "s" : ""} Selected
+            {productCount} Product
+            {productCount !== 1 ? "s" : ""} Selected
           </h2>
 
           <p
@@ -91,9 +95,9 @@ function ComparisonToolbar() {
         </div>
       </div>
 
-      {/* -------------------------------------------------------------- */}
-      {/* Actions                                                        */}
-      {/* -------------------------------------------------------------- */}
+      {/* --------------------------------------------------------------------- */}
+      {/* Actions                                                               */}
+      {/* --------------------------------------------------------------------- */}
 
       <div
         className="
@@ -103,63 +107,20 @@ function ComparisonToolbar() {
           gap-3
         "
       >
-        <button
-          type="button"
-          disabled={!hasProducts}
-          className="
-            inline-flex
-            items-center
-            gap-2
-            rounded-xl
-            border
-            border-slate-200
-            bg-white
-            px-4
-            py-3
-            text-sm
-            font-medium
-            text-slate-700
-            transition-colors
-            hover:bg-slate-50
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-          "
-        >
-          <Store size={16} />
-          Stores
-          <ChevronDown size={16} />
-        </button>
+        {/* Stores */}
 
-        <button
-          type="button"
-          disabled={!canSort}
-          className="
-            inline-flex
-            items-center
-            gap-2
-            rounded-xl
-            border
-            border-slate-200
-            bg-white
-            px-4
-            py-3
-            text-sm
-            font-medium
-            text-slate-700
-            transition-colors
-            hover:bg-slate-50
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-          "
-        >
-          <ChevronDown size={16} className="rotate-180" />
-          Sort
-          <ChevronDown size={16} />
-        </button>
+        <ComparisonStoreMenu disabled={!hasProducts} />
+
+        {/* Sort */}
+
+        <ComparisonSortMenu disabled={!canSort} />
+
+        {/* Export */}
 
         <button
           type="button"
           disabled={!hasProducts}
+          onClick={comparison.exportComparison}
           className="
             inline-flex
             items-center
@@ -183,6 +144,8 @@ function ComparisonToolbar() {
           Export
         </button>
 
+        {/* Add Product */}
+
         <button
           type="button"
           className="
@@ -205,6 +168,8 @@ function ComparisonToolbar() {
           <Plus size={16} />
           Add Product
         </button>
+
+        {/* Clear */}
 
         <button
           type="button"

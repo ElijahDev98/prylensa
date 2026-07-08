@@ -7,26 +7,50 @@
  * Reusable dropdown action item.
  *
  * Responsibilities:
- * - Render a clickable dropdown item.
- * - Apply consistent styling.
- * - Support disabled state.
- *
- * Does NOT:
- * - Execute feature logic.
+ * - Display a dropdown action.
+ * - Support optional leading icon.
+ * - Support destructive styling.
  * -----------------------------------------------------------------------------
  */
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
-type DropdownItemProps = ComponentPropsWithoutRef<typeof DropdownMenu.Item>;
+type DropdownItemVariant = "default" | "destructive";
+
+interface DropdownItemProps extends ComponentPropsWithoutRef<
+  typeof DropdownMenu.Item
+> {
+  /**
+   * Optional icon displayed before the label.
+   */
+  leftIcon?: ReactNode;
+
+  /**
+   * Visual style.
+   */
+  variant?: DropdownItemVariant;
+}
 
 function DropdownItem({
-  className = "",
   children,
+  leftIcon,
+  variant = "default",
+  className = "",
   ...props
 }: DropdownItemProps) {
+  const variantClass =
+    variant === "destructive"
+      ? `
+          text-red-600
+          data-[highlighted]:bg-red-50
+        `
+      : `
+          text-slate-700
+          data-[highlighted]:bg-slate-100
+        `;
+
   return (
     <DropdownMenu.Item
       {...props}
@@ -41,20 +65,33 @@ function DropdownItem({
         py-2.5
         text-sm
         font-medium
-        text-slate-700
         outline-none
         transition-colors
 
-        hover:bg-slate-100
-        focus:bg-slate-100
+        data-disabled:pointer-events-none
+        data-disabled:opacity-50
 
-        data-[disabled]:pointer-events-none
-        data-[disabled]:opacity-50
+        ${variantClass}
 
         ${className}
       `}
     >
-      {children}
+      {leftIcon && (
+        <span
+          className="
+            flex
+            h-4
+            w-4
+            items-center
+            justify-center
+            shrink-0
+          "
+        >
+          {leftIcon}
+        </span>
+      )}
+
+      <span className="flex-1">{children}</span>
     </DropdownMenu.Item>
   );
 }

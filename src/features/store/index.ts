@@ -22,3 +22,8 @@ export * from "./services/store.service";
  * Store domain types.
  */
 export type { Store } from "./types/store.types";
+
+/**
+ * Store ViewModels.
+ */
+export type { StoreViewModel } from "./viewmodels/store.viewmodel";

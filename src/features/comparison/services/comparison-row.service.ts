@@ -9,6 +9,7 @@
  * Responsibilities:
  * - Build comparison business models.
  * - Resolve Offer data.
+ * - Respect selected stores.
  * - Keep presentation concerns out of the domain.
  *
  * Does NOT:
@@ -23,6 +24,8 @@ import { getOffersByProductId } from "@/features/offer/services/offer.service";
 import type { Product } from "@/features/product/types/product.types";
 import type { Store } from "@/features/store/types/store.types";
 
+import { COMPARISON_ROW_ID } from "../constants/comparison-row.constants";
+
 import type {
   ComparisonProductValuesModel,
   ComparisonRowModel,
@@ -36,46 +39,63 @@ interface BuildComparisonRowsOptions {
 
 export function getComparisonRows({
   products,
+  stores,
 }: BuildComparisonRowsOptions): ComparisonRowModel[] {
   return [
-    buildPriceRow(products),
-    buildDiscountRow(products),
-    buildAvailabilityRow(products),
+    buildPriceRow(products, stores),
+    buildDiscountRow(products, stores),
+    buildAvailabilityRow(products, stores),
   ];
 }
 
-function buildPriceRow(products: Product[]): ComparisonRowModel {
+function buildPriceRow(
+  products: Product[],
+  stores: Store[],
+): ComparisonRowModel {
   return {
-    id: "price",
+    id: COMPARISON_ROW_ID.PRICE,
 
     label: "Price",
 
-    products: products.map(buildPriceValues),
+    products: products.map((product) => buildPriceValues(product, stores)),
   };
 }
 
-function buildDiscountRow(products: Product[]): ComparisonRowModel {
+function buildDiscountRow(
+  products: Product[],
+  stores: Store[],
+): ComparisonRowModel {
   return {
-    id: "discount",
+    id: COMPARISON_ROW_ID.DISCOUNT,
 
     label: "Discount",
 
-    products: products.map(buildDiscountValues),
+    products: products.map((product) => buildDiscountValues(product, stores)),
   };
 }
 
-function buildAvailabilityRow(products: Product[]): ComparisonRowModel {
+function buildAvailabilityRow(
+  products: Product[],
+  stores: Store[],
+): ComparisonRowModel {
   return {
-    id: "availability",
+    id: COMPARISON_ROW_ID.AVAILABILITY,
 
     label: "Availability",
 
-    products: products.map(buildAvailabilityValues),
+    products: products.map((product) =>
+      buildAvailabilityValues(product, stores),
+    ),
   };
 }
 
-function buildPriceValues(product: Product): ComparisonProductValuesModel {
-  const offers = getOffersByProductId(product.id);
+function buildPriceValues(
+  product: Product,
+  stores: Store[],
+): ComparisonProductValuesModel {
+  const offers = getOffersByProductId(product.id).filter((offer) =>
+    stores.some((store) => store.id === offer.storeId),
+  );
 
   return {
     productId: product.id,
@@ -88,8 +108,13 @@ function buildPriceValues(product: Product): ComparisonProductValuesModel {
   };
 }
 
-function buildDiscountValues(product: Product): ComparisonProductValuesModel {
-  const offers = getOffersByProductId(product.id);
+function buildDiscountValues(
+  product: Product,
+  stores: Store[],
+): ComparisonProductValuesModel {
+  const offers = getOffersByProductId(product.id).filter((offer) =>
+    stores.some((store) => store.id === offer.storeId),
+  );
 
   return {
     productId: product.id,
@@ -104,8 +129,11 @@ function buildDiscountValues(product: Product): ComparisonProductValuesModel {
 
 function buildAvailabilityValues(
   product: Product,
+  stores: Store[],
 ): ComparisonProductValuesModel {
-  const offers = getOffersByProductId(product.id);
+  const offers = getOffersByProductId(product.id).filter((offer) =>
+    stores.some((store) => store.id === offer.storeId),
+  );
 
   return {
     productId: product.id,

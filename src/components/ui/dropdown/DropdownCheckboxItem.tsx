@@ -57,8 +57,8 @@ function DropdownCheckboxItem({
         hover:bg-slate-100
         focus:bg-slate-100
 
-        data-[disabled]:pointer-events-none
-        data-[disabled]:opacity-50
+        data-disabled:pointer-events-none
+        data-disabled:opacity-50
 
         ${className}
       `}
