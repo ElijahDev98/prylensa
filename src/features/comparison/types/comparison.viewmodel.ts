@@ -20,6 +20,12 @@ import type { Store } from "@/features/store/types/store.types";
 import type { ComparisonProductViewModel } from "../viewmodels/comparison-product.viewmodel";
 import type { ComparisonRowViewModel } from "../viewmodels/comparison-row.viewmodel";
 
+import type {
+  ComparisonInsight,
+  ComparisonRecommendation,
+  ComparisonSummary,
+} from "../services/comparison-analysis";
+
 export interface ComparisonViewModel {
   /**
    * Products prepared for the Compare presentation.
@@ -35,6 +41,21 @@ export interface ComparisonViewModel {
    * Available stores.
    */
   stores: Store[];
+
+  /**
+   * Numerical comparison summary.
+   */
+  summary: ComparisonSummary;
+
+  /**
+   * Recommended offer.
+   */
+  recommendation?: ComparisonRecommendation;
+
+  /**
+   * Structured business insights.
+   */
+  insights: ComparisonInsight[];
 
   /**
    * Number of selected products.

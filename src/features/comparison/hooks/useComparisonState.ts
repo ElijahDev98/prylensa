@@ -11,6 +11,7 @@
  * - Resolve Product entities.
  * - Resolve Store entities.
  * - Build Comparison business models.
+ * - Execute Comparison Intelligence.
  * - Map business models into presentation ViewModels.
  * -----------------------------------------------------------------------------
  */
@@ -27,11 +28,14 @@ import {
 
 import { getComparisonRows } from "../services/comparison-row.service";
 
+import { analyzeComparison } from "../services/comparison-analysis";
+
 import { toComparisonProductViewModels } from "../mappers/comparison.mapper";
 
 import { toComparisonRowViewModels } from "../mappers/comparison-row.mapper";
 
 import { getProductsByIds } from "@/features/product";
+
 import { getStores } from "@/features/store/services/store.service";
 
 import type { ComparisonViewModel } from "../types/comparison.viewmodel";
@@ -80,6 +84,11 @@ function useComparisonState(): ComparisonViewModel {
   });
 
   /**
+   * Comparison Intelligence
+   */
+  const analysis = analyzeComparison(rowModels);
+
+  /**
    * Presentation ViewModels
    */
   const products = toComparisonProductViewModels(productEntities);
@@ -92,6 +101,12 @@ function useComparisonState(): ComparisonViewModel {
     rows,
 
     stores,
+
+    summary: analysis.summary,
+
+    recommendation: analysis.recommendation,
+
+    insights: analysis.insights,
 
     selectedCount: comparison.selectedProductIds.length,
 
