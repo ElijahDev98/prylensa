@@ -115,11 +115,13 @@ function SearchPage() {
         />
       )}
 
-      <SearchResultList
-        results={results}
-        selectedResult={selectedResult}
-        onSelectResult={selectResult}
-      />
+      {selectedResult === null && (
+        <SearchResultList
+          results={results}
+          selectedResult={selectedResult}
+          onSelectResult={selectResult}
+        />
+      )}
 
       <SearchWorkspace
         query={query}
