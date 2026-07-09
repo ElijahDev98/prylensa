@@ -26,10 +26,10 @@
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
+import { SearchToolbar } from "./components/toolbar";
 import {
   RecentSearches,
   SearchResultList,
-  SearchToolbar,
   SearchWorkspace,
   WelcomeSection,
 } from "./components";
