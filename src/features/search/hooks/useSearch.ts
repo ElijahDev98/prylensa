@@ -8,37 +8,26 @@
  *
  * Responsibilities:
  * - Own Search feature state.
- * - Delegate business operations to SearchService.
- * - Expose UI callbacks.
- * - Manage Offer Dialog state.
- *
- * Architecture:
- * UI
- *   ↓
- * Hook
- *   ↓
- * Search Service
- *   ↓
- * Search Mapper
- *   ↓
- * ViewModel
- *
- * Notes:
- * - The hook owns state only.
- * - Business operations are delegated to SearchService.
+ * - Delegate search execution.
+ * - Persist recent searches.
+ * - Manage selected product.
+ * - Manage Offer dialog state.
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
-import { executeSearch } from "../services/search.service";
+import { searchProducts } from "../services/search.service";
 
-import type { SearchSortOption, SearchState } from "../types/search.types";
+import {
+  addRecentSearch,
+  clearRecentSearches,
+  loadRecentSearches,
+} from "../utils/recent-search.storage";
+
+import type { SearchState } from "../types/search.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
-/**
- * Creates the initial Search feature state.
- */
 function createInitialState(): SearchState {
   return {
     query: "",
@@ -51,23 +40,17 @@ function createInitialState(): SearchState {
 
     selectedResult: null,
 
-    recentSearches: [],
+    recentSearches: loadRecentSearches(),
 
     sort: "relevance",
   };
 }
 
-/**
- * Search feature orchestration hook.
- */
 export default function useSearch() {
   const [state, setState] = useState<SearchState>(createInitialState);
 
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
 
-  /**
-   * Updates the current search query.
-   */
   const updateQuery = useCallback((query: string) => {
     setState((previous) => ({
       ...previous,
@@ -75,43 +58,57 @@ export default function useSearch() {
     }));
   }, []);
 
-  /**
-   * Updates the selected sort option.
-   */
-  const updateSort = useCallback((sort: SearchSortOption) => {
+  const updateSort = useCallback((sort: SearchState["sort"]) => {
     setState((previous) => ({
       ...previous,
       sort,
     }));
   }, []);
 
-  /**
-   * Executes the current search.
-   */
-  const performSearch = useCallback((query: string) => {
-    setState((previous) => executeSearch(previous, query));
+  const executeSearch = useCallback(() => {
+    setState((previous) => {
+      const results = searchProducts(previous.query);
+
+      const recentSearches = addRecentSearch(
+        previous.recentSearches,
+        previous.query,
+      );
+
+      return {
+        ...previous,
+        loading: false,
+        results,
+        selectedResult: null,
+        recentSearches,
+      };
+    });
   }, []);
 
-  /**
-   * Executes the current query.
-   */
-  const executeCurrentSearch = useCallback(() => {
-    performSearch(state.query);
-  }, [performSearch, state.query]);
+  const executeRecentSearch = useCallback((query: string) => {
+    setState((previous) => {
+      const results = searchProducts(query);
 
-  /**
-   * Executes a recent search.
-   */
-  const executeRecentSearch = useCallback(
-    (query: string) => {
-      performSearch(query);
-    },
-    [performSearch],
-  );
+      const recentSearches = addRecentSearch(previous.recentSearches, query);
 
-  /**
-   * Selects a search result.
-   */
+      return {
+        ...previous,
+        query,
+        results,
+        selectedResult: null,
+        recentSearches,
+      };
+    });
+  }, []);
+
+  const clearRecentSearchHistory = useCallback(() => {
+    clearRecentSearches();
+
+    setState((previous) => ({
+      ...previous,
+      recentSearches: [],
+    }));
+  }, []);
+
   const selectResult = useCallback((result: SearchResultViewModel) => {
     setState((previous) => ({
       ...previous,
@@ -119,9 +116,6 @@ export default function useSearch() {
     }));
   }, []);
 
-  /**
-   * Clears the selected result.
-   */
   const clearSelection = useCallback(() => {
     setState((previous) => ({
       ...previous,
@@ -129,16 +123,10 @@ export default function useSearch() {
     }));
   }, []);
 
-  /**
-   * Opens the Offer dialog.
-   */
   const openOfferDialog = useCallback(() => {
     setOfferDialogOpen(true);
   }, []);
 
-  /**
-   * Closes the Offer dialog.
-   */
   const closeOfferDialog = useCallback(() => {
     setOfferDialogOpen(false);
   }, []);
@@ -150,9 +138,11 @@ export default function useSearch() {
 
     updateSort,
 
-    executeSearch: executeCurrentSearch,
+    executeSearch,
 
     executeRecentSearch,
+
+    clearRecentSearchHistory,
 
     selectResult,
 

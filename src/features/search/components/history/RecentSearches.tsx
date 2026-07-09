@@ -9,6 +9,7 @@
  * Responsibilities:
  * - Render recent searches.
  * - Allow users to execute a previous search.
+ * - Allow users to clear their search history.
  *
  * Architecture:
  * UI
@@ -26,13 +27,11 @@ interface RecentSearchesProps {
   searches: string[];
 
   onSelect(search: string): void;
+
+  onClear(): void;
 }
 
-function RecentSearches({ searches, onSelect }: RecentSearchesProps) {
-  if (searches.length === 0) {
-    return null;
-  }
-
+function RecentSearches({ searches, onSelect, onClear }: RecentSearchesProps) {
   return (
     <section
       aria-label="Recent Searches"
@@ -45,45 +44,78 @@ function RecentSearches({ searches, onSelect }: RecentSearchesProps) {
         shadow-sm
       "
     >
-      <header className="mb-4">
-        <h2 className="text-sm font-semibold text-slate-900">
-          Recent Searches
-        </h2>
+      <header className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-sm font-semibold text-slate-900">
+            Recent Searches
+          </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
-          Quickly continue a previous search.
-        </p>
-      </header>
+          <p className="mt-1 text-sm text-slate-500">
+            Quickly continue a previous search.
+          </p>
+        </div>
 
-      <div className="flex flex-wrap gap-2">
-        {searches.map((search) => (
+        {searches.length > 0 && (
           <button
-            key={search}
             type="button"
-            onClick={() => onSelect(search)}
+            onClick={onClear}
             className="
-              rounded-full
-              border
-              border-slate-200
-              bg-slate-50
-              px-4
-              py-2
               text-sm
-              text-slate-700
+              font-medium
+              text-red-600
               transition-colors
-              duration-200
-              hover:border-blue-300
-              hover:bg-blue-50
-              hover:text-blue-700
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-200
+              hover:text-red-700
             "
           >
-            {search}
+            Clear
           </button>
-        ))}
-      </div>
+        )}
+      </header>
+
+      {searches.length === 0 ? (
+        <div
+          className="
+            rounded-xl
+            border
+            border-dashed
+            border-slate-200
+            py-8
+            text-center
+          "
+        >
+          <p className="text-sm text-slate-500">No recent searches yet.</p>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {searches.map((search) => (
+            <button
+              key={search}
+              type="button"
+              onClick={() => onSelect(search)}
+              className="
+                rounded-full
+                border
+                border-slate-200
+                bg-slate-50
+                px-4
+                py-2
+                text-sm
+                text-slate-700
+                transition-colors
+                duration-200
+                hover:border-blue-300
+                hover:bg-blue-50
+                hover:text-blue-700
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-200
+              "
+            >
+              {search}
+            </button>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

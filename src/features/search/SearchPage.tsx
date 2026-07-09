@@ -48,6 +48,7 @@ function SearchPage() {
 
     executeSearch,
     executeRecentSearch,
+    clearRecentSearchHistory,
 
     selectResult,
 
@@ -79,10 +80,11 @@ function SearchPage() {
         onSearch={executeSearch}
       />
 
-      {recentSearches.length > 0 && results.length === 0 && !loading && (
+      {results.length === 0 && !loading && (
         <RecentSearches
           searches={recentSearches}
           onSelect={executeRecentSearch}
+          onClear={clearRecentSearchHistory}
         />
       )}
 
