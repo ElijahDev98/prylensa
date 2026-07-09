@@ -4,9 +4,10 @@
  * Feature: Search
  *
  * Purpose:
- * Defines the three-column Search workspace.
+ * Defines the Search workspace layout.
  *
  * Responsibilities:
+ * - Display the workspace header.
  * - Arrange workspace panels.
  * - Delegate rendering to child components.
  *
@@ -28,6 +29,7 @@ import { BestPricePanel } from "../offers";
 
 import ProductGallery from "./ProductGallery";
 import ProductInformation from "./ProductInformation";
+import WorkspaceHeader from "./WorkspaceHeader";
 
 import type { SearchResultViewModel } from "../../viewmodels/search.viewmodel";
 
@@ -39,6 +41,8 @@ interface WorkspaceLayoutProps {
   isCompared: boolean;
 
   onViewAllPrices(): void;
+
+  onChangeProduct(): void;
 }
 
 function WorkspaceLayout({
@@ -46,37 +50,57 @@ function WorkspaceLayout({
   onCompare,
   isCompared,
   onViewAllPrices,
+  onChangeProduct,
 }: WorkspaceLayoutProps) {
-  const { images, offers, lowestOffer } = result;
+  const { title, images, offers, lowestOffer } = result;
 
   return (
-    <section
-      className={`
-        grid
-        ${LAYOUT.workspace.gap}
-        items-stretch
-        lg:grid-cols-3
-      `}
-    >
-      <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <ProductGallery images={images} />
-      </div>
+    <section className="space-y-6">
+      <WorkspaceHeader title={title} onChangeProduct={onChangeProduct} />
 
-      <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <ProductInformation
-          result={result}
-          onCompare={onCompare}
-          isCompared={isCompared}
-        />
-      </div>
+      <section
+        className={`
+          grid
+          ${LAYOUT.workspace.gap}
+          items-stretch
+          lg:grid-cols-3
+        `}
+      >
+        <div
+          className={`
+            min-w-0
+            ${LAYOUT.workspacePanel.stretch}
+          `}
+        >
+          <ProductGallery images={images} />
+        </div>
 
-      <div className={`min-w-0 ${LAYOUT.workspacePanel.stretch}`}>
-        <BestPricePanel
-          offers={offers}
-          lowestOffer={lowestOffer}
-          onViewAllPrices={onViewAllPrices}
-        />
-      </div>
+        <div
+          className={`
+            min-w-0
+            ${LAYOUT.workspacePanel.stretch}
+          `}
+        >
+          <ProductInformation
+            result={result}
+            onCompare={onCompare}
+            isCompared={isCompared}
+          />
+        </div>
+
+        <div
+          className={`
+            min-w-0
+            ${LAYOUT.workspacePanel.stretch}
+          `}
+        >
+          <BestPricePanel
+            offers={offers}
+            lowestOffer={lowestOffer}
+            onViewAllPrices={onViewAllPrices}
+          />
+        </div>
+      </section>
     </section>
   );
 }
