@@ -28,6 +28,7 @@ import useComparison from "@/features/comparison/hooks/useComparison";
 
 import { RecentSearches, SearchResultList, WelcomeSection } from "./components";
 
+import { SearchSession } from "./components/session";
 import { SearchSummary } from "./components/summary";
 import { SearchToolbar } from "./components/toolbar";
 import { SearchWorkspace } from "./components/workspace";
@@ -97,6 +98,12 @@ function SearchPage() {
         onMoveSuggestionUp={moveSuggestionUp}
         onMoveSuggestionDown={moveSuggestionDown}
         onClearSuggestions={clearSuggestions}
+      />
+
+      <SearchSession
+        query={query}
+        resultCount={summary.resultCount}
+        storeCount={summary.storeCount}
       />
 
       {summary.resultCount > 0 && (
