@@ -5,6 +5,29 @@
  *
  * Purpose:
  * Provides business operations for the Search feature.
+ *
+ * Responsibilities:
+ * - Execute product searches.
+ * - Resolve product offers.
+ * - Resolve store information.
+ * - Sort search results.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * Hook
+ *   ↓
+ * Search Service
+ *   ↓
+ * Search Mapper
+ *   ↓
+ * ViewModel
+ *   ↓
+ * Domain Model
+ *
+ * Notes:
+ * - Owns Search business logic.
+ * - UI must never access Product, Offer or Store directly.
  * -----------------------------------------------------------------------------
  */
 
@@ -15,13 +38,14 @@ import { getStoreById } from "@/features/store";
 import { SearchMapper } from "../mappers/search.mapper";
 
 import type { SearchSortOption } from "../types/search.types";
-import type { SearchFilters } from "../types/search-filter.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
+/**
+ * Executes a product search.
+ */
 export function searchProducts(
   query: string,
   sort: SearchSortOption = "relevance",
-  filters?: SearchFilters,
 ): SearchResultViewModel[] {
   const keyword = query.trim().toLowerCase();
 
@@ -29,7 +53,7 @@ export function searchProducts(
     return [];
   }
 
-  let results = getProducts()
+  const results = getProducts()
     .filter(
       (product) =>
         product.title.toLowerCase().includes(keyword) ||
@@ -45,43 +69,12 @@ export function searchProducts(
       );
     });
 
-  if (filters) {
-    results = results.filter((result) => {
-      const categoryMatch =
-        filters.category === "all" ||
-        result.category.toLowerCase() === filters.category;
-
-      const storeMatch =
-        filters.store === "all" ||
-        result.offers.some(
-          (offer) =>
-            offer.storeName.toLowerCase() === filters.store.toLowerCase(),
-        );
-
-      const stockMatch =
-        !filters.inStockOnly || result.offers.some((offer) => offer.inStock);
-
-      const minPriceMatch =
-        filters.minPrice === undefined ||
-        (result.lowestOffer?.currentPrice ?? 0) >= filters.minPrice;
-
-      const maxPriceMatch =
-        filters.maxPrice === undefined ||
-        (result.lowestOffer?.currentPrice ?? 0) <= filters.maxPrice;
-
-      return (
-        categoryMatch &&
-        storeMatch &&
-        stockMatch &&
-        minPriceMatch &&
-        maxPriceMatch
-      );
-    });
-  }
-
   return sortSearchResults(results, sort);
 }
 
+/**
+ * Sorts search results.
+ */
 function sortSearchResults(
   results: SearchResultViewModel[],
   sort: SearchSortOption,
@@ -103,6 +96,7 @@ function sortSearchResults(
           (a.lowestOffer?.currentPrice ?? 0),
       );
 
+    case "relevance":
     default:
       return sorted;
   }

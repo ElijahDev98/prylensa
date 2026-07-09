@@ -13,6 +13,17 @@
  * - Generate search suggestions.
  * - Manage selected product.
  * - Manage Offer dialog state.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * Hook
+ *   ↓
+ * Search Service
+ *
+ * Notes:
+ * - No business logic.
+ * - Business rules belong in SearchService.
  * -----------------------------------------------------------------------------
  */
 
@@ -49,31 +60,39 @@ export default function useSearch() {
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] =
+    useState<number>(-1);
 
   const updateQuery = useCallback((query: string) => {
-    setState((previous) => {
-      setSuggestions(getSearchSuggestions(query, previous.recentSearches));
+    setState((previous) => ({
+      ...previous,
+      query,
+    }));
 
-      setActiveSuggestionIndex(-1);
+    setSuggestions((previousSuggestions) => {
+      void previousSuggestions;
+
+      return getSearchSuggestions(query, loadRecentSearches());
+    });
+
+    setActiveSuggestionIndex(-1);
+  }, []);
+
+  const updateSort = useCallback((sort: SearchState["sort"]) => {
+    setState((previous) => {
+      const results = searchProducts(previous.query, sort);
 
       return {
         ...previous,
-        query,
+        sort,
+        results,
       };
     });
   }, []);
 
-  const updateSort = useCallback((sort: SearchState["sort"]) => {
-    setState((previous) => ({
-      ...previous,
-      sort,
-    }));
-  }, []);
-
   const executeSearch = useCallback(() => {
     setState((previous) => {
-      const results = searchProducts(previous.query);
+      const results = searchProducts(previous.query, previous.sort);
 
       const recentSearches = addRecentSearch(
         previous.recentSearches,
@@ -81,6 +100,7 @@ export default function useSearch() {
       );
 
       setSuggestions([]);
+      setActiveSuggestionIndex(-1);
 
       return {
         ...previous,
@@ -94,11 +114,12 @@ export default function useSearch() {
 
   const executeRecentSearch = useCallback((query: string) => {
     setState((previous) => {
-      const results = searchProducts(query);
+      const results = searchProducts(query, previous.sort);
 
       const recentSearches = addRecentSearch(previous.recentSearches, query);
 
       setSuggestions([]);
+      setActiveSuggestionIndex(-1);
 
       return {
         ...previous,
@@ -117,7 +138,6 @@ export default function useSearch() {
     }));
 
     setSuggestions([]);
-
     setActiveSuggestionIndex(-1);
   }, []);
 
