@@ -8,8 +8,9 @@
  *
  * Responsibilities:
  * - Execute product searches.
- * - Retrieve product offers.
+ * - Resolve product offers.
  * - Resolve store information.
+ * - Maintain recent search history.
  * - Delegate presentation mapping to SearchMapper.
  *
  * Architecture:
@@ -41,10 +42,15 @@ import { SearchMapper } from "../mappers/search.mapper";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 /**
+ * Maximum number of recent searches retained.
+ */
+const MAX_RECENT_SEARCHES = 10;
+
+/**
  * Executes a product search.
  *
  * @param query User supplied search query.
- * @returns Search result view models.
+ * @returns Search result ViewModels.
  */
 export function searchProducts(query: string): SearchResultViewModel[] {
   const keyword = query.trim().toLowerCase();
@@ -68,4 +74,35 @@ export function searchProducts(query: string): SearchResultViewModel[] {
         (storeId: string) => getStoreById(storeId)?.name ?? "Unknown Store",
       );
     });
+}
+
+/**
+ * Updates the recent search history.
+ *
+ * Responsibilities:
+ * - Ignore empty searches.
+ * - Prevent duplicate entries.
+ * - Keep newest searches first.
+ * - Limit history size.
+ *
+ * @param history Existing history.
+ * @param query Search query.
+ * @returns Updated history.
+ */
+export function updateRecentSearches(
+  history: string[],
+  query: string,
+): string[] {
+  const normalized = query.trim();
+
+  if (normalized.length === 0) {
+    return history;
+  }
+
+  return [
+    normalized,
+    ...history.filter(
+      (item) => item.toLowerCase() !== normalized.toLowerCase(),
+    ),
+  ].slice(0, MAX_RECENT_SEARCHES);
 }
