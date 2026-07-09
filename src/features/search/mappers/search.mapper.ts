@@ -10,6 +10,7 @@
  * - Convert Product and Offer domain models into ViewModels.
  * - Convert Product images into presentation models.
  * - Convert Product specifications into presentation models.
+ * - Produce SearchSummaryViewModel.
  * - Centralize presentation formatting.
  *
  * Architecture:
@@ -24,10 +25,6 @@
  * Search ViewModel
  *   ↓
  * Domain Models
- *
- * Notes:
- * - Stateless.
- * - Never expose domain models to the presentation layer.
  * -----------------------------------------------------------------------------
  */
 
@@ -39,15 +36,10 @@ import type {
   ProductSpecificationViewModel,
   SearchOfferViewModel,
   SearchResultViewModel,
+  SearchSummaryViewModel,
 } from "../viewmodels/search.viewmodel";
 
-/**
- * Search presentation mapper.
- */
 export class SearchMapper {
-  /**
-   * Maps product images into presentation models.
-   */
   private static toImageViewModels(
     images: Product["images"],
   ): ProductImageViewModel[] {
@@ -58,9 +50,6 @@ export class SearchMapper {
     }));
   }
 
-  /**
-   * Maps product specifications into presentation models.
-   */
   private static toSpecificationViewModels(
     specifications: Product["specifications"],
   ): ProductSpecificationViewModel[] {
@@ -71,9 +60,6 @@ export class SearchMapper {
     }));
   }
 
-  /**
-   * Maps a domain Offer into a SearchOfferViewModel.
-   */
   public static toOfferViewModel(
     offer: Offer,
     storeName: string,
@@ -100,9 +86,6 @@ export class SearchMapper {
     };
   }
 
-  /**
-   * Maps a Product and its Offers into a SearchResultViewModel.
-   */
   public static toSearchResultViewModel(
     product: Product,
     offers: Offer[],
@@ -142,6 +125,57 @@ export class SearchMapper {
       lowestOffer: offerViewModels.length > 0 ? offerViewModels[0] : null,
 
       offers: offerViewModels,
+    };
+  }
+
+  /**
+   * Produces the Search Summary ViewModel.
+   */
+  public static toSearchSummaryViewModel(
+    results: SearchResultViewModel[],
+  ): SearchSummaryViewModel {
+    if (results.length === 0) {
+      return {
+        resultCount: 0,
+        storeCount: 0,
+        lowestPrice: 0,
+        lowestPriceLabel: "₦0",
+        averagePrice: 0,
+        averagePriceLabel: "₦0",
+      };
+    }
+
+    const uniqueStores = new Set<string>();
+    const prices: number[] = [];
+
+    results.forEach((result) => {
+      result.offers.forEach((offer) => {
+        uniqueStores.add(offer.storeId);
+        prices.push(offer.currentPrice);
+      });
+    });
+
+    const lowestPrice = Math.min(...prices);
+
+    const averagePrice =
+      prices.length === 0
+        ? 0
+        : Math.round(
+            prices.reduce((sum, price) => sum + price, 0) / prices.length,
+          );
+
+    return {
+      resultCount: results.length,
+
+      storeCount: uniqueStores.size,
+
+      lowestPrice,
+
+      lowestPriceLabel: `₦${lowestPrice.toLocaleString()}`,
+
+      averagePrice,
+
+      averagePriceLabel: `₦${averagePrice.toLocaleString()}`,
     };
   }
 }
