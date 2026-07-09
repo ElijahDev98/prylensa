@@ -4,19 +4,20 @@
  * Feature: Search
  *
  * Purpose:
- * Composes the Search workspace.
+ * Coordinates every Search workspace state.
  *
  * Responsibilities:
  * - Display loading state.
  * - Display error state.
- * - Display empty state.
- * - Display the workspace.
- * - Display the Offer dialog.
+ * - Display initial workspace.
+ * - Display no-results workspace.
+ * - Display selection placeholder.
+ * - Display selected product workspace.
  *
  * Architecture:
  * UI
  *   ↓
- * Workspace
+ * SearchResultViewModel
  *
  * Notes:
  * - Pure presentation component.
@@ -24,16 +25,21 @@
  * -----------------------------------------------------------------------------
  */
 
-import { OfferDialog } from "../offers";
-
+import OfferDialog from "../offers/OfferDialog";
 import SearchEmpty from "./SearchEmpty";
 import SearchError from "./SearchError";
 import SearchLoading from "./SearchLoading";
+import SearchNoResults from "./SearchNoResults";
+import SearchSelectionPlaceholder from "./SearchSelectionPlaceholder";
 import WorkspaceLayout from "./WorkspaceLayout";
 
 import type { SearchResultViewModel } from "../../viewmodels/search.viewmodel";
 
 interface SearchWorkspaceProps {
+  query: string;
+
+  results: SearchResultViewModel[];
+
   result: SearchResultViewModel | null;
 
   loading: boolean;
@@ -49,9 +55,13 @@ interface SearchWorkspaceProps {
   onOpenOfferDialog(): void;
 
   onCloseOfferDialog(): void;
+
+  onRetry?(): void;
 }
 
 function SearchWorkspace({
+  query,
+  results,
   result,
   loading,
   error,
@@ -60,22 +70,49 @@ function SearchWorkspace({
   offerDialogOpen,
   onOpenOfferDialog,
   onCloseOfferDialog,
+  onRetry,
 }: SearchWorkspaceProps) {
+  /**
+   * Loading
+   */
   if (loading) {
     return <SearchLoading />;
   }
 
+  /**
+   * Error
+   */
   if (error) {
-    return <SearchError message={error} />;
+    return <SearchError message={error} onRetry={onRetry} />;
   }
 
-  if (!result) {
+  /**
+   * Initial workspace
+   */
+  if (query.trim().length === 0) {
     return <SearchEmpty />;
   }
 
+  /**
+   * Search completed with no matches
+   */
+  if (results.length === 0) {
+    return <SearchNoResults query={query} />;
+  }
+
+  /**
+   * Results exist but user hasn't selected one.
+   */
+  if (result === null) {
+    return <SearchSelectionPlaceholder resultCount={results.length} />;
+  }
+
+  /**
+   * Product selected
+   */
   return (
     <>
-      <section aria-label="Search Results Workspace" className="w-full">
+      <section aria-label="Search Workspace" className="w-full">
         <WorkspaceLayout
           result={result}
           onCompare={onCompare}
