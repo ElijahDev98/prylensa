@@ -70,6 +70,43 @@ export interface SearchOfferViewModel {
 }
 
 /**
+ * Search summary presented above the result list.
+ *
+ * Produced by the SearchMapper.
+ */
+export interface SearchSummaryViewModel {
+  /**
+   * Number of matching products.
+   */
+  resultCount: number;
+
+  /**
+   * Number of unique stores represented.
+   */
+  storeCount: number;
+
+  /**
+   * Lowest available price.
+   */
+  lowestPrice: number;
+
+  /**
+   * Formatted lowest price.
+   */
+  lowestPriceLabel: string;
+
+  /**
+   * Average available price.
+   */
+  averagePrice: number;
+
+  /**
+   * Formatted average price.
+   */
+  averagePriceLabel: string;
+}
+
+/**
  * Presentation model representing a searchable product.
  */
 export interface SearchResultViewModel {
@@ -83,9 +120,6 @@ export interface SearchResultViewModel {
 
   thumbnail: string;
 
-  /**
-   * Complete image collection used by ProductGallery.
-   */
   images: ProductImageViewModel[];
 
   rating: number;
