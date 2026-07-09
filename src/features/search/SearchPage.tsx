@@ -16,7 +16,7 @@
  *   ↓
  * useSearch()
  *   ↓
- * Search Service
+ * Search Services
  *
  * Notes:
  * - Composition root only.
@@ -27,6 +27,8 @@
 import useComparison from "@/features/comparison/hooks/useComparison";
 
 import { RecentSearches, SearchResultList, WelcomeSection } from "./components";
+
+import { SearchSummary } from "./components/summary";
 import { SearchToolbar } from "./components/toolbar";
 import { SearchWorkspace } from "./components/workspace";
 
@@ -40,6 +42,7 @@ function SearchPage() {
     feedback,
 
     results,
+    summary,
     selectedResult,
     recentSearches,
 
@@ -94,6 +97,15 @@ function SearchPage() {
         onMoveSuggestionDown={moveSuggestionDown}
         onClearSuggestions={clearSuggestions}
       />
+
+      {summary.resultCount > 0 && (
+        <SearchSummary
+          resultCount={summary.resultCount}
+          storeCount={summary.storeCount}
+          lowestPrice={summary.lowestPriceLabel}
+          averagePrice={summary.averagePriceLabel}
+        />
+      )}
 
       {results.length === 0 && recentSearches.length > 0 && !loading && (
         <RecentSearches
