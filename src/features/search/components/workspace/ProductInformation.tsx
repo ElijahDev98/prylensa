@@ -32,7 +32,7 @@ import ProductFeatureGrid from "./ProductFeatureGrid";
 import ProductHeader from "./ProductHeader";
 import ProductPrice from "./ProductPrice";
 
-import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
+import type { SearchResultViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ProductInformationProps {
   result: SearchResultViewModel;

@@ -18,7 +18,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import { SEARCH_CONTENT } from "../constants/search.constants";
+import { SEARCH_CONTENT } from "../../constants/search.constants";
 
 function WelcomeSection() {
   return (

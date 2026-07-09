@@ -26,7 +26,7 @@ import type { RefObject } from "react";
 
 import ProductThumbnail from "./ProductThumbnail";
 
-import type { ProductImageViewModel } from "../viewmodels/search.viewmodel";
+import type { ProductImageViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ProductThumbnailListProps {
   images: ProductImageViewModel[];

@@ -23,7 +23,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
+import type { SearchResultViewModel } from "../../viewmodels/search.viewmodel";
 
 interface SearchResultListProps {
   results: SearchResultViewModel[];

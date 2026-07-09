@@ -12,9 +12,14 @@
  * - Delegate sorting to the Offer Dialog service.
  * - Render the Offer list.
  *
- * Does NOT:
- * - Fetch data.
- * - Execute business logic.
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchOfferViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -24,10 +29,10 @@ import Dialog from "@/components/ui/Dialog";
 
 import OfferList from "./OfferList";
 
-import { sortOffers } from "../services/offer-dialog.service";
+import { sortOffers } from "../../services/offer-dialog.service";
 
-import type { OfferSortOption } from "../types/offer-dialog.types";
-import type { SearchOfferViewModel } from "../viewmodels/search.viewmodel";
+import type { OfferSortOption } from "../../types/offer-dialog.types";
+import type { SearchOfferViewModel } from "../../viewmodels/search.viewmodel";
 
 interface OfferDialogProps {
   open: boolean;

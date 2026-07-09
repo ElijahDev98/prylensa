@@ -1,12 +1,38 @@
+/**
+ * -----------------------------------------------------------------------------
+ * File: ProductGallery.tsx
+ * Feature: Search
+ *
+ * Purpose:
+ * Displays the selected product image gallery.
+ *
+ * Responsibilities:
+ * - Display the active product image.
+ * - Display thumbnail navigation.
+ * - Coordinate gallery presentation state.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * useProductGallery
+ *   ↓
+ * ProductImageViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
+ * -----------------------------------------------------------------------------
+ */
+
 import Card from "@/components/ui/Card";
 import { LAYOUT, SPACING } from "@/design-system";
 
 import ProductImageViewer from "./ProductImageViewer";
 import ThumbnailCarousel from "./ThumbnailCarousel";
 
-import { useProductGallery } from "../hooks/useProductGallery";
+import { useProductGallery } from "../../hooks/useProductGallery";
 
-import type { ProductGalleryProps } from "../types/product-gallery.types";
+import type { ProductGalleryProps } from "../../types/product-gallery.types";
 
 function ProductGallery({ images }: ProductGalleryProps) {
   const {

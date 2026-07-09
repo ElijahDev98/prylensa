@@ -21,7 +21,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { ProductSpecificationViewModel } from "../viewmodels/search.viewmodel";
+import type { ProductSpecificationViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ProductFeatureGridProps {
   specifications: ProductSpecificationViewModel[];

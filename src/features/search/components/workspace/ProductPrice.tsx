@@ -24,7 +24,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { SearchOfferViewModel } from "../viewmodels/search.viewmodel";
+import type { SearchOfferViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ProductPriceProps {
   offer: SearchOfferViewModel | null;

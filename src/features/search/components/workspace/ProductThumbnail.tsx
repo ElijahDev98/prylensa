@@ -22,7 +22,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { ProductImageViewModel } from "../viewmodels/search.viewmodel";
+import type { ProductImageViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ProductThumbnailProps {
   image: ProductImageViewModel;

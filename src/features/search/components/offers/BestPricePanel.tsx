@@ -27,7 +27,7 @@ import { LAYOUT, SPACING } from "@/design-system";
 
 import BestOfferCard from "./BestOfferCard";
 
-import type { SearchOfferViewModel } from "../viewmodels/search.viewmodel";
+import type { SearchOfferViewModel } from "../../viewmodels/search.viewmodel";
 
 interface BestPricePanelProps {
   offers: SearchOfferViewModel[];

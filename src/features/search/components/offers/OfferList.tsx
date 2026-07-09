@@ -24,7 +24,7 @@
 
 import OfferCard from "./OfferCard";
 
-import type { SearchOfferViewModel } from "../viewmodels/search.viewmodel";
+import type { SearchOfferViewModel } from "../../viewmodels/search.viewmodel";
 
 interface OfferListProps {
   offers: SearchOfferViewModel[];

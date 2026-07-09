@@ -1,4 +1,4 @@
-import type { ProductImageViewerProps } from "../types/product-gallery.types";
+import type { ProductImageViewerProps } from "../../types/product-gallery.types";
 
 function ProductImageViewer({ image }: ProductImageViewerProps) {
   if (!image) {
