@@ -8,8 +8,8 @@
  *
  * Responsibilities:
  * - Display current search query.
- * - Display search statistics.
  * - Display search status.
+ * - Display search statistics.
  *
  * Architecture:
  * UI
@@ -45,7 +45,8 @@ function SearchSession({ query, resultCount, storeCount }: SearchSessionProps) {
         border
         border-slate-200
         bg-white
-        p-6
+        px-6
+        py-4
         shadow-sm
       "
     >
@@ -53,34 +54,35 @@ function SearchSession({ query, resultCount, storeCount }: SearchSessionProps) {
         className="
           flex
           flex-col
-          gap-5
+          gap-4
           lg:flex-row
           lg:items-center
           lg:justify-between
         "
       >
-        <div>
+        <div className="min-w-0">
           <p
             className="
-              text-sm
-              font-medium
+              text-xs
+              font-semibold
               uppercase
-              tracking-wide
+              tracking-wider
               text-slate-500
             "
           >
-            Current Search
+            Search Results
           </p>
 
           <h2
             className="
-              mt-2
-              text-2xl
-              font-bold
+              mt-1
+              truncate
+              text-lg
+              font-semibold
               text-slate-900
             "
           >
-            "{query}"
+            {query}
           </h2>
         </div>
 
@@ -88,7 +90,7 @@ function SearchSession({ query, resultCount, storeCount }: SearchSessionProps) {
           className="
             flex
             flex-wrap
-            gap-3
+            gap-2
           "
         >
           <SearchSessionBadge label="Products" value={resultCount} />

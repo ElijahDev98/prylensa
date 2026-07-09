@@ -52,11 +52,11 @@ function WorkspaceLayout({
   onViewAllPrices,
   onChangeProduct,
 }: WorkspaceLayoutProps) {
-  const { title, images, offers, lowestOffer } = result;
+  const { images, offers, lowestOffer } = result;
 
   return (
     <section className="space-y-6">
-      <WorkspaceHeader title={title} onChangeProduct={onChangeProduct} />
+      <WorkspaceHeader onChangeProduct={onChangeProduct} />
 
       <section
         className={`
