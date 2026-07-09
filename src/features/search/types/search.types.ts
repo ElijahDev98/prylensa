@@ -19,6 +19,7 @@
  * -----------------------------------------------------------------------------
  */
 
+import type { SearchFilters } from "./search-filter.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 /**
@@ -36,10 +37,6 @@ export interface SearchFeedback {
 
 /**
  * Supported search sort options.
- *
- * Future:
- * Additional options can be introduced without modifying
- * presentation components.
  */
 export type SearchSortOption = "relevance" | "lowest-price" | "highest-price";
 
@@ -81,6 +78,11 @@ export interface SearchState {
    * Current sort option.
    */
   sort: SearchSortOption;
+
+  /**
+   * Active search filters.
+   */
+  filters: SearchFilters;
 }
 
 /**
