@@ -4,18 +4,16 @@
  * Feature: Search
  *
  * Purpose:
- * Displays a single Search summary metric.
+ * Displays a single metric inside the Search Summary.
  *
  * Responsibilities:
- * - Render one summary metric.
- * - Display label and value.
+ * - Display one metric.
  *
  * Architecture:
  * UI
  *
  * Notes:
  * - Pure presentation component.
- * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -27,22 +25,12 @@ interface SearchSummaryCardProps {
 
 function SearchSummaryCard({ label, value }: SearchSummaryCardProps) {
   return (
-    <article
+    <div
       className="
         flex
-        min-w-[160px]
-        flex-1
         flex-col
-        rounded-2xl
-        border
-        border-slate-200
-        bg-white
-        p-5
-        shadow-sm
-        transition-all
-        duration-200
-        hover:border-blue-200
-        hover:shadow-md
+        gap-1
+        min-w-35
       "
     >
       <span
@@ -50,7 +38,7 @@ function SearchSummaryCard({ label, value }: SearchSummaryCardProps) {
           text-xs
           font-medium
           uppercase
-          tracking-wide
+          tracking-wider
           text-slate-500
         "
       >
@@ -59,15 +47,14 @@ function SearchSummaryCard({ label, value }: SearchSummaryCardProps) {
 
       <span
         className="
-          mt-2
-          text-2xl
+          text-lg
           font-bold
           text-slate-900
         "
       >
         {value}
       </span>
-    </article>
+    </div>
   );
 }
 
