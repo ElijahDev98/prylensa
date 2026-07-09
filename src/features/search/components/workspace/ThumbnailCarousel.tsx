@@ -24,10 +24,11 @@
 
 import { useRef } from "react";
 
-import CarouselButton from "./CarouselButton";
+import CarouselButton from "../CarouselButton";
+
 import ProductThumbnailList from "./ProductThumbnailList";
 
-import type { ProductImageViewModel } from "../viewmodels/search.viewmodel";
+import type { ProductImageViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ThumbnailCarouselProps {
   images: ProductImageViewModel[];
