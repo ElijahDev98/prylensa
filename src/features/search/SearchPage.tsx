@@ -63,6 +63,7 @@ function SearchPage() {
     clearRecentSearchHistory,
 
     selectResult,
+    clearSelection,
 
     offerDialogOpen,
     openOfferDialog,
@@ -136,6 +137,7 @@ function SearchPage() {
         offerDialogOpen={offerDialogOpen}
         onOpenOfferDialog={openOfferDialog}
         onCloseOfferDialog={closeOfferDialog}
+        onChangeProduct={clearSelection}
       />
     </section>
   );

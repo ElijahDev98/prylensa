@@ -56,6 +56,11 @@ interface SearchWorkspaceProps {
 
   onCloseOfferDialog(): void;
 
+  /**
+   * Clears the current product selection.
+   */
+  onChangeProduct(): void;
+
   onRetry?(): void;
 }
 
@@ -70,6 +75,7 @@ function SearchWorkspace({
   offerDialogOpen,
   onOpenOfferDialog,
   onCloseOfferDialog,
+  onChangeProduct,
   onRetry,
 }: SearchWorkspaceProps) {
   /**
@@ -118,6 +124,7 @@ function SearchWorkspace({
           onCompare={onCompare}
           isCompared={isCompared}
           onViewAllPrices={onOpenOfferDialog}
+          onChangeProduct={onChangeProduct}
         />
       </section>
 
