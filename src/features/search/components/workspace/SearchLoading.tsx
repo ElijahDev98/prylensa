@@ -4,41 +4,26 @@
  * Feature: Search
  *
  * Purpose:
- * Displays the loading state for the search workspace.
+ * Displays the loading state for the Search workspace.
+ *
+ * Responsibilities:
+ * - Render the SearchSkeleton component.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchSkeleton
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
-function SearchLoading() {
-  return (
-    <section
-      className="
-        flex
-        min-h-105
-        items-center
-        justify-center
-        rounded-2xl
-        border
-        border-slate-200
-        bg-white
-      "
-    >
-      <div className="flex flex-col items-center gap-4">
-        <div
-          className="
-            h-12
-            w-12
-            animate-spin
-            rounded-full
-            border-4
-            border-slate-200
-            border-t-blue-600
-          "
-        />
+import SearchSkeleton from "./SearchSkeleton";
 
-        <p className="text-sm text-slate-500">Searching products...</p>
-      </div>
-    </section>
-  );
+function SearchLoading() {
+  return <SearchSkeleton />;
 }
 
 export default SearchLoading;
