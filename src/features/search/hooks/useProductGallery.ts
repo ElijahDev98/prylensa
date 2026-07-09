@@ -4,15 +4,34 @@
  * Feature: Search
  *
  * Purpose:
- * Manages the state of the product gallery.
+ * Manages the presentation state of the Product Gallery.
+ *
+ * Responsibilities:
+ * - Maintain the active image.
+ * - Resolve the active image.
+ * - Expose gallery state.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * Hook
+ *   ↓
+ * ProductImageViewModel
+ *
+ * Notes:
+ * - This hook owns gallery UI state only.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
 import { useMemo, useState } from "react";
 
-import type { ProductImage } from "../types/product-gallery.types";
+import type { ProductImageViewModel } from "../viewmodels/search.viewmodel";
 
-export function useProductGallery(images: ProductImage[]) {
+/**
+ * Product Gallery hook.
+ */
+export function useProductGallery(images: ProductImageViewModel[]) {
   const [activeImageId, setActiveImageId] = useState(images[0]?.id ?? "");
 
   const activeImage = useMemo(() => {

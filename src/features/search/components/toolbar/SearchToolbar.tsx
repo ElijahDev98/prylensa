@@ -33,7 +33,7 @@ import SearchControls from "./SearchControls";
 import SearchInput from "./SearchInput";
 import SearchSubmitButton from "./SearchSubmitButton";
 
-import type { SearchSortOption } from "../types/search.types";
+import type { SearchSortOption } from "../../types/search.types";
 
 interface SearchToolbarProps {
   query: string;

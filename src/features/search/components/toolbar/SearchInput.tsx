@@ -20,7 +20,7 @@
 
 import { Search } from "lucide-react";
 
-import type { SearchInputProps } from "../types/search.types";
+import type { SearchInputProps } from "../../types/search.types";
 
 function SearchInput({ value, onChange }: SearchInputProps) {
   return (

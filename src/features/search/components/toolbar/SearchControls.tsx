@@ -21,7 +21,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { SearchSortOption } from "../types/search.types";
+import type { SearchSortOption } from "../../types/search.types";
 
 interface SearchControlsProps {
   sort: SearchSortOption;
