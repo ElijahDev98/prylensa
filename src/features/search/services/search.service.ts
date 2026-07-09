@@ -11,7 +11,8 @@
  * - Resolve product offers.
  * - Resolve store information.
  * - Maintain recent search history.
- * - Delegate presentation mapping to SearchMapper.
+ * - Sort search results.
+ * - Delegate ViewModel creation to SearchMapper.
  *
  * Architecture:
  * UI
@@ -27,9 +28,8 @@
  * Domain Model
  *
  * Notes:
- * - This service owns Search business logic.
- * - ViewModel construction is delegated to SearchMapper.
- * - React components must never access Product, Offer or Store directly.
+ * - Owns Search business rules.
+ * - UI must never access Product, Offer or Store directly.
  * -----------------------------------------------------------------------------
  */
 
@@ -39,6 +39,7 @@ import { getStoreById } from "@/features/store";
 
 import { SearchMapper } from "../mappers/search.mapper";
 
+import type { SearchSortOption } from "../types/search.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 /**
@@ -49,17 +50,21 @@ const MAX_RECENT_SEARCHES = 10;
 /**
  * Executes a product search.
  *
- * @param query User supplied search query.
- * @returns Search result ViewModels.
+ * @param query User search query.
+ * @param sort Selected sort option.
+ * @returns Search results.
  */
-export function searchProducts(query: string): SearchResultViewModel[] {
+export function searchProducts(
+  query: string,
+  sort: SearchSortOption = "relevance",
+): SearchResultViewModel[] {
   const keyword = query.trim().toLowerCase();
 
   if (keyword.length < 2) {
     return [];
   }
 
-  return getProducts()
+  const results = getProducts()
     .filter(
       (product) =>
         product.title.toLowerCase().includes(keyword) ||
@@ -74,16 +79,52 @@ export function searchProducts(query: string): SearchResultViewModel[] {
         (storeId: string) => getStoreById(storeId)?.name ?? "Unknown Store",
       );
     });
+
+  return sortSearchResults(results, sort);
+}
+
+/**
+ * Sorts Search results.
+ *
+ * @param results Search results.
+ * @param sort Selected sort option.
+ * @returns Sorted results.
+ */
+function sortSearchResults(
+  results: SearchResultViewModel[],
+  sort: SearchSortOption,
+): SearchResultViewModel[] {
+  const sorted = [...results];
+
+  switch (sort) {
+    case "lowest-price":
+      return sorted.sort((left, right) => {
+        const leftPrice =
+          left.lowestOffer?.currentPrice ?? Number.MAX_SAFE_INTEGER;
+
+        const rightPrice =
+          right.lowestOffer?.currentPrice ?? Number.MAX_SAFE_INTEGER;
+
+        return leftPrice - rightPrice;
+      });
+
+    case "highest-price":
+      return sorted.sort((left, right) => {
+        const leftPrice = left.lowestOffer?.currentPrice ?? 0;
+
+        const rightPrice = right.lowestOffer?.currentPrice ?? 0;
+
+        return rightPrice - leftPrice;
+      });
+
+    case "relevance":
+    default:
+      return sorted;
+  }
 }
 
 /**
  * Updates the recent search history.
- *
- * Responsibilities:
- * - Ignore empty searches.
- * - Prevent duplicate entries.
- * - Keep newest searches first.
- * - Limit history size.
  *
  * @param history Existing history.
  * @param query Search query.

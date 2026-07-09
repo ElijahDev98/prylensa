@@ -94,7 +94,7 @@ export default function useSearch() {
    */
   const executeSearch = useCallback(() => {
     setState((previous) => {
-      const results = searchProducts(previous.query);
+      const results = searchProducts(previous.query, previous.sort);
 
       return {
         ...previous,
