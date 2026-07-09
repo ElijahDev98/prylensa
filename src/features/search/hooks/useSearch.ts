@@ -9,6 +9,7 @@
  * Responsibilities:
  * - Own Search feature state.
  * - Delegate search execution.
+ * - Produce Search summary.
  * - Persist recent searches.
  * - Generate search suggestions.
  * - Manage selected product.
@@ -18,17 +19,18 @@
  * UI
  *   ↓
  * Hook
- *   ↓
- * Search Service
+ *   ├── Search Service
+ *   └── Search Summary Service
  *
  * Notes:
  * - No business logic.
- * - Business rules belong in SearchService.
+ * - Business rules belong in services.
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
+import { buildSearchSummary } from "../services/search-summary.service";
 import { searchProducts } from "../services/search.service";
 import { getSearchSuggestions } from "../services/search-suggestion.service";
 
@@ -39,7 +41,10 @@ import {
 } from "../utils/recent-search.storage";
 
 import type { SearchState } from "../types/search.types";
-import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
+import type {
+  SearchResultViewModel,
+  SearchSummaryViewModel,
+} from "../viewmodels/search.viewmodel";
 
 function createInitialState(): SearchState {
   return {
@@ -52,6 +57,15 @@ function createInitialState(): SearchState {
     sort: "relevance",
   };
 }
+
+const EMPTY_SUMMARY: SearchSummaryViewModel = {
+  resultCount: 0,
+  storeCount: 0,
+  lowestPrice: 0,
+  lowestPriceLabel: "₦0",
+  averagePrice: 0,
+  averagePriceLabel: "₦0",
+};
 
 export default function useSearch() {
   const [state, setState] = useState<SearchState>(createInitialState);
@@ -69,11 +83,7 @@ export default function useSearch() {
       query,
     }));
 
-    setSuggestions((previousSuggestions) => {
-      void previousSuggestions;
-
-      return getSearchSuggestions(query, loadRecentSearches());
-    });
+    setSuggestions(getSearchSuggestions(query, loadRecentSearches()));
 
     setActiveSuggestionIndex(-1);
   }, []);
@@ -187,8 +197,15 @@ export default function useSearch() {
     setOfferDialogOpen(false);
   }, []);
 
+  const summary =
+    state.results.length > 0
+      ? buildSearchSummary(state.results)
+      : EMPTY_SUMMARY;
+
   return {
     ...state,
+
+    summary,
 
     suggestions,
     activeSuggestionIndex,
