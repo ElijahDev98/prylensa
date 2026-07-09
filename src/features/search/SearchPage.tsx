@@ -19,8 +19,8 @@
  * Search Service
  *
  * Notes:
- * - This page should remain a composition root.
- * - No business logic should be implemented here.
+ * - Composition root for the Search feature.
+ * - No business logic belongs in this page.
  * -----------------------------------------------------------------------------
  */
 
@@ -38,6 +38,7 @@ import useSearch from "./hooks/useSearch";
 function SearchPage() {
   const {
     query,
+    sort,
     loading,
     feedback,
 
@@ -45,6 +46,7 @@ function SearchPage() {
     selectedResult,
 
     updateQuery,
+    updateSort,
     executeSearch,
 
     selectResult,
@@ -71,7 +73,9 @@ function SearchPage() {
 
       <SearchToolbar
         query={query}
+        sort={sort}
         onQueryChange={updateQuery}
+        onSortChange={updateSort}
         onSearch={executeSearch}
       />
 
