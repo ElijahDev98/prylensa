@@ -13,8 +13,7 @@
 
 export * from "./toolbar";
 
-export { default as BestOfferCard } from "./BestOfferCard";
-export { default as BestPricePanel } from "./BestPricePanel";
-export { default as OfferCard } from "./OfferCard";
-export { default as OfferDialog } from "./OfferDialog";
-export { default as OfferList } from "./OfferList";
+export { default as RecentSearches } from "./RecentSearches";
+export { default as SearchResultList } from "./SearchResultList";
+export { default as ThumbnailCarousel } from "./ThumbnailCarousel";
+export { default as WelcomeSection } from "./WelcomeSection";

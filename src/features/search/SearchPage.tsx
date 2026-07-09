@@ -27,12 +27,8 @@
 import useComparison from "@/features/comparison/hooks/useComparison";
 
 import { SearchToolbar } from "./components/toolbar";
-import {
-  RecentSearches,
-  SearchResultList,
-  SearchWorkspace,
-  WelcomeSection,
-} from "./components";
+import { RecentSearches, SearchResultList, WelcomeSection } from "./components";
+import { SearchWorkspace } from "./components/workspace";
 
 import useSearch from "./hooks/useSearch";
 

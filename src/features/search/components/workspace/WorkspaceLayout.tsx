@@ -24,16 +24,17 @@
 
 import { LAYOUT } from "@/design-system";
 
-import BestPricePanel from "./BestPricePanel";
+import { BestPricePanel } from "../offers";
+
 import ProductGallery from "./ProductGallery";
 import ProductInformation from "./ProductInformation";
 
-import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
+import type { SearchResultViewModel } from "../../viewmodels/search.viewmodel";
 
 interface WorkspaceLayoutProps {
   result: SearchResultViewModel;
 
-  onCompare: (productId: string) => void;
+  onCompare(productId: string): void;
 
   isCompared: boolean;
 
