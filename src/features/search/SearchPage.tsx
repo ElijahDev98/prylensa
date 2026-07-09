@@ -2,25 +2,6 @@
  * -----------------------------------------------------------------------------
  * File: SearchPage.tsx
  * Feature: Search
- *
- * Purpose:
- * Entry point for the Search feature.
- *
- * Responsibilities:
- * - Compose the Search feature.
- * - Connect Search and Comparison features.
- * - Coordinate presentation components.
- *
- * Architecture:
- * UI
- *   ↓
- * useSearch()
- *   ↓
- * Search Service
- *
- * Notes:
- * - Composition root only.
- * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -43,11 +24,20 @@ function SearchPage() {
     selectedResult,
     recentSearches,
 
+    suggestions,
+    activeSuggestionIndex,
+
     updateQuery,
     updateSort,
 
     executeSearch,
     executeRecentSearch,
+
+    selectSuggestion,
+    moveSuggestionUp,
+    moveSuggestionDown,
+    clearSuggestions,
+
     clearRecentSearchHistory,
 
     selectResult,
@@ -75,9 +65,15 @@ function SearchPage() {
       <SearchToolbar
         query={query}
         sort={sort}
+        suggestions={suggestions}
+        activeSuggestionIndex={activeSuggestionIndex}
         onQueryChange={updateQuery}
         onSortChange={updateSort}
         onSearch={executeSearch}
+        onSelectSuggestion={selectSuggestion}
+        onMoveSuggestionUp={moveSuggestionUp}
+        onMoveSuggestionDown={moveSuggestionDown}
+        onClearSuggestions={clearSuggestions}
       />
 
       {results.length === 0 && !loading && (

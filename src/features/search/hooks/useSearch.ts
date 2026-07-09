@@ -10,6 +10,7 @@
  * - Own Search feature state.
  * - Delegate search execution.
  * - Persist recent searches.
+ * - Generate search suggestions.
  * - Manage selected product.
  * - Manage Offer dialog state.
  * -----------------------------------------------------------------------------
@@ -18,6 +19,7 @@
 import { useCallback, useState } from "react";
 
 import { searchProducts } from "../services/search.service";
+import { getSearchSuggestions } from "../services/search-suggestion.service";
 
 import {
   addRecentSearch,
@@ -31,17 +33,11 @@ import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 function createInitialState(): SearchState {
   return {
     query: "",
-
     loading: false,
-
     feedback: {},
-
     results: [],
-
     selectedResult: null,
-
     recentSearches: loadRecentSearches(),
-
     sort: "relevance",
   };
 }
@@ -51,11 +47,21 @@ export default function useSearch() {
 
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
 
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+
   const updateQuery = useCallback((query: string) => {
-    setState((previous) => ({
-      ...previous,
-      query,
-    }));
+    setState((previous) => {
+      setSuggestions(getSearchSuggestions(query, previous.recentSearches));
+
+      setActiveSuggestionIndex(-1);
+
+      return {
+        ...previous,
+        query,
+      };
+    });
   }, []);
 
   const updateSort = useCallback((sort: SearchState["sort"]) => {
@@ -74,6 +80,8 @@ export default function useSearch() {
         previous.query,
       );
 
+      setSuggestions([]);
+
       return {
         ...previous,
         loading: false,
@@ -90,6 +98,8 @@ export default function useSearch() {
 
       const recentSearches = addRecentSearch(previous.recentSearches, query);
 
+      setSuggestions([]);
+
       return {
         ...previous,
         query,
@@ -99,6 +109,32 @@ export default function useSearch() {
       };
     });
   }, []);
+
+  const selectSuggestion = useCallback((suggestion: string) => {
+    setState((previous) => ({
+      ...previous,
+      query: suggestion,
+    }));
+
+    setSuggestions([]);
+
+    setActiveSuggestionIndex(-1);
+  }, []);
+
+  const clearSuggestions = useCallback(() => {
+    setSuggestions([]);
+    setActiveSuggestionIndex(-1);
+  }, []);
+
+  const moveSuggestionUp = useCallback(() => {
+    setActiveSuggestionIndex((previous) => Math.max(previous - 1, 0));
+  }, []);
+
+  const moveSuggestionDown = useCallback(() => {
+    setActiveSuggestionIndex((previous) =>
+      Math.min(previous + 1, suggestions.length - 1),
+    );
+  }, [suggestions.length]);
 
   const clearRecentSearchHistory = useCallback(() => {
     clearRecentSearches();
@@ -134,24 +170,27 @@ export default function useSearch() {
   return {
     ...state,
 
-    updateQuery,
+    suggestions,
+    activeSuggestionIndex,
 
+    updateQuery,
     updateSort,
 
     executeSearch,
-
     executeRecentSearch,
+
+    selectSuggestion,
+    clearSuggestions,
+    moveSuggestionUp,
+    moveSuggestionDown,
 
     clearRecentSearchHistory,
 
     selectResult,
-
     clearSelection,
 
     offerDialogOpen,
-
     openOfferDialog,
-
     closeOfferDialog,
   };
 }
