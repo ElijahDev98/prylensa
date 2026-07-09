@@ -12,6 +12,7 @@
  * - Resolve store information.
  * - Maintain recent search history.
  * - Sort search results.
+ * - Execute search sessions.
  * - Delegate ViewModel creation to SearchMapper.
  *
  * Architecture:
@@ -28,7 +29,7 @@
  * Domain Model
  *
  * Notes:
- * - Owns Search business rules.
+ * - Owns Search business logic.
  * - UI must never access Product, Offer or Store directly.
  * -----------------------------------------------------------------------------
  */
@@ -39,7 +40,7 @@ import { getStoreById } from "@/features/store";
 
 import { SearchMapper } from "../mappers/search.mapper";
 
-import type { SearchSortOption } from "../types/search.types";
+import type { SearchState, SearchSortOption } from "../types/search.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 /**
@@ -49,10 +50,6 @@ const MAX_RECENT_SEARCHES = 10;
 
 /**
  * Executes a product search.
- *
- * @param query User search query.
- * @param sort Selected sort option.
- * @returns Search results.
  */
 export function searchProducts(
   query: string,
@@ -76,7 +73,7 @@ export function searchProducts(
       return SearchMapper.toSearchResultViewModel(
         product,
         offers,
-        (storeId: string) => getStoreById(storeId)?.name ?? "Unknown Store",
+        (storeId) => getStoreById(storeId)?.name ?? "Unknown Store",
       );
     });
 
@@ -84,11 +81,28 @@ export function searchProducts(
 }
 
 /**
- * Sorts Search results.
+ * Executes an entire search session.
  *
- * @param results Search results.
- * @param sort Selected sort option.
- * @returns Sorted results.
+ * This is the single business entry point used by the Hook.
+ */
+export function executeSearch(state: SearchState, query: string): SearchState {
+  return {
+    ...state,
+
+    query,
+
+    loading: false,
+
+    results: searchProducts(query, state.sort),
+
+    selectedResult: null,
+
+    recentSearches: updateRecentSearches(state.recentSearches, query),
+  };
+}
+
+/**
+ * Sorts search results.
  */
 function sortSearchResults(
   results: SearchResultViewModel[],
@@ -98,37 +112,26 @@ function sortSearchResults(
 
   switch (sort) {
     case "lowest-price":
-      return sorted.sort((left, right) => {
-        const leftPrice =
-          left.lowestOffer?.currentPrice ?? Number.MAX_SAFE_INTEGER;
-
-        const rightPrice =
-          right.lowestOffer?.currentPrice ?? Number.MAX_SAFE_INTEGER;
-
-        return leftPrice - rightPrice;
-      });
+      return sorted.sort(
+        (a, b) =>
+          (a.lowestOffer?.currentPrice ?? Number.MAX_SAFE_INTEGER) -
+          (b.lowestOffer?.currentPrice ?? Number.MAX_SAFE_INTEGER),
+      );
 
     case "highest-price":
-      return sorted.sort((left, right) => {
-        const leftPrice = left.lowestOffer?.currentPrice ?? 0;
+      return sorted.sort(
+        (a, b) =>
+          (b.lowestOffer?.currentPrice ?? 0) -
+          (a.lowestOffer?.currentPrice ?? 0),
+      );
 
-        const rightPrice = right.lowestOffer?.currentPrice ?? 0;
-
-        return rightPrice - leftPrice;
-      });
-
-    case "relevance":
     default:
       return sorted;
   }
 }
 
 /**
- * Updates the recent search history.
- *
- * @param history Existing history.
- * @param query Search query.
- * @returns Updated history.
+ * Updates recent search history.
  */
 export function updateRecentSearches(
   history: string[],

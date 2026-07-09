@@ -9,7 +9,7 @@
  * Responsibilities:
  * - Compose the Search feature.
  * - Connect Search and Comparison features.
- * - Delegate business operations to hooks.
+ * - Coordinate presentation components.
  *
  * Architecture:
  * UI
@@ -19,14 +19,15 @@
  * Search Service
  *
  * Notes:
- * - Composition root for the Search feature.
- * - No business logic belongs in this page.
+ * - Composition root only.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
 import {
+  RecentSearches,
   SearchResultList,
   SearchToolbar,
   SearchWorkspace,
@@ -44,10 +45,13 @@ function SearchPage() {
 
     results,
     selectedResult,
+    recentSearches,
 
     updateQuery,
     updateSort,
+
     executeSearch,
+    executeRecentSearch,
 
     selectResult,
 
@@ -78,6 +82,13 @@ function SearchPage() {
         onSortChange={updateSort}
         onSearch={executeSearch}
       />
+
+      {recentSearches.length > 0 && results.length === 0 && !loading && (
+        <RecentSearches
+          searches={recentSearches}
+          onSelect={executeRecentSearch}
+        />
+      )}
 
       <SearchResultList
         results={results}

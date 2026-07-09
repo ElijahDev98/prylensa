@@ -24,18 +24,14 @@
  * ViewModel
  *
  * Notes:
- * - No business logic belongs in this hook.
+ * - The hook owns state only.
  * - Business operations are delegated to SearchService.
- * - This hook owns feature state only.
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
-import {
-  searchProducts,
-  updateRecentSearches,
-} from "../services/search.service";
+import { executeSearch } from "../services/search.service";
 
 import type { SearchSortOption, SearchState } from "../types/search.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
@@ -90,28 +86,28 @@ export default function useSearch() {
   }, []);
 
   /**
-   * Executes a search.
+   * Executes the current search.
    */
-  const executeSearch = useCallback(() => {
-    setState((previous) => {
-      const results = searchProducts(previous.query, previous.sort);
-
-      return {
-        ...previous,
-
-        loading: false,
-
-        results,
-
-        selectedResult: null,
-
-        recentSearches: updateRecentSearches(
-          previous.recentSearches,
-          previous.query,
-        ),
-      };
-    });
+  const performSearch = useCallback((query: string) => {
+    setState((previous) => executeSearch(previous, query));
   }, []);
+
+  /**
+   * Executes the current query.
+   */
+  const executeCurrentSearch = useCallback(() => {
+    performSearch(state.query);
+  }, [performSearch, state.query]);
+
+  /**
+   * Executes a recent search.
+   */
+  const executeRecentSearch = useCallback(
+    (query: string) => {
+      performSearch(query);
+    },
+    [performSearch],
+  );
 
   /**
    * Selects a search result.
@@ -154,7 +150,9 @@ export default function useSearch() {
 
     updateSort,
 
-    executeSearch,
+    executeSearch: executeCurrentSearch,
+
+    executeRecentSearch,
 
     selectResult,
 
