@@ -4,29 +4,56 @@
  * Feature: Search
  *
  * Purpose:
- * Search toolbar.
+ * Displays the primary Search toolbar.
  *
  * Responsibilities:
- * - Display search field.
- * - Camera shortcut.
- * - Voice shortcut.
- * - Submit search.
+ * - Display the search input.
+ * - Display search controls.
+ * - Display camera shortcut.
+ * - Display voice shortcut.
+ * - Submit searches.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * SearchControls
+ *   ↓
+ * Hook
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - Does not execute business logic.
  * -----------------------------------------------------------------------------
  */
 
 import type { ComponentProps } from "react";
 import { Camera, Mic } from "lucide-react";
 
+import SearchControls from "./SearchControls";
 import SearchInput from "./SearchInput";
 import SearchSubmitButton from "./SearchSubmitButton";
 
+import type { SearchSortOption } from "../types/search.types";
+
 interface SearchToolbarProps {
   query: string;
-  onQueryChange: (value: string) => void;
-  onSearch: () => void;
+
+  sort: SearchSortOption;
+
+  onQueryChange(value: string): void;
+
+  onSortChange(sort: SearchSortOption): void;
+
+  onSearch(): void;
 }
 
-function SearchToolbar({ query, onQueryChange, onSearch }: SearchToolbarProps) {
+function SearchToolbar({
+  query,
+  sort,
+  onQueryChange,
+  onSortChange,
+  onSearch,
+}: SearchToolbarProps) {
   const handleSubmit = (
     event: Parameters<NonNullable<ComponentProps<"form">["onSubmit"]>>[0],
   ) => {
@@ -35,7 +62,7 @@ function SearchToolbar({ query, onQueryChange, onSearch }: SearchToolbarProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-4">
       <div
         className="
           flex
@@ -87,6 +114,8 @@ function SearchToolbar({ query, onQueryChange, onSearch }: SearchToolbarProps) {
           <Mic size={20} />
         </button>
       </div>
+
+      <SearchControls sort={sort} onSortChange={onSortChange} />
 
       <SearchSubmitButton />
     </form>
