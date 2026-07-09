@@ -5,6 +5,20 @@
  *
  * Purpose:
  * Displays the horizontal list of product thumbnails.
+ *
+ * Responsibilities:
+ * - Render product thumbnails.
+ * - Highlight the active thumbnail.
+ * - Delegate thumbnail selection.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * ProductImageViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -12,12 +26,15 @@ import type { RefObject } from "react";
 
 import ProductThumbnail from "./ProductThumbnail";
 
-import type { ProductImage } from "../types/product-gallery.types";
+import type { ProductImageViewModel } from "../viewmodels/search.viewmodel";
 
 interface ProductThumbnailListProps {
-  images: ProductImage[];
+  images: ProductImageViewModel[];
+
   activeImageId: string;
-  onSelectImage: (id: string) => void;
+
+  onSelectImage(id: string): void;
+
   scrollRef: RefObject<HTMLDivElement | null>;
 }
 

@@ -2,15 +2,34 @@
  * -----------------------------------------------------------------------------
  * File: ProductThumbnail.tsx
  * Feature: Search
+ *
+ * Purpose:
+ * Displays a single product thumbnail.
+ *
+ * Responsibilities:
+ * - Render a thumbnail image.
+ * - Highlight the active thumbnail.
+ * - Notify the parent when selected.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * ProductImageViewModel
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
-import type { ProductImage } from "../types/product-gallery.types";
+import type { ProductImageViewModel } from "../viewmodels/search.viewmodel";
 
 interface ProductThumbnailProps {
-  image: ProductImage;
+  image: ProductImageViewModel;
+
   isActive: boolean;
-  onSelect: (id: string) => void;
+
+  onSelect(id: string): void;
 }
 
 function ProductThumbnail({
@@ -26,11 +45,13 @@ function ProductThumbnail({
       className={`
         flex-none
         h-12
-        w-12 
+        w-12
         overflow-hidden
         rounded-2xl
         border
         transition-all
+        duration-200
+
         ${
           isActive
             ? "border-blue-600 ring-2 ring-blue-100"
