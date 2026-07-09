@@ -2,13 +2,32 @@
  * -----------------------------------------------------------------------------
  * File: SearchPage.tsx
  * Feature: Search
+ *
+ * Purpose:
+ * Entry point for the Search feature.
+ *
+ * Responsibilities:
+ * - Compose the Search feature.
+ * - Connect Search and Comparison features.
+ * - Coordinate presentation components.
+ *
+ * Architecture:
+ * UI
+ *   ↓
+ * useSearch()
+ *   ↓
+ * Search Service
+ *
+ * Notes:
+ * - Composition root only.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
-import { SearchToolbar } from "./components/toolbar";
 import { RecentSearches, SearchResultList, WelcomeSection } from "./components";
+import { SearchToolbar } from "./components/toolbar";
 import { SearchWorkspace } from "./components/workspace";
 
 import useSearch from "./hooks/useSearch";
@@ -34,9 +53,9 @@ function SearchPage() {
     executeRecentSearch,
 
     selectSuggestion,
-    moveSuggestionUp,
-    moveSuggestionDown,
     clearSuggestions,
+    moveSuggestionDown,
+    moveSuggestionUp,
 
     clearRecentSearchHistory,
 
@@ -76,7 +95,7 @@ function SearchPage() {
         onClearSuggestions={clearSuggestions}
       />
 
-      {results.length === 0 && !loading && (
+      {results.length === 0 && recentSearches.length > 0 && !loading && (
         <RecentSearches
           searches={recentSearches}
           onSelect={executeRecentSearch}
@@ -91,6 +110,8 @@ function SearchPage() {
       />
 
       <SearchWorkspace
+        query={query}
+        results={results}
         result={selectedResult}
         loading={loading}
         error={feedback.error ?? null}
