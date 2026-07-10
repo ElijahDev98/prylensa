@@ -4,13 +4,14 @@
  * Feature: Search
  *
  * Purpose:
- * Encapsulates Search execution actions.
+ * Encapsulates Search business actions.
  *
  * Responsibilities:
  * - Execute searches.
  * - Execute recent searches.
  * - Update sorting.
- * - Manage product selection.
+ * - Manage selected product.
+ * - Manage recent search history.
  *
  * Architecture:
  * UI
@@ -20,8 +21,8 @@
  * Search Service
  *
  * Notes:
+ * - Depends only on SearchState updater.
  * - No presentation logic.
- * - No UI state.
  * -----------------------------------------------------------------------------
  */
 
@@ -36,7 +37,8 @@ import {
 
 import type { Dispatch, SetStateAction } from "react";
 
-import type { SearchState } from "../../types/search.types";
+import type { SearchSortOption, SearchState } from "../../types/search.types";
+
 import type { SearchResultViewModel } from "../../viewmodels/search.viewmodel";
 
 interface UseSearchActionsProps {
@@ -45,16 +47,12 @@ interface UseSearchActionsProps {
 
 export default function useSearchActions({ setState }: UseSearchActionsProps) {
   const updateSort = useCallback(
-    (sort: SearchState["sort"]) => {
-      setState((previous) => {
-        const results = searchProducts(previous.query, sort);
-
-        return {
-          ...previous,
-          sort,
-          results,
-        };
-      });
+    (sort: SearchSortOption) => {
+      setState((previous) => ({
+        ...previous,
+        sort,
+        results: searchProducts(previous.query, sort),
+      }));
     },
     [setState],
   );
@@ -63,36 +61,28 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
     setState((previous) => {
       const results = searchProducts(previous.query, previous.sort);
 
-      const recentSearches = addRecentSearch(
-        previous.recentSearches,
-        previous.query,
-      );
-
       return {
         ...previous,
         loading: false,
         results,
         selectedResult: null,
-        recentSearches,
+        recentSearches: addRecentSearch(
+          previous.recentSearches,
+          previous.query,
+        ),
       };
     });
   }, [setState]);
 
   const executeRecentSearch = useCallback(
     (query: string) => {
-      setState((previous) => {
-        const results = searchProducts(query, previous.sort);
-
-        const recentSearches = addRecentSearch(previous.recentSearches, query);
-
-        return {
-          ...previous,
-          query,
-          results,
-          selectedResult: null,
-          recentSearches,
-        };
-      });
+      setState((previous) => ({
+        ...previous,
+        query,
+        results: searchProducts(query, previous.sort),
+        selectedResult: null,
+        recentSearches: addRecentSearch(previous.recentSearches, query),
+      }));
     },
     [setState],
   );
@@ -125,13 +115,10 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
 
   return {
     updateSort,
-
     executeSearch,
     executeRecentSearch,
-
     selectResult,
     clearSelection,
-
     clearRecentSearchHistory,
   };
 }

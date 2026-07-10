@@ -8,7 +8,8 @@
  *
  * Responsibilities:
  * - Initialize SearchState.
- * - Expose state and state updater.
+ * - Expose SearchState.
+ * - Expose SearchState updater.
  *
  * Architecture:
  * UI
@@ -16,7 +17,7 @@
  * Hook
  *
  * Notes:
- * - Single source of truth for SearchState.
+ * - Single source of truth.
  * - No business logic.
  * -----------------------------------------------------------------------------
  */
@@ -41,13 +42,13 @@ function createInitialState(): SearchState {
   };
 }
 
-interface UseSearchStateResult {
+export interface SearchStateContext {
   state: SearchState;
 
   setState: Dispatch<SetStateAction<SearchState>>;
 }
 
-export default function useSearchState(): UseSearchStateResult {
+export default function useSearchState(): SearchStateContext {
   const [state, setState] = useState<SearchState>(createInitialState);
 
   return {
