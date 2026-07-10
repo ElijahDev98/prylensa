@@ -15,6 +15,7 @@
  * UI
  *   ↓
  * useSearch()
+ * useSearchFocus()
  *   ↓
  * Search Services
  *
@@ -23,6 +24,8 @@
  * - No business logic.
  * -----------------------------------------------------------------------------
  */
+
+import { useCallback } from "react";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
@@ -34,6 +37,7 @@ import { SearchToolbar } from "./components/toolbar";
 import { SearchWorkspace } from "./components/workspace";
 
 import useSearch from "./hooks/useSearch";
+import useSearchFocus from "./hooks/useSearchFocus";
 
 function SearchPage() {
   const {
@@ -71,7 +75,14 @@ function SearchPage() {
     closeOfferDialog,
   } = useSearch();
 
+  const { inputRef, focusSearch } = useSearchFocus();
+
   const comparison = useComparison();
+
+  const handleChangeProduct = useCallback(() => {
+    clearSelection();
+    focusSearch();
+  }, [clearSelection, focusSearch]);
 
   return (
     <section
@@ -87,6 +98,7 @@ function SearchPage() {
       <WelcomeSection />
 
       <SearchToolbar
+        inputRef={inputRef}
         query={query}
         sort={sort}
         suggestions={suggestions}
@@ -144,7 +156,7 @@ function SearchPage() {
         offerDialogOpen={offerDialogOpen}
         onOpenOfferDialog={openOfferDialog}
         onCloseOfferDialog={closeOfferDialog}
-        onChangeProduct={clearSelection}
+        onChangeProduct={handleChangeProduct}
       />
     </section>
   );

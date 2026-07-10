@@ -4,18 +4,18 @@
  * Feature: Search
  *
  * Purpose:
- * Controlled search input.
+ * Controlled search input with inline autocomplete support.
  *
  * Responsibilities:
  * - Display the search field.
- * - Notify parent when the value changes.
- * - Expose the input ref for focus management.
+ * - Display inline ghost completion.
+ * - Forward keyboard events.
+ * - Forward focus events.
+ * - Expose the input ref.
  *
- * Future Enhancements:
- * - Google-style autocomplete
- * - Recent searches
- * - Search suggestions
- * - Keyboard shortcuts
+ * Notes:
+ * - Presentation only.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -26,34 +26,68 @@ import { Search } from "lucide-react";
 import type { SearchInputProps } from "../../types/search.types";
 
 const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ value, onChange }, ref) => {
+  ({ value, ghostText = "", onChange, onKeyDown, onFocus, onBlur }, ref) => {
     return (
       <div className="flex flex-1 items-center gap-3">
-        <Search size={20} className="text-slate-400" />
+        <Search size={20} className="shrink-0 text-slate-400" />
 
         <label htmlFor="product-search" className="sr-only">
           Search products
         </label>
 
-        <input
-          ref={ref}
-          id="product-search"
-          type="search"
-          autoComplete="off"
-          spellCheck={false}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder="Search for products, brands or categories..."
-          className="
-            w-full
-            border-none
-            bg-transparent
-            text-base
-            text-slate-700
-            placeholder:text-slate-400
-            outline-none
-          "
-        />
+        <div className="relative flex-1">
+          {/* Ghost text layer */}
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              flex
+              items-center
+              overflow-hidden
+              whitespace-nowrap
+              text-base
+            "
+          >
+            <span className="invisible">{value}</span>
+
+            {ghostText.length > 0 && (
+              <span className="select-none text-slate-400">{ghostText}</span>
+            )}
+          </div>
+
+          <input
+            ref={ref}
+            id="product-search"
+            type="search"
+            value={value}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            enterKeyHint="search"
+            placeholder="Search for products, brands or categories..."
+            onChange={(event) => onChange(event.target.value)}
+            onKeyDown={onKeyDown}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            aria-label="Search products"
+            aria-autocomplete="both"
+            className="
+              relative
+              z-10
+              w-full
+              border-none
+              bg-transparent
+              text-base
+              text-slate-700
+              caret-slate-900
+              outline-none
+              placeholder:text-slate-400
+            "
+          />
+        </div>
       </div>
     );
   },

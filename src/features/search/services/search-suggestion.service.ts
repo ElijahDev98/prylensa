@@ -4,27 +4,80 @@
  * Feature: Search
  *
  * Purpose:
- * Generates search suggestions from recent searches and products.
+ * Generates ranked search suggestions from recent searches and products.
+ *
+ * Responsibilities:
+ * - Generate search suggestions.
+ * - Prioritize recent searches.
+ * - Prioritize prefix matches.
+ * - Remove duplicates.
+ *
+ * Architecture:
+ * Hook
+ *   ↓
+ * Search Suggestion Service
+ *
+ * Notes:
+ * - Pure business logic.
+ * - No React dependencies.
  * -----------------------------------------------------------------------------
  */
 
 import { getProducts } from "@/features/product";
 
+const MAX_SUGGESTIONS = 8;
+
+function normalize(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function unique(values: string[]): string[] {
+  const seen = new Set<string>();
+
+  return values.filter((value) => {
+    const key = normalize(value);
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+
+    return true;
+  });
+}
+
+function rankSuggestions(values: string[], keyword: string): string[] {
+  const prefixMatches = values.filter((value) =>
+    normalize(value).startsWith(keyword),
+  );
+
+  const partialMatches = values.filter(
+    (value) =>
+      !normalize(value).startsWith(keyword) &&
+      normalize(value).includes(keyword),
+  );
+
+  return [...prefixMatches, ...partialMatches];
+}
+
 export function getSearchSuggestions(
   query: string,
   recentSearches: string[],
 ): string[] {
-  const keyword = query.trim().toLowerCase();
+  const keyword = normalize(query);
 
   if (!keyword) {
     return [];
   }
 
-  const productSuggestions = getProducts()
-    .flatMap((product) => [product.title, product.brand])
-    .filter((value) => value.toLowerCase().includes(keyword));
+  const products = getProducts();
 
-  return [...new Set([...recentSearches, ...productSuggestions])]
-    .filter((value) => value.toLowerCase().includes(keyword))
-    .slice(0, 8);
+  const productTitles = products.map((product) => product.title);
+
+  const brands = products.map((product) => product.brand);
+
+  const suggestions = unique([...recentSearches, ...productTitles, ...brands]);
+
+  return rankSuggestions(suggestions, keyword).slice(0, MAX_SUGGESTIONS);
 }

@@ -5,10 +5,23 @@
  *
  * Purpose:
  * Displays the primary Search toolbar.
+ *
+ * Responsibilities:
+ * - Display search input.
+ * - Display search controls.
+ * - Display search suggestions.
+ * - Submit searches.
+ *
+ * Architecture:
+ * UI
+ *
+ * Notes:
+ * - Pure presentation component.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
-import type { ComponentProps, KeyboardEvent } from "react";
+import type { ComponentProps, KeyboardEvent, Ref } from "react";
 
 import { Camera, Mic } from "lucide-react";
 
@@ -27,6 +40,8 @@ interface SearchToolbarProps {
   suggestions: string[];
 
   activeSuggestionIndex: number;
+
+  inputRef: Ref<HTMLInputElement>;
 
   onQueryChange(value: string): void;
 
@@ -48,6 +63,7 @@ function SearchToolbar({
   sort,
   suggestions,
   activeSuggestionIndex,
+  inputRef,
   onQueryChange,
   onSortChange,
   onSearch,
@@ -113,7 +129,7 @@ function SearchToolbar({
             focus-within:ring-blue-100
           "
         >
-          <SearchInput value={query} onChange={onQueryChange} />
+          <SearchInput ref={inputRef} value={query} onChange={onQueryChange} />
 
           <div className="mx-3 h-6 w-px bg-slate-200" />
 

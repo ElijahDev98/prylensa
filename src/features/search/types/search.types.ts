@@ -19,6 +19,8 @@
  * -----------------------------------------------------------------------------
  */
 
+import type { KeyboardEventHandler, FocusEventHandler } from "react";
+
 import type { SearchFilters } from "./search-filter.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
@@ -89,7 +91,36 @@ export interface SearchState {
  * Search input props.
  */
 export interface SearchInputProps {
+  /**
+   * Current search query.
+   */
   value: string;
 
+  /**
+   * Inline autocomplete completion.
+   * Example:
+   * value = "iph"
+   * ghostText = "one 16 Pro"
+   */
+  ghostText?: string;
+
+  /**
+   * Input value changed.
+   */
   onChange(value: string): void;
+
+  /**
+   * Keyboard events forwarded to the toolbar.
+   */
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
+
+  /**
+   * Focus events.
+   */
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+
+  /**
+   * Blur events.
+   */
+  onBlur?: FocusEventHandler<HTMLInputElement>;
 }

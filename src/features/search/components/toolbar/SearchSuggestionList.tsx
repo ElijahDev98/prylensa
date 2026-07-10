@@ -4,12 +4,13 @@
  * Feature: Search
  *
  * Purpose:
- * Displays search suggestions.
+ * Displays ranked search suggestions.
  *
  * Responsibilities:
- * - Render suggestion list.
+ * - Render suggestions.
  * - Highlight active suggestion.
  * - Notify selection.
+ * - Provide accessibility metadata.
  *
  * Notes:
  * - Presentation only.
@@ -36,6 +37,8 @@ function SearchSuggestionList({
 
   return (
     <div
+      role="listbox"
+      aria-label="Search suggestions"
       className="
         absolute
         left-0
@@ -51,31 +54,39 @@ function SearchSuggestionList({
         shadow-lg
       "
     >
-      {suggestions.map((suggestion, index) => (
-        <button
-          key={suggestion}
-          type="button"
-          onClick={() => onSelect(suggestion)}
-          className={`
-            flex
-            w-full
-            items-center
-            px-5
-            py-3
-            text-left
-            text-sm
-            transition-colors
+      {suggestions.map((suggestion, index) => {
+        const active = index === activeIndex;
 
-            ${
-              index === activeIndex
-                ? "bg-blue-50 text-blue-700"
-                : "hover:bg-slate-50"
-            }
-          `}
-        >
-          {suggestion}
-        </button>
-      ))}
+        return (
+          <button
+            key={suggestion}
+            id={`search-suggestion-${index}`}
+            role="option"
+            aria-selected={active}
+            type="button"
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => onSelect(suggestion)}
+            className={`
+              flex
+              w-full
+              items-center
+              px-5
+              py-3
+              text-left
+              text-sm
+              transition-colors
+
+              ${
+                active
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-slate-700 hover:bg-slate-50"
+              }
+            `}
+          >
+            {suggestion}
+          </button>
+        );
+      })}
     </div>
   );
 }

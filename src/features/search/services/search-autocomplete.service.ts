@@ -4,71 +4,46 @@
  * Feature: Search
  *
  * Purpose:
- * Provides autocomplete behavior for the Search feature.
+ * Provides Google-style inline autocomplete.
  *
  * Responsibilities:
- * - Resolve the active autocomplete suggestion.
- * - Accept highlighted suggestions.
- * - Navigate suggestion lists.
+ * - Complete the user's current query.
+ * - Rank autocomplete candidates.
+ * - Return the best completion.
  *
  * Architecture:
  * UI
  *   ↓
  * Hook
  *   ↓
- * SearchAutocompleteService
- *   ↓
- * SearchSuggestionService
+ * Autocomplete Service
  *
  * Notes:
- * - Contains business logic only.
- * - No React dependencies.
+ * - No React.
+ * - No presentation logic.
  * -----------------------------------------------------------------------------
  */
 
-export interface AutocompleteState {
-  suggestions: string[];
-  activeIndex: number;
+import { getProducts } from "@/features/product";
+
+function normalize(value: string): string {
+  return value.trim().toLowerCase();
 }
 
-export function moveToPreviousSuggestion(state: AutocompleteState): number {
-  if (state.suggestions.length === 0) {
-    return -1;
-  }
+/**
+ * Returns the best inline autocomplete.
+ */
+export function getAutocomplete(query: string): string | null {
+  const keyword = normalize(query);
 
-  if (state.activeIndex <= 0) {
-    return 0;
-  }
-
-  return state.activeIndex - 1;
-}
-
-export function moveToNextSuggestion(state: AutocompleteState): number {
-  if (state.suggestions.length === 0) {
-    return -1;
-  }
-
-  if (state.activeIndex >= state.suggestions.length - 1) {
-    return state.suggestions.length - 1;
-  }
-
-  return state.activeIndex + 1;
-}
-
-export function getHighlightedSuggestion(
-  state: AutocompleteState,
-): string | null {
-  if (state.activeIndex < 0 || state.activeIndex >= state.suggestions.length) {
+  if (keyword.length < 2) {
     return null;
   }
 
-  return state.suggestions[state.activeIndex];
-}
+  const candidates = getProducts()
+    .map((product) => product.title)
+    .filter((title) => title.toLowerCase().startsWith(keyword))
+    .sort((left, right) => left.localeCompare(right));
 
-export function acceptSuggestion(state: AutocompleteState): string | null {
-  return getHighlightedSuggestion(state);
-}
-
-export function hasSuggestions(state: AutocompleteState): boolean {
-  return state.suggestions.length > 0;
+  return candidates[0] ?? null;
 }
