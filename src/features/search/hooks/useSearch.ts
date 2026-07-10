@@ -4,16 +4,14 @@
  * Feature: Search
  *
  * Purpose:
- * Orchestrates the Search feature.
+ * Composes the Search feature hooks.
  *
  * Responsibilities:
  * - Compose Search hooks.
- * - Expose Search state.
- * - Expose Search actions.
- * - Produce Search summary.
- * - Manage Offer dialog state.
+ * - Expose Search API.
  *
  * Architecture:
+ *
  * UI
  *   ↓
  * useSearch
@@ -21,41 +19,29 @@
  *   ├── useSearchActions
  *   ├── useSearchSuggestions
  *   ├── useSearchAutocomplete
- *   └── Search Summary Service
+ *   ├── useOfferDialog
+ *   └── useSearchSummary
  *
  * Notes:
- * - Orchestrator only.
+ * - Composition root only.
  * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
-import { useCallback, useState } from "react";
-
-import { buildSearchSummary } from "../services/search-summary.service";
-
 import {
+  useOfferDialog,
   useSearchActions,
   useSearchAutocomplete,
   useSearchSuggestions,
+  useSearchSummary,
 } from "./search";
 
 import useSearchState from "./search/useSearchState";
 
-import type { SearchSummaryViewModel } from "../viewmodels/search.viewmodel";
-
-const EMPTY_SUMMARY: SearchSummaryViewModel = {
-  resultCount: 0,
-  storeCount: 0,
-  lowestPrice: 0,
-  lowestPriceLabel: "₦0",
-  averagePrice: 0,
-  averagePriceLabel: "₦0",
-};
-
 export default function useSearch() {
   /**
    * ---------------------------------------------------------------------------
-   * State
+   * Search State
    * ---------------------------------------------------------------------------
    */
 
@@ -93,15 +79,7 @@ export default function useSearch() {
    * ---------------------------------------------------------------------------
    */
 
-  const [offerDialogOpen, setOfferDialogOpen] = useState(false);
-
-  const openOfferDialog = useCallback(() => {
-    setOfferDialogOpen(true);
-  }, []);
-
-  const closeOfferDialog = useCallback(() => {
-    setOfferDialogOpen(false);
-  }, []);
+  const offerDialog = useOfferDialog();
 
   /**
    * ---------------------------------------------------------------------------
@@ -109,10 +87,7 @@ export default function useSearch() {
    * ---------------------------------------------------------------------------
    */
 
-  const summary =
-    state.results.length > 0
-      ? buildSearchSummary(state.results)
-      : EMPTY_SUMMARY;
+  const summary = useSearchSummary(state.results);
 
   /**
    * ---------------------------------------------------------------------------
@@ -131,8 +106,6 @@ export default function useSearch() {
 
     ...autocomplete,
 
-    offerDialogOpen,
-    openOfferDialog,
-    closeOfferDialog,
+    ...offerDialog,
   };
 }

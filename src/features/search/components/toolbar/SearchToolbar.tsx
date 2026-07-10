@@ -7,17 +7,12 @@
  * Displays the primary Search toolbar.
  *
  * Responsibilities:
- * - Display search input.
- * - Display search controls.
- * - Display search suggestions.
- * - Submit searches.
+ * - Compose search controls.
+ * - Handle keyboard navigation.
+ * - Display search shortcuts.
  *
  * Architecture:
  * UI
- *
- * Notes:
- * - Pure presentation component.
- * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -27,12 +22,15 @@ import { Camera, Mic } from "lucide-react";
 
 import SearchControls from "./SearchControls";
 import SearchInput from "./SearchInput";
+import SearchShortcutHint from "./SearchShortcutHint";
 import SearchSubmitButton from "./SearchSubmitButton";
 import SearchSuggestionList from "./SearchSuggestionList";
 
 import type { SearchSortOption } from "../../types/search.types";
 
 interface SearchToolbarProps {
+  inputRef: Ref<HTMLInputElement>;
+
   query: string;
 
   sort: SearchSortOption;
@@ -41,13 +39,13 @@ interface SearchToolbarProps {
 
   activeSuggestionIndex: number;
 
-  inputRef: Ref<HTMLInputElement>;
-
   onQueryChange(value: string): void;
 
   onSortChange(sort: SearchSortOption): void;
 
   onSearch(): void;
+
+  onAcceptAutocomplete?(): void;
 
   onSelectSuggestion(suggestion: string): void;
 
@@ -59,14 +57,15 @@ interface SearchToolbarProps {
 }
 
 function SearchToolbar({
+  inputRef,
   query,
   sort,
   suggestions,
   activeSuggestionIndex,
-  inputRef,
   onQueryChange,
   onSortChange,
   onSearch,
+  onAcceptAutocomplete,
   onSelectSuggestion,
   onMoveSuggestionUp,
   onMoveSuggestionDown,
@@ -87,20 +86,27 @@ function SearchToolbar({
       case "ArrowDown":
         event.preventDefault();
         onMoveSuggestionDown();
-        break;
+        return;
 
       case "ArrowUp":
         event.preventDefault();
         onMoveSuggestionUp();
-        break;
+        return;
 
       case "Escape":
         onClearSuggestions();
-        break;
+        return;
+
+      case "Tab":
+        if (onAcceptAutocomplete) {
+          event.preventDefault();
+          onAcceptAutocomplete();
+        }
+        return;
 
       case "Enter":
         onClearSuggestions();
-        break;
+        return;
     }
   };
 
@@ -160,6 +166,10 @@ function SearchToolbar({
           >
             <Mic size={20} />
           </button>
+
+          <div className="ml-2">
+            <SearchShortcutHint />
+          </div>
         </div>
 
         <SearchSuggestionList
