@@ -7,20 +7,25 @@
  * Displays the dashboard metrics grid.
  *
  * Responsibilities:
- * - Render metric cards.
- * - Handle responsive layout.
+ * - Render dashboard metric cards.
+ * - Arrange metric cards responsively.
  *
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Know where the data comes from.
  * -----------------------------------------------------------------------------
  */
 
 import DashboardMetricCard from "./DashboardMetricCard";
 
-import { DASHBOARD_METRICS } from "../data/metrics";
+import type { DashboardMetricViewModel } from "../viewmodels/dashboard.viewmodel";
 
-function DashboardMetrics() {
+interface DashboardMetricsProps {
+  metrics: DashboardMetricViewModel[];
+}
+
+function DashboardMetrics({ metrics }: DashboardMetricsProps) {
   return (
     <section
       aria-label="Dashboard Metrics"
@@ -32,7 +37,7 @@ function DashboardMetrics() {
         xl:grid-cols-4
       "
     >
-      {DASHBOARD_METRICS.map((metric) => (
+      {metrics.map((metric) => (
         <DashboardMetricCard key={metric.id} metric={metric} />
       ))}
     </section>

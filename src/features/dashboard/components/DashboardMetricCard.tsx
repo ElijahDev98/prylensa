@@ -4,7 +4,17 @@
  * Feature: Dashboard
  *
  * Purpose:
- * Compact dashboard metric card.
+ * Displays a dashboard KPI metric.
+ *
+ * Responsibilities:
+ * - Display metric icon.
+ * - Display metric value.
+ * - Display metric trend.
+ *
+ * Does NOT:
+ * - Fetch data.
+ * - Manage state.
+ * - Format business data.
  * -----------------------------------------------------------------------------
  */
 
@@ -12,16 +22,14 @@ import Card from "@/components/ui/Card";
 
 import { TrendingDown, TrendingUp } from "lucide-react";
 
-import type { DashboardMetric } from "../types/dashboard.types";
+import type { DashboardMetricViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface DashboardMetricCardProps {
-  metric: DashboardMetric;
+  metric: DashboardMetricViewModel;
 }
 
 function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
   const Icon = metric.icon;
-
-  const isPositive = metric.trendColor.includes("green");
 
   return (
     <Card
@@ -34,7 +42,9 @@ function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
         hover:shadow-md
       "
     >
-      {/* Header */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Header                                                             */}
+      {/* ------------------------------------------------------------------ */}
 
       <div className="flex items-center gap-3">
         <div
@@ -62,7 +72,9 @@ function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
         </p>
       </div>
 
-      {/* Value */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Value                                                              */}
+      {/* ------------------------------------------------------------------ */}
 
       <h2
         className="
@@ -73,10 +85,12 @@ function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
           text-slate-900
         "
       >
-        {metric.value}
+        {metric.valueLabel}
       </h2>
 
-      {/* Trend */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Trend                                                              */}
+      {/* ------------------------------------------------------------------ */}
 
       <div
         className={`
@@ -89,9 +103,13 @@ function DashboardMetricCard({ metric }: DashboardMetricCardProps) {
           ${metric.trendColor}
         `}
       >
-        {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+        {metric.isPositiveTrend ? (
+          <TrendingUp size={16} />
+        ) : (
+          <TrendingDown size={16} />
+        )}
 
-        <span>{metric.change}</span>
+        <span>{metric.changeLabel}</span>
       </div>
     </Card>
   );

@@ -2,15 +2,33 @@
  * -----------------------------------------------------------------------------
  * File: RecentComparisonsWidget.tsx
  * Feature: Dashboard
+ *
+ * Purpose:
+ * Displays recent product comparisons.
+ *
+ * Responsibilities:
+ * - Render widget header.
+ * - Render recent comparison rows.
+ *
+ * Does NOT:
+ * - Fetch data.
+ * - Manage state.
+ * - Know where the data comes from.
  * -----------------------------------------------------------------------------
  */
 
 import DashboardWidgetHeader from "./DashboardWidgetHeader";
 import RecentComparisonRow from "./RecentComparisonRow";
 
-import { RECENT_COMPARISONS } from "../data/recent-comparisons";
+import type { RecentComparisonViewModel } from "../viewmodels/dashboard.viewmodel";
 
-function RecentComparisonsWidget() {
+interface RecentComparisonsWidgetProps {
+  comparisons: RecentComparisonViewModel[];
+}
+
+function RecentComparisonsWidget({
+  comparisons,
+}: RecentComparisonsWidgetProps) {
   return (
     <section>
       <DashboardWidgetHeader
@@ -20,7 +38,7 @@ function RecentComparisonsWidget() {
       />
 
       <div>
-        {RECENT_COMPARISONS.map((comparison) => (
+        {comparisons.map((comparison) => (
           <RecentComparisonRow key={comparison.id} comparison={comparison} />
         ))}
       </div>

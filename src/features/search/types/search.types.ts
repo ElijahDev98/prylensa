@@ -110,6 +110,11 @@ export interface SearchInputProps {
   onChange(value: string): void;
 
   /**
+   * Autocomplete
+   */
+  onAcceptAutocomplete?(): void;
+
+  /**
    * Keyboard events forwarded to the toolbar.
    */
   onKeyDown?: KeyboardEventHandler<HTMLInputElement>;

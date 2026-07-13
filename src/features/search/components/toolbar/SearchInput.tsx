@@ -4,18 +4,18 @@
  * Feature: Search
  *
  * Purpose:
- * Controlled search input with inline autocomplete support.
+ * Controlled Search input.
  *
  * Responsibilities:
- * - Display the search field.
- * - Display inline ghost completion.
- * - Forward keyboard events.
+ * - Render the Search input.
+ * - Display inline autocomplete.
+ * - Accept autocomplete shortcuts.
+ * - Forward remaining keyboard events.
  * - Forward focus events.
- * - Expose the input ref.
  *
  * Notes:
  * - Presentation only.
- * - No business logic.
+ * - No Search business logic.
  * -----------------------------------------------------------------------------
  */
 
@@ -26,7 +26,41 @@ import { Search } from "lucide-react";
 import type { SearchInputProps } from "../../types/search.types";
 
 const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ value, ghostText = "", onChange, onKeyDown, onFocus, onBlur }, ref) => {
+  (
+    {
+      value,
+      ghostText = "",
+      onChange,
+      onAcceptAutocomplete,
+      onKeyDown,
+      onFocus,
+      onBlur,
+    },
+    ref,
+  ) => {
+    const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
+      event,
+    ) => {
+      switch (event.key) {
+        /**
+         * Accept inline autocomplete.
+         */
+        case "Tab":
+        case "ArrowRight":
+          if (ghostText.length > 0) {
+            event.preventDefault();
+
+            onAcceptAutocomplete?.();
+
+            return;
+          }
+
+          break;
+      }
+
+      onKeyDown?.(event);
+    };
+
     return (
       <div className="flex flex-1 items-center gap-3">
         <Search size={20} className="shrink-0 text-slate-400" />
@@ -36,7 +70,6 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         </label>
 
         <div className="relative flex-1">
-          {/* Ghost text layer */}
           <div
             aria-hidden="true"
             className="
@@ -69,7 +102,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             enterKeyHint="search"
             placeholder="Search for products, brands or categories..."
             onChange={(event) => onChange(event.target.value)}
-            onKeyDown={onKeyDown}
+            onKeyDown={handleKeyDown}
             onFocus={onFocus}
             onBlur={onBlur}
             aria-label="Search products"

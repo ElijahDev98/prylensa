@@ -2,15 +2,31 @@
  * -----------------------------------------------------------------------------
  * File: PriceAlertsWidget.tsx
  * Feature: Dashboard
+ *
+ * Purpose:
+ * Displays dashboard price alerts.
+ *
+ * Responsibilities:
+ * - Render widget header.
+ * - Render price alerts.
+ *
+ * Does NOT:
+ * - Fetch data.
+ * - Manage state.
+ * - Know where the data comes from.
  * -----------------------------------------------------------------------------
  */
 
 import DashboardWidgetHeader from "./DashboardWidgetHeader";
 import PriceAlertRow from "./PriceAlertRow";
 
-import { PRICE_ALERTS } from "../data/price-alerts";
+import type { PriceAlertViewModel } from "../viewmodels/dashboard.viewmodel";
 
-function PriceAlertsWidget() {
+interface PriceAlertsWidgetProps {
+  alerts: PriceAlertViewModel[];
+}
+
+function PriceAlertsWidget({ alerts }: PriceAlertsWidgetProps) {
   return (
     <section>
       <DashboardWidgetHeader
@@ -20,7 +36,7 @@ function PriceAlertsWidget() {
       />
 
       <div>
-        {PRICE_ALERTS.map((alert) => (
+        {alerts.map((alert) => (
           <PriceAlertRow key={alert.id} alert={alert} />
         ))}
       </div>

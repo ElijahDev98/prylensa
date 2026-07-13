@@ -5,15 +5,25 @@
  *
  * Purpose:
  * Displays a compact AI recommendation.
+ *
+ * Responsibilities:
+ * - Display recommendation summary.
+ * - Display recommendation priority.
+ * - Provide navigation action.
+ *
+ * Does NOT:
+ * - Fetch data.
+ * - Manage state.
+ * - Format business data.
  * -----------------------------------------------------------------------------
  */
 
 import { ArrowRight, Sparkles } from "lucide-react";
 
-import type { Recommendation } from "../types/recommendation.types";
+import type { RecommendationViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface RecommendationRowProps {
-  recommendation: Recommendation;
+  recommendation: RecommendationViewModel;
 }
 
 function RecommendationRow({ recommendation }: RecommendationRowProps) {
@@ -52,14 +62,29 @@ function RecommendationRow({ recommendation }: RecommendationRowProps) {
         </div>
 
         <div className="min-w-0">
-          <h3
-            className="
-              font-semibold
-              text-slate-900
-            "
-          >
-            {recommendation.title}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3
+              className="
+                font-semibold
+                text-slate-900
+              "
+            >
+              {recommendation.title}
+            </h3>
+
+            <span
+              className={`
+                rounded-full
+                px-2
+                py-0.5
+                text-xs
+                font-medium
+                ${recommendation.badgeColor}
+              `}
+            >
+              {recommendation.priority}
+            </span>
+          </div>
 
           <p
             className="

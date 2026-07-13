@@ -15,15 +15,16 @@
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Format business data.
  * -----------------------------------------------------------------------------
  */
 
 import { ArrowRightLeft } from "lucide-react";
 
-import type { RecentComparison } from "../types/recent-comparison.types";
+import type { RecentComparisonViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface RecentComparisonRowProps {
-  comparison: RecentComparison;
+  comparison: RecentComparisonViewModel;
 }
 
 function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
@@ -49,7 +50,7 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
       {/* Product Information                                                */}
       {/* ------------------------------------------------------------------ */}
 
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex min-w-0 items-center gap-3">
         <div
           className="
             flex
@@ -83,7 +84,7 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
               text-slate-500
             "
           >
-            Compared across {comparison.comparedStores} stores
+            Compared across {comparison.comparedStoresLabel}
           </p>
         </div>
       </div>
@@ -92,14 +93,15 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
       {/* Comparison Summary                                                 */}
       {/* ------------------------------------------------------------------ */}
 
-      <div className="text-right shrink-0">
+      <div className="shrink-0 text-right">
         <p
           className="
+            whitespace-nowrap
             font-semibold
             text-slate-900
           "
         >
-          {comparison.bestPrice}
+          {comparison.bestPriceLabel}
         </p>
 
         <p
@@ -109,7 +111,7 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
             text-slate-400
           "
         >
-          {comparison.comparedAt}
+          {comparison.comparedAtLabel}
         </p>
       </div>
     </article>

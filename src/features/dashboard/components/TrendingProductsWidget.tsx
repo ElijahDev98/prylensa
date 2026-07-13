@@ -13,15 +13,20 @@
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Know where the data comes from.
  * -----------------------------------------------------------------------------
  */
 
 import DashboardWidgetHeader from "./DashboardWidgetHeader";
 import TrendingProductRow from "./TrendingProductRow";
 
-import { TRENDING_PRODUCTS } from "../data/trending-products";
+import type { TrendingProductViewModel } from "../viewmodels/dashboard.viewmodel";
 
-function TrendingProductsWidget() {
+interface TrendingProductsWidgetProps {
+  products: TrendingProductViewModel[];
+}
+
+function TrendingProductsWidget({ products }: TrendingProductsWidgetProps) {
   return (
     <section>
       <DashboardWidgetHeader
@@ -31,7 +36,7 @@ function TrendingProductsWidget() {
       />
 
       <div>
-        {TRENDING_PRODUCTS.map((product) => (
+        {products.map((product) => (
           <TrendingProductRow key={product.id} product={product} />
         ))}
       </div>

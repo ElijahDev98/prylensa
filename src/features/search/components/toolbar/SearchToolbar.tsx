@@ -7,16 +7,26 @@
  * Displays the primary Search toolbar.
  *
  * Responsibilities:
- * - Compose search controls.
- * - Handle keyboard navigation.
- * - Display search shortcuts.
+ * - Compose Search controls.
+ * - Route keyboard interactions.
+ * - Display Search suggestions.
+ * - Submit Search requests.
  *
  * Architecture:
- * UI
+ *
+ * SearchPage
+ *      ↓
+ * SearchToolbar
+ *      ↓
+ * SearchInput
+ *
+ * Notes:
+ * - UI composition only.
+ * - No business logic.
  * -----------------------------------------------------------------------------
  */
 
-import type { ComponentProps, KeyboardEvent, Ref } from "react";
+import type { ComponentProps, KeyboardEventHandler, Ref } from "react";
 
 import { Camera, Mic } from "lucide-react";
 
@@ -33,6 +43,8 @@ interface SearchToolbarProps {
 
   query: string;
 
+  ghostText: string;
+
   sort: SearchSortOption;
 
   suggestions: string[];
@@ -43,8 +55,24 @@ interface SearchToolbarProps {
 
   onSortChange(sort: SearchSortOption): void;
 
+  /**
+   * Executes a Search.
+   */
   onSearch(): void;
 
+  /**
+   * Handles Escape.
+   */
+  onEscape(): void;
+
+  /**
+   * Hides the suggestion popup.
+   */
+  onHideSuggestions(): void;
+
+  /**
+   * Accept inline autocomplete.
+   */
   onAcceptAutocomplete?(): void;
 
   onSelectSuggestion(suggestion: string): void;
@@ -52,25 +80,31 @@ interface SearchToolbarProps {
   onMoveSuggestionUp(): void;
 
   onMoveSuggestionDown(): void;
-
-  onClearSuggestions(): void;
 }
 
 function SearchToolbar({
   inputRef,
   query,
+  ghostText,
   sort,
   suggestions,
   activeSuggestionIndex,
   onQueryChange,
   onSortChange,
   onSearch,
+  onEscape,
+  onHideSuggestions,
   onAcceptAutocomplete,
   onSelectSuggestion,
   onMoveSuggestionUp,
   onMoveSuggestionDown,
-  onClearSuggestions,
 }: SearchToolbarProps) {
+  /**
+   * ---------------------------------------------------------------------------
+   * Form Submission
+   * ---------------------------------------------------------------------------
+   */
+
   const handleSubmit = (
     event: Parameters<NonNullable<ComponentProps<"form">["onSubmit"]>>[0],
   ) => {
@@ -78,10 +112,18 @@ function SearchToolbar({
 
     onSearch();
 
-    onClearSuggestions();
+    onHideSuggestions();
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
+  /**
+   * ---------------------------------------------------------------------------
+   * Keyboard Interaction
+   * ---------------------------------------------------------------------------
+   */
+
+  const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
@@ -94,28 +136,23 @@ function SearchToolbar({
         return;
 
       case "Escape":
-        onClearSuggestions();
-        return;
-
-      case "Tab":
-        if (onAcceptAutocomplete) {
-          event.preventDefault();
-          onAcceptAutocomplete();
-        }
+        event.preventDefault();
+        onEscape();
         return;
 
       case "Enter":
-        onClearSuggestions();
+        event.preventDefault();
+
+        onSearch();
+
+        onHideSuggestions();
+
         return;
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      onKeyDown={handleKeyDown}
-      className="flex flex-wrap items-center gap-4"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-4">
       <div className="relative flex-1">
         <div
           className="
@@ -135,7 +172,14 @@ function SearchToolbar({
             focus-within:ring-blue-100
           "
         >
-          <SearchInput ref={inputRef} value={query} onChange={onQueryChange} />
+          <SearchInput
+            ref={inputRef}
+            value={query}
+            ghostText={ghostText}
+            onChange={onQueryChange}
+            onAcceptAutocomplete={onAcceptAutocomplete}
+            onKeyDown={handleInputKeyDown}
+          />
 
           <div className="mx-3 h-6 w-px bg-slate-200" />
 

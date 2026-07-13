@@ -2,15 +2,33 @@
  * -----------------------------------------------------------------------------
  * File: AIRecommendationWidget.tsx
  * Feature: Dashboard
+ *
+ * Purpose:
+ * Displays AI recommendations.
+ *
+ * Responsibilities:
+ * - Render widget header.
+ * - Render AI recommendations.
+ *
+ * Does NOT:
+ * - Fetch data.
+ * - Manage state.
+ * - Know where the data comes from.
  * -----------------------------------------------------------------------------
  */
 
 import DashboardWidgetHeader from "./DashboardWidgetHeader";
 import RecommendationRow from "./RecommendationRow";
 
-import { RECOMMENDATIONS } from "../data/recommendations";
+import type { RecommendationViewModel } from "../viewmodels/dashboard.viewmodel";
 
-function AIRecommendationWidget() {
+interface AIRecommendationWidgetProps {
+  recommendations: RecommendationViewModel[];
+}
+
+function AIRecommendationWidget({
+  recommendations,
+}: AIRecommendationWidgetProps) {
   return (
     <section>
       <DashboardWidgetHeader
@@ -20,7 +38,7 @@ function AIRecommendationWidget() {
       />
 
       <div>
-        {RECOMMENDATIONS.map((recommendation) => (
+        {recommendations.map((recommendation) => (
           <RecommendationRow
             key={recommendation.id}
             recommendation={recommendation}

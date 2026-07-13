@@ -15,6 +15,7 @@
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Format business data.
  * - Know where data originates.
  * -----------------------------------------------------------------------------
  */
@@ -26,10 +27,10 @@ import {
   PRODUCT_CATEGORY_ICONS,
 } from "@/shared/icons";
 
-import type { TrendingProduct } from "../types/trending-product.types";
+import type { TrendingProductViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface TrendingProductRowProps {
-  product: TrendingProduct;
+  product: TrendingProductViewModel;
 }
 
 function TrendingProductRow({ product }: TrendingProductRowProps) {
@@ -127,7 +128,7 @@ function TrendingProductRow({ product }: TrendingProductRowProps) {
             text-slate-900
           "
         >
-          {product.currentPrice}
+          {product.currentPriceLabel}
         </p>
 
         <span
@@ -154,7 +155,7 @@ function TrendingProductRow({ product }: TrendingProductRowProps) {
             <ArrowUpRight size={14} />
           )}
 
-          {product.priceChange}
+          {product.priceChangeLabel}
         </span>
       </div>
     </article>

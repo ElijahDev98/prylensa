@@ -15,19 +15,21 @@
  * Does NOT:
  * - Fetch data.
  * - Manage state.
+ * - Format business data.
+ * - Know where data originates.
  * -----------------------------------------------------------------------------
  */
 
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
-import type { PriceAlert } from "../types/price-alert.types";
+import type { PriceAlertViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface PriceAlertRowProps {
-  alert: PriceAlert;
+  alert: PriceAlertViewModel;
 }
 
 function PriceAlertRow({ alert }: PriceAlertRowProps) {
-  const isDrop = alert.direction === "down";
+  const isPriceDrop = alert.direction === "down";
 
   return (
     <article
@@ -47,9 +49,9 @@ function PriceAlertRow({ alert }: PriceAlertRowProps) {
         last:pb-0
       "
     >
-      {/* -------------------------------------------------------------- */}
-      {/* Product */}
-      {/* -------------------------------------------------------------- */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Product                                                            */}
+      {/* ------------------------------------------------------------------ */}
 
       <div className="min-w-0">
         <h3
@@ -73,18 +75,19 @@ function PriceAlertRow({ alert }: PriceAlertRowProps) {
         </p>
       </div>
 
-      {/* -------------------------------------------------------------- */}
-      {/* Prices */}
-      {/* -------------------------------------------------------------- */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Prices                                                             */}
+      {/* ------------------------------------------------------------------ */}
 
       <div className="text-right">
         <p
           className="
+            whitespace-nowrap
             font-semibold
             text-slate-900
           "
         >
-          {alert.currentPrice}
+          {alert.currentPriceLabel}
         </p>
 
         <div
@@ -103,7 +106,7 @@ function PriceAlertRow({ alert }: PriceAlertRowProps) {
               line-through
             "
           >
-            {alert.previousPrice}
+            {alert.previousPriceLabel}
           </span>
 
           <span
@@ -116,14 +119,15 @@ function PriceAlertRow({ alert }: PriceAlertRowProps) {
               py-1
               text-xs
               font-semibold
-              ${
-                isDrop
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }
+              ${isPriceDrop ? "bg-green-100" : "bg-red-100"}
+              ${alert.directionColor}
             `}
           >
-            {isDrop ? <ArrowDownRight size={14} /> : <ArrowUpRight size={14} />}
+            {isPriceDrop ? (
+              <ArrowDownRight size={14} />
+            ) : (
+              <ArrowUpRight size={14} />
+            )}
           </span>
         </div>
       </div>

@@ -12,6 +12,7 @@
  * - Coordinate presentation components.
  *
  * Architecture:
+ *
  * UI
  *   ↓
  * useSearch()
@@ -29,15 +30,16 @@ import { useCallback } from "react";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
 
+import useKeyboardShortcuts from "./hooks/useKeyboardShortcuts";
+import useSearch from "./hooks/useSearch";
+import useSearchFocus from "./hooks/useSearchFocus";
+
 import { RecentSearches, SearchResultList, WelcomeSection } from "./components";
 
 import { SearchSession } from "./components/session";
 import { SearchSummary } from "./components/summary";
 import { SearchToolbar } from "./components/toolbar";
 import { SearchWorkspace } from "./components/workspace";
-
-import useSearch from "./hooks/useSearch";
-import useSearchFocus from "./hooks/useSearchFocus";
 
 function SearchPage() {
   const {
@@ -52,6 +54,7 @@ function SearchPage() {
     recentSearches,
 
     suggestions,
+    autocomplete,
     activeSuggestionIndex,
 
     updateQuery,
@@ -61,7 +64,11 @@ function SearchPage() {
     executeRecentSearch,
 
     selectSuggestion,
+    acceptAutocomplete,
+
     clearSuggestions,
+    resetSearch,
+
     moveSuggestionDown,
     moveSuggestionUp,
 
@@ -75,14 +82,52 @@ function SearchPage() {
     closeOfferDialog,
   } = useSearch();
 
+  const comparison = useComparison();
+
   const { inputRef, focusSearch } = useSearchFocus();
 
-  const comparison = useComparison();
+  /**
+   * ---------------------------------------------------------------------------
+   * Escape Behaviour
+   * ---------------------------------------------------------------------------
+   */
+
+  const handleEscape = useCallback(() => {
+    resetSearch();
+    focusSearch();
+  }, [resetSearch, focusSearch]);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Hide Suggestion Popup
+   * ---------------------------------------------------------------------------
+   */
+
+  const handleHideSuggestions = useCallback(() => {
+    clearSuggestions();
+  }, [clearSuggestions]);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Change Product
+   * ---------------------------------------------------------------------------
+   */
 
   const handleChangeProduct = useCallback(() => {
     clearSelection();
     focusSearch();
   }, [clearSelection, focusSearch]);
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Global Keyboard Shortcuts
+   * ---------------------------------------------------------------------------
+   */
+
+  useKeyboardShortcuts({
+    onFocusSearch: focusSearch,
+    onEscape: handleEscape,
+  });
 
   return (
     <section
@@ -100,16 +145,19 @@ function SearchPage() {
       <SearchToolbar
         inputRef={inputRef}
         query={query}
+        ghostText={autocomplete ?? ""}
         sort={sort}
         suggestions={suggestions}
         activeSuggestionIndex={activeSuggestionIndex}
         onQueryChange={updateQuery}
         onSortChange={updateSort}
         onSearch={executeSearch}
+        onEscape={handleEscape}
+        onHideSuggestions={handleHideSuggestions}
+        onAcceptAutocomplete={acceptAutocomplete}
         onSelectSuggestion={selectSuggestion}
         onMoveSuggestionUp={moveSuggestionUp}
         onMoveSuggestionDown={moveSuggestionDown}
-        onClearSuggestions={clearSuggestions}
       />
 
       <SearchSession

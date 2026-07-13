@@ -9,7 +9,7 @@
  * Responsibilities:
  * - Arrange dashboard panels.
  * - Compose dashboard widgets.
- * - Provide responsive layout.
+ * - Distribute Dashboard view models.
  *
  * Does NOT:
  * - Fetch data.
@@ -20,12 +20,34 @@
 
 import DashboardPanel from "./DashboardPanel";
 
-import TrendingProductsWidget from "./TrendingProductsWidget";
-import PriceAlertsWidget from "./PriceAlertsWidget";
 import AIRecommendationWidget from "./AIRecommendationWidget";
+import PriceAlertsWidget from "./PriceAlertsWidget";
 import RecentComparisonsWidget from "./RecentComparisonsWidget";
+import TrendingProductsWidget from "./TrendingProductsWidget";
 
-function DashboardWorkspace() {
+import type {
+  PriceAlertViewModel,
+  RecommendationViewModel,
+  RecentComparisonViewModel,
+  TrendingProductViewModel,
+} from "../viewmodels/dashboard.viewmodel";
+
+interface DashboardWorkspaceProps {
+  trendingProducts: TrendingProductViewModel[];
+
+  priceAlerts: PriceAlertViewModel[];
+
+  recommendations: RecommendationViewModel[];
+
+  recentComparisons: RecentComparisonViewModel[];
+}
+
+function DashboardWorkspace({
+  trendingProducts,
+  priceAlerts,
+  recommendations,
+  recentComparisons,
+}: DashboardWorkspaceProps) {
   return (
     <section
       aria-label="Dashboard Workspace"
@@ -39,7 +61,7 @@ function DashboardWorkspace() {
 
       <div className="lg:col-span-8">
         <DashboardPanel>
-          <TrendingProductsWidget />
+          <TrendingProductsWidget products={trendingProducts} />
         </DashboardPanel>
       </div>
 
@@ -47,7 +69,7 @@ function DashboardWorkspace() {
 
       <div className="lg:col-span-4">
         <DashboardPanel>
-          <PriceAlertsWidget />
+          <PriceAlertsWidget alerts={priceAlerts} />
         </DashboardPanel>
       </div>
 
@@ -55,7 +77,7 @@ function DashboardWorkspace() {
 
       <div className="lg:col-span-6">
         <DashboardPanel>
-          <AIRecommendationWidget />
+          <AIRecommendationWidget recommendations={recommendations} />
         </DashboardPanel>
       </div>
 
@@ -63,7 +85,7 @@ function DashboardWorkspace() {
 
       <div className="lg:col-span-6">
         <DashboardPanel>
-          <RecentComparisonsWidget />
+          <RecentComparisonsWidget comparisons={recentComparisons} />
         </DashboardPanel>
       </div>
     </section>
