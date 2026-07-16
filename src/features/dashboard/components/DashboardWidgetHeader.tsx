@@ -34,12 +34,12 @@ function DashboardWidgetHeader({
       className="
         mb-6
         flex
-        items-start
+        items-center
         justify-between
         gap-4
       "
     >
-      <div>
+      <div className="min-w-0 flex-1">
         <h2
           className="
             text-lg
@@ -54,6 +54,7 @@ function DashboardWidgetHeader({
           className="
             mt-1
             text-sm
+            leading-6
             text-slate-500
           "
         >
@@ -67,12 +68,12 @@ function DashboardWidgetHeader({
           onClick={onAction}
           className="
             shrink-0
-            rounded-xl
-            px-3
-            py-2
+            rounded-lg
+            px-2
+            py-1.5
             text-sm
             font-medium
-            text-blue-600
+            text-slate-600
             transition-colors
             hover:bg-blue-50
             hover:text-blue-700

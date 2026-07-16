@@ -51,42 +51,104 @@ export const DASHBOARD_MOCK: DashboardModel = {
   trendingProducts: [
     {
       id: "1",
+
       name: "Apple iPhone 16 Pro",
+
       category: "Smartphones",
+
       currentPrice: 1999000,
+
       priceChangePercentage: -5,
+
       trend: "down",
-      store: "Jumia",
+
+      stores: ["Jumia", "Konga", "Slot"],
+
+      bestPriceStore: "Jumia",
+
+      isBestPrice: true,
+
+      trendHistory: [
+        2100000, 2085000, 2060000, 2045000, 2020000, 2005000, 1999000,
+      ],
+
+      thumbnail: "/images/products/iphone-16-pro.png",
     },
 
     {
       id: "2",
+
       name: "Samsung Galaxy S25 Ultra",
+
       category: "Smartphones",
+
       currentPrice: 2050000,
+
       priceChangePercentage: -3,
+
       trend: "down",
-      store: "Konga",
+
+      stores: ["Konga", "Jumia", "Pointek"],
+
+      bestPriceStore: "Konga",
+
+      isBestPrice: true,
+
+      trendHistory: [
+        2110000, 2105000, 2090000, 2080000, 2075000, 2060000, 2050000,
+      ],
+
+      thumbnail: "/images/products/galaxy-s25-ultra.png",
     },
 
     {
       id: "3",
+
       name: "Sony WH-1000XM6",
+
       category: "Audio",
+
       currentPrice: 645000,
+
       priceChangePercentage: -7,
+
       trend: "down",
-      store: "Slot",
+
+      stores: ["Slot", "Jumia", "Kara"],
+
+      bestPriceStore: "Slot",
+
+      isBestPrice: true,
+
+      trendHistory: [699000, 690000, 680000, 670000, 660000, 652000, 645000],
+
+      thumbnail: "/images/products/sony-wh1000xm6.png",
     },
 
     {
       id: "4",
+
       name: "MacBook Pro M5",
+
       category: "Laptop",
+
       currentPrice: 4250000,
+
       priceChangePercentage: -2,
+
       trend: "down",
-      store: "iStore",
+
+      stores: ["iStore", "Slot", "Jumia"],
+
+      bestPriceStore: "iStore",
+
+      isBestPrice: true,
+
+      trendHistory: [
+        4380000, 4350000, 4320000, 4300000, 4285000, 4260000, 4250000,
+      ],
+
+      thumbnail: "/images/products/macbook-pro-m5.png",
     },
   ],
 

@@ -69,8 +69,31 @@ export interface TrendingProductModel {
 
   trend: ProductTrend;
 
-  store: string;
+  /**
+   * Stores currently selling this product.
+   */
+  stores: string[];
 
+  /**
+   * Store currently offering the best price.
+   */
+  bestPriceStore: string;
+
+  /**
+   * Indicates whether the current price is the best available.
+   */
+  isBestPrice: boolean;
+
+  /**
+   * Historical prices used for trend visualization.
+   *
+   * Ordered from oldest → newest.
+   */
+  trendHistory: number[];
+
+  /**
+   * Optional product thumbnail.
+   */
   thumbnail?: string;
 }
 

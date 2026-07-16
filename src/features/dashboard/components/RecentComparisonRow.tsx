@@ -8,7 +8,7 @@
  *
  * Responsibilities:
  * - Display compared product.
- * - Display compared stores.
+ * - Display comparison summary.
  * - Display best available price.
  * - Display comparison timestamp.
  *
@@ -32,15 +32,17 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
     <article
       className="
         flex
-        items-center
-        justify-between
-        gap-4
+        flex-col
+        gap-5
         border-b
         border-slate-200
-        py-4
+        py-5
         transition-colors
         duration-200
         hover:bg-slate-50
+        md:flex-row
+        md:items-start
+        md:justify-between
         first:pt-0
         last:border-b-0
         last:pb-0
@@ -50,32 +52,105 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
       {/* Product Information                                                */}
       {/* ------------------------------------------------------------------ */}
 
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 gap-4">
         <div
           className="
             flex
-            h-10
-            w-10
+            h-11
+            w-11
             shrink-0
             items-center
             justify-center
-            rounded-xl
+            rounded-2xl
             bg-slate-100
           "
         >
-          <ArrowRightLeft size={18} className="text-slate-600" />
+          <ArrowRightLeft size={20} className="text-slate-600" />
         </div>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h3
             className="
               truncate
+              text-base
               font-semibold
               text-slate-900
             "
           >
             {comparison.product}
           </h3>
+
+          <div
+            className="
+              mt-3
+              inline-flex
+              items-center
+              rounded-full
+              bg-slate-100
+              px-3
+              py-1
+              text-xs
+              font-medium
+              text-slate-600
+            "
+          >
+            Compared across {comparison.comparedStoresLabel}
+          </div>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Comparison Summary                                                 */}
+      {/* ------------------------------------------------------------------ */}
+
+      <div
+        className="
+          flex
+          shrink-0
+          flex-col
+          items-start
+          gap-3
+          md:items-end
+        "
+      >
+        <div className="text-left md:text-right">
+          <p
+            className="
+              text-xs
+              font-medium
+              uppercase
+              tracking-wide
+              text-slate-400
+            "
+          >
+            Best Price
+          </p>
+
+          <p
+            className="
+              mt-1
+              whitespace-nowrap
+              text-lg
+              font-bold
+              text-slate-900
+            "
+          >
+            {comparison.bestPriceLabel}
+          </p>
+        </div>
+
+        <div className="text-left md:text-right">
+          <p
+            className="
+              text-xs
+              font-medium
+              uppercase
+              tracking-wide
+              text-slate-400
+            "
+          >
+            Compared
+          </p>
 
           <p
             className="
@@ -84,36 +159,17 @@ function RecentComparisonRow({ comparison }: RecentComparisonRowProps) {
               text-slate-500
             "
           >
-            Compared across {comparison.comparedStoresLabel}
+            {comparison.comparedAtLabel}
           </p>
         </div>
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Comparison Summary                                                 */}
-      {/* ------------------------------------------------------------------ */}
-
-      <div className="shrink-0 text-right">
-        <p
-          className="
-            whitespace-nowrap
-            font-semibold
-            text-slate-900
-          "
-        >
-          {comparison.bestPriceLabel}
-        </p>
-
-        <p
-          className="
-            mt-1
-            text-xs
-            text-slate-400
-          "
-        >
-          {comparison.comparedAtLabel}
-        </p>
-      </div>
+      {/* TODO (Backend)
+          - Restore previous comparison session.
+          - Navigate to comparison results.
+          - Display compared marketplace summary.
+      */}
     </article>
   );
 }

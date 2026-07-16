@@ -9,7 +9,7 @@
  * Responsibilities:
  * - Display recommendation summary.
  * - Display recommendation priority.
- * - Provide navigation action.
+ * - Present AI insight.
  *
  * Does NOT:
  * - Fetch data.
@@ -18,7 +18,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import type { RecommendationViewModel } from "../viewmodels/dashboard.viewmodel";
 
@@ -30,13 +30,9 @@ function RecommendationRow({ recommendation }: RecommendationRowProps) {
   return (
     <article
       className="
-        flex
-        items-start
-        justify-between
-        gap-4
         border-b
         border-slate-200
-        py-4
+        py-5
         transition-colors
         duration-200
         hover:bg-slate-50
@@ -45,40 +41,59 @@ function RecommendationRow({ recommendation }: RecommendationRowProps) {
         last:pb-0
       "
     >
-      <div className="flex gap-3">
+      <div className="flex items-start gap-4">
+        {/* -------------------------------------------------------------- */}
+        {/* AI Icon                                                        */}
+        {/* -------------------------------------------------------------- */}
+
         <div
           className="
             flex
-            h-10
-            w-10
+            h-11
+            w-11
             shrink-0
             items-center
             justify-center
-            rounded-xl
+            rounded-2xl
             bg-blue-100
           "
         >
-          <Sparkles size={18} className="text-blue-600" />
+          <Sparkles size={20} className="text-blue-600" />
         </div>
 
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h3
+        {/* -------------------------------------------------------------- */}
+        {/* Recommendation                                                 */}
+        {/* -------------------------------------------------------------- */}
+
+        <div className="min-w-0 flex-1">
+          <div
+            className="
+              flex
+              flex-wrap
+              items-center
+              gap-2
+            "
+          >
+            <span
               className="
+                text-xs
                 font-semibold
-                text-slate-900
+                uppercase
+                tracking-wide
+                text-slate-400
               "
             >
-              {recommendation.title}
-            </h3>
+              AI Insight
+            </span>
 
             <span
               className={`
                 rounded-full
-                px-2
-                py-0.5
+                px-2.5
+                py-1
                 text-xs
-                font-medium
+                font-semibold
+                uppercase
                 ${recommendation.badgeColor}
               `}
             >
@@ -86,10 +101,22 @@ function RecommendationRow({ recommendation }: RecommendationRowProps) {
             </span>
           </div>
 
+          <h3
+            className="
+              mt-2
+              text-base
+              font-semibold
+              text-slate-900
+            "
+          >
+            {recommendation.title}
+          </h3>
+
           <p
             className="
-              mt-1
+              mt-2
               text-sm
+              leading-6
               text-slate-500
             "
           >
@@ -98,22 +125,13 @@ function RecommendationRow({ recommendation }: RecommendationRowProps) {
         </div>
       </div>
 
-      <button
-        type="button"
-        aria-label={`View recommendation: ${recommendation.title}`}
-        title={`View recommendation: ${recommendation.title}`}
-        className="
-          shrink-0
-          rounded-lg
-          p-2
-          text-slate-400
-          transition-colors
-          hover:bg-slate-100
-          hover:text-slate-700
-        "
-      >
-        <ArrowRight size={18} />
-      </button>
+      {/* ------------------------------------------------------------------ */}
+      {/* TODO (AI Service)
+          Display recommendation confidence.
+          Display reasoning summary.
+          Allow user feedback (Helpful / Not Helpful).
+          Support recommendation actions.
+      */}
     </article>
   );
 }

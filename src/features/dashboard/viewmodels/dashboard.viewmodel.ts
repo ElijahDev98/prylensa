@@ -66,8 +66,29 @@ export interface TrendingProductViewModel {
 
   trend: "up" | "down";
 
-  store: string;
+  /**
+   * Marketplace names.
+   */
+  stores: string[];
 
+  /**
+   * Best-price marketplace.
+   */
+  bestPriceStoreLabel: string;
+
+  /**
+   * Indicates whether this is currently the best market price.
+   */
+  isBestPrice: boolean;
+
+  /**
+   * Historical values for the sparkline.
+   */
+  trendHistory: number[];
+
+  /**
+   * Optional product thumbnail.
+   */
   thumbnail?: string;
 
   trendColor: string;

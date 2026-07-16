@@ -144,7 +144,13 @@ function mapTrendingProduct(
 
     trend: model.trend,
 
-    store: model.store,
+    stores: model.stores,
+
+    bestPriceStoreLabel: model.bestPriceStore,
+
+    isBestPrice: model.isBestPrice,
+
+    trendHistory: model.trendHistory,
 
     thumbnail: model.thumbnail,
 
@@ -203,7 +209,7 @@ function mapRecentComparison(
 
     product: model.product,
 
-    comparedStoresLabel: model.comparedStores.toString(),
+    comparedStoresLabel: `${model.comparedStores} Stores`,
 
     bestPriceLabel: formatCurrency(model.bestPrice),
 
