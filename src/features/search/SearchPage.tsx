@@ -147,6 +147,7 @@ function SearchPage() {
         query={query}
         ghostText={autocomplete ?? ""}
         sort={sort}
+        loading={loading}
         suggestions={suggestions}
         activeSuggestionIndex={activeSuggestionIndex}
         onQueryChange={updateQuery}

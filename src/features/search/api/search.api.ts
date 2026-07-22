@@ -72,7 +72,7 @@ interface SearchApiResponse {
 }
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
 
 /**
  * Searches the Marketplace backend.
@@ -100,7 +100,7 @@ export async function fetchSearchResults(
    * Execute the search request.
    */
   const response = await fetch(
-    `${API_BASE_URL}/marketplace/search?q=${encodeURIComponent(keyword)}`,
+    `${API_BASE_URL}/api/v1/marketplace/search?q=${encodeURIComponent(keyword)}`,
   );
 
   /**

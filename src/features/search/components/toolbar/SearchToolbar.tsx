@@ -11,6 +11,7 @@
  * - Route keyboard interactions.
  * - Display Search suggestions.
  * - Submit Search requests.
+ * - Prevent duplicate submissions while searching.
  *
  * Architecture:
  *
@@ -21,7 +22,7 @@
  * SearchInput
  *
  * Notes:
- * - UI composition only.
+ * - Presentation component only.
  * - No business logic.
  * -----------------------------------------------------------------------------
  */
@@ -47,6 +48,11 @@ interface SearchToolbarProps {
 
   sort: SearchSortOption;
 
+  /**
+   * Indicates whether a search request is currently running.
+   */
+  loading: boolean;
+
   suggestions: string[];
 
   activeSuggestionIndex: number;
@@ -55,24 +61,12 @@ interface SearchToolbarProps {
 
   onSortChange(sort: SearchSortOption): void;
 
-  /**
-   * Executes a Search.
-   */
   onSearch(): void;
 
-  /**
-   * Handles Escape.
-   */
   onEscape(): void;
 
-  /**
-   * Hides the suggestion popup.
-   */
   onHideSuggestions(): void;
 
-  /**
-   * Accept inline autocomplete.
-   */
   onAcceptAutocomplete?(): void;
 
   onSelectSuggestion(suggestion: string): void;
@@ -87,6 +81,7 @@ function SearchToolbar({
   query,
   ghostText,
   sort,
+  loading,
   suggestions,
   activeSuggestionIndex,
   onQueryChange,
@@ -110,6 +105,10 @@ function SearchToolbar({
   ) => {
     event.preventDefault();
 
+    if (loading) {
+      return;
+    }
+
     onSearch();
 
     onHideSuggestions();
@@ -124,6 +123,10 @@ function SearchToolbar({
   const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = (
     event,
   ) => {
+    if (loading) {
+      return;
+    }
+
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
@@ -176,6 +179,7 @@ function SearchToolbar({
             ref={inputRef}
             value={query}
             ghostText={ghostText}
+            disabled={loading}
             onChange={onQueryChange}
             onAcceptAutocomplete={onAcceptAutocomplete}
             onKeyDown={handleInputKeyDown}
@@ -185,6 +189,7 @@ function SearchToolbar({
 
           <button
             type="button"
+            disabled={loading}
             aria-label="Search by image"
             className="
               rounded-lg
@@ -192,6 +197,8 @@ function SearchToolbar({
               text-slate-500
               transition-colors
               hover:bg-slate-100
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
           >
             <Camera size={20} />
@@ -199,6 +206,7 @@ function SearchToolbar({
 
           <button
             type="button"
+            disabled={loading}
             aria-label="Voice search"
             className="
               rounded-lg
@@ -206,6 +214,8 @@ function SearchToolbar({
               text-slate-500
               transition-colors
               hover:bg-slate-100
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
           >
             <Mic size={20} />
@@ -225,7 +235,7 @@ function SearchToolbar({
 
       <SearchControls sort={sort} onSortChange={onSortChange} />
 
-      <SearchSubmitButton />
+      <SearchSubmitButton loading={loading} />
     </form>
   );
 }

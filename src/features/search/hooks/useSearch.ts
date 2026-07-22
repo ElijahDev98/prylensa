@@ -115,6 +115,59 @@ export default function useSearch() {
 
   /**
    * ---------------------------------------------------------------------------
+   * Search Runner
+   * ---------------------------------------------------------------------------
+   */
+
+  const runSearch = useCallback(
+    async (
+      query: string,
+      sort: SearchSortOption,
+      options?: {
+        updateQuery?: boolean;
+        saveRecent?: boolean;
+      },
+    ) => {
+      const trimmedQuery = query.trim();
+
+      if (!trimmedQuery) {
+        return;
+      }
+
+      setState((previous) => ({
+        ...previous,
+        loading: true,
+        feedback: {},
+      }));
+
+      try {
+        const results = await searchProducts(trimmedQuery, sort);
+
+        setState((previous) => ({
+          ...previous,
+          query: options?.updateQuery ? trimmedQuery : previous.query,
+          loading: false,
+          results,
+          selectedResult: null,
+          recentSearches: options?.saveRecent
+            ? addRecentSearch(previous.recentSearches, trimmedQuery)
+            : previous.recentSearches,
+        }));
+      } catch {
+        setState((previous) => ({
+          ...previous,
+          loading: false,
+          feedback: {
+            error: "Unable to complete search. Please try again.",
+          },
+        }));
+      }
+    },
+    [],
+  );
+
+  /**
+   * ---------------------------------------------------------------------------
    * Query
    * ---------------------------------------------------------------------------
    */
@@ -139,13 +192,19 @@ export default function useSearch() {
    * ---------------------------------------------------------------------------
    */
 
-  const updateSort = useCallback((sort: SearchSortOption) => {
-    setState((previous) => ({
-      ...previous,
-      sort,
-      results: searchProducts(previous.query, sort),
-    }));
-  }, []);
+  const updateSort = useCallback(
+    async (sort: SearchSortOption) => {
+      setState((previous) => ({
+        ...previous,
+        sort,
+      }));
+
+      if (state.query.trim()) {
+        await runSearch(state.query, sort);
+      }
+    },
+    [state.query, runSearch],
+  );
 
   /**
    * ---------------------------------------------------------------------------
@@ -153,45 +212,27 @@ export default function useSearch() {
    * ---------------------------------------------------------------------------
    */
 
-  const executeSearch = useCallback(() => {
+  const executeSearch = useCallback(async () => {
     setSuggestionsOpen(false);
     setActiveSuggestionIndex(-1);
-    setState((previous) => {
-      const query = previous.query.trim();
 
-      if (query.length === 0) {
-        return previous;
-      }
-      const results = searchProducts(previous.query, previous.sort);
-
-      return {
-        ...previous,
-        loading: false,
-        results,
-        selectedResult: null,
-        recentSearches: addRecentSearch(
-          previous.recentSearches,
-          previous.query,
-        ),
-      };
+    await runSearch(state.query, state.sort, {
+      saveRecent: true,
     });
-  }, []);
+  }, [state.query, state.sort, runSearch]);
 
-  const executeRecentSearch = useCallback((query: string) => {
-    setSuggestionsOpen(false);
-    setActiveSuggestionIndex(-1);
-    setState((previous) => {
-      const results = searchProducts(query, previous.sort);
+  const executeRecentSearch = useCallback(
+    async (query: string) => {
+      setSuggestionsOpen(false);
+      setActiveSuggestionIndex(-1);
 
-      return {
-        ...previous,
-        query,
-        results,
-        selectedResult: null,
-        recentSearches: addRecentSearch(previous.recentSearches, query),
-      };
-    });
-  }, []);
+      await runSearch(query, state.sort, {
+        updateQuery: true,
+        saveRecent: true,
+      });
+    },
+    [state.sort, runSearch],
+  );
 
   /**
    * ---------------------------------------------------------------------------
@@ -199,21 +240,18 @@ export default function useSearch() {
    * ---------------------------------------------------------------------------
    */
 
-  const selectSuggestion = useCallback((suggestion: string) => {
-    setSuggestionsOpen(false);
-    setActiveSuggestionIndex(-1);
-    setState((previous) => {
-      const results = searchProducts(suggestion, previous.sort);
+  const selectSuggestion = useCallback(
+    async (suggestion: string) => {
+      setSuggestionsOpen(false);
+      setActiveSuggestionIndex(-1);
 
-      return {
-        ...previous,
-        query: suggestion,
-        results,
-        selectedResult: null,
-        recentSearches: addRecentSearch(previous.recentSearches, suggestion),
-      };
-    });
-  }, []);
+      await runSearch(suggestion, state.sort, {
+        updateQuery: true,
+        saveRecent: true,
+      });
+    },
+    [state.sort, runSearch],
+  );
 
   /**
    * ---------------------------------------------------------------------------

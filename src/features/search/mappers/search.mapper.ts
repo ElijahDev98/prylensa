@@ -114,10 +114,19 @@ export class SearchMapper {
       thumbnail: representativeProduct?.imageUrl ?? "",
 
       /**
-       * Multiple product images are not yet supported
-       * by the backend.
+       * The backend currently exposes a single image.
+       * Until multiple images are supported, expose it
+       * as a one-item gallery.
        */
-      images: [],
+      images: representativeProduct?.imageUrl
+        ? [
+            {
+              id: representativeProduct.id,
+              url: representativeProduct.imageUrl,
+              alt: representativeProduct.title,
+            },
+          ]
+        : [],
 
       /**
        * Rating will be added later.
