@@ -4,24 +4,49 @@
  * Feature: Search
  *
  * Purpose:
- * Primary search action button.
+ * Primary action button for executing a search.
  *
- * Future Enhancements:
- * - Trigger backend search
- * - Loading state
- * - Disable while searching
+ * Responsibilities:
+ * - Submit the parent search form.
+ * - Display loading feedback.
+ * - Prevent duplicate submissions.
+ * - Provide accessible button semantics.
+ *
+ * Architecture:
+ *
+ * SearchPage
+ *      ↓
+ * SearchToolbar
+ *      ↓
+ * SearchSubmitButton
+ *
+ * Notes:
+ * - Presentation component only.
+ * - No business logic.
+ * - No service or API dependencies.
  * -----------------------------------------------------------------------------
  */
 
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 
-function SearchSubmitButton() {
+interface SearchSubmitButtonProps {
+  /**
+   * Indicates whether a search request is currently executing.
+   */
+  loading?: boolean;
+}
+
+function SearchSubmitButton({ loading = false }: SearchSubmitButtonProps) {
   return (
     <button
       type="submit"
+      disabled={loading}
+      aria-disabled={loading}
+      aria-busy={loading}
       className="
         flex
         h-14
+        min-w-36
         items-center
         justify-center
         rounded-2xl
@@ -29,12 +54,25 @@ function SearchSubmitButton() {
         px-8
         font-medium
         text-white
-        transition-colors
+        transition-all
+        duration-200
         hover:bg-blue-700
+        disabled:cursor-not-allowed
+        disabled:bg-slate-400
+        disabled:hover:bg-slate-400
       "
     >
-      <Search size={18} className="mr-2" />
-      Search
+      {loading ? (
+        <>
+          <Loader2 size={18} className="mr-2 animate-spin" />
+          Searching...
+        </>
+      ) : (
+        <>
+          <Search size={18} className="mr-2" />
+          Search
+        </>
+      )}
     </button>
   );
 }
