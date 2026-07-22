@@ -7,6 +7,7 @@
  * Defines shared Search feature types.
  *
  * Architecture:
+ *
  * UI
  *   ↓
  * Hook
@@ -19,13 +20,13 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { KeyboardEventHandler, FocusEventHandler } from "react";
+import type { FocusEventHandler, KeyboardEventHandler } from "react";
 
 import type { SearchFilters } from "./search-filter.types";
 import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
 
 /**
- * Search feedback displayed to the user.
+ * User-facing feedback produced by the Search feature.
  */
 export interface SearchFeedback {
   validation?: string;
@@ -38,7 +39,7 @@ export interface SearchFeedback {
 }
 
 /**
- * Supported search sort options.
+ * Supported search sorting options.
  */
 export type SearchSortOption = "relevance" | "lowest-price" | "highest-price";
 
@@ -52,7 +53,7 @@ export interface SearchState {
   query: string;
 
   /**
-   * Indicates whether a search operation is in progress.
+   * Indicates whether a search request is executing.
    */
   loading: boolean;
 
@@ -77,7 +78,7 @@ export interface SearchState {
   recentSearches: string[];
 
   /**
-   * Current sort option.
+   * Selected sorting option.
    */
   sort: SearchSortOption;
 
@@ -88,7 +89,7 @@ export interface SearchState {
 }
 
 /**
- * Search input props.
+ * Shared Search input properties.
  */
 export interface SearchInputProps {
   /**
@@ -98,19 +99,27 @@ export interface SearchInputProps {
 
   /**
    * Inline autocomplete completion.
+   *
    * Example:
+   *
    * value = "iph"
    * ghostText = "one 16 Pro"
    */
   ghostText?: string;
 
   /**
-   * Input value changed.
+   * Disables user interaction while a search
+   * request is executing.
+   */
+  disabled?: boolean;
+
+  /**
+   * Invoked whenever the input value changes.
    */
   onChange(value: string): void;
 
   /**
-   * Autocomplete
+   * Accepts the current autocomplete suggestion.
    */
   onAcceptAutocomplete?(): void;
 
