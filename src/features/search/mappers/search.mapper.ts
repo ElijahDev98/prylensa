@@ -4,16 +4,16 @@
  * Feature: Search
  *
  * Purpose:
- * Maps Product and Offer domain entities into Search presentation models.
+ * Maps Marketplace Search API DTOs into Search ViewModels.
  *
  * Responsibilities:
- * - Convert Product and Offer domain models into ViewModels.
- * - Convert Product images into presentation models.
- * - Convert Product specifications into presentation models.
+ * - Convert backend SearchResultDto objects into SearchResultViewModels.
+ * - Convert marketplace offers into presentation models.
  * - Produce SearchSummaryViewModel.
  * - Centralize presentation formatting.
  *
  * Architecture:
+ *
  * UI
  *   ↓
  * Hook
@@ -22,117 +22,143 @@
  *   ↓
  * Search Mapper
  *   ↓
- * Search ViewModel
- *   ↓
- * Domain Models
+ * Backend DTO
  * -----------------------------------------------------------------------------
  */
 
-import type { Offer } from "@/features/offer";
-import type { Product } from "@/features/product";
+import type { SearchOfferDto, SearchResultDto } from "../api/search.api";
 
 import type {
-  ProductImageViewModel,
-  ProductSpecificationViewModel,
   SearchOfferViewModel,
   SearchResultViewModel,
   SearchSummaryViewModel,
 } from "../viewmodels/search.viewmodel";
 
 export class SearchMapper {
-  private static toImageViewModels(
-    images: Product["images"],
-  ): ProductImageViewModel[] {
-    return images.map((image) => ({
-      id: image.id,
-      url: image.url,
-      alt: image.alt,
-    }));
-  }
-
-  private static toSpecificationViewModels(
-    specifications: Product["specifications"],
-  ): ProductSpecificationViewModel[] {
-    return specifications.map((specification) => ({
-      id: specification.id,
-      name: specification.name,
-      value: specification.value,
-    }));
-  }
-
-  public static toOfferViewModel(
-    offer: Offer,
-    storeName: string,
-  ): SearchOfferViewModel {
+  /**
+   * Converts a marketplace offer returned by the backend
+   * into a SearchOfferViewModel.
+   */
+  private static toOfferViewModel(offer: SearchOfferDto): SearchOfferViewModel {
     return {
       id: offer.id,
-      storeId: offer.storeId,
-      storeName,
 
-      currentPrice: offer.currentPrice,
-      currentPriceLabel: `₦${offer.currentPrice.toLocaleString()}`,
+      /**
+       * Marketplace acts as the store identifier.
+       */
+      storeId: offer.marketplace,
 
-      originalPrice: offer.previousPrice,
+      /**
+       * Marketplace acts as the display name.
+       */
+      storeName: offer.marketplace,
+
+      currentPrice: offer.price,
+
+      currentPriceLabel: `₦${offer.price.toLocaleString()}`,
+
+      originalPrice: offer.originalPrice,
+
       originalPriceLabel:
-        offer.previousPrice > 0
-          ? `₦${offer.previousPrice.toLocaleString()}`
+        offer.originalPrice !== undefined
+          ? `₦${offer.originalPrice.toLocaleString()}`
           : undefined,
 
-      discountPercentage: offer.discount,
+      discountPercentage:
+        offer.originalPrice && offer.originalPrice > offer.price
+          ? Math.round(
+              ((offer.originalPrice - offer.price) / offer.originalPrice) * 100,
+            )
+          : 0,
 
-      inStock: offer.stockStatus !== "OUT_OF_STOCK",
+      inStock: offer.inStock,
 
       productUrl: offer.productUrl,
     };
   }
 
+  /**
+   * Converts a grouped marketplace search result
+   * into a SearchResultViewModel.
+   */
   public static toSearchResultViewModel(
-    product: Product,
-    offers: Offer[],
-    resolveStoreName: (storeId: string) => string,
+    result: SearchResultDto,
   ): SearchResultViewModel {
-    const sortedOffers = [...offers].sort(
-      (left, right) => left.currentPrice - right.currentPrice,
-    );
+    const offers = [...result.offers]
+      .sort((left, right) => left.price - right.price)
+      .map((offer) => this.toOfferViewModel(offer));
 
-    const offerViewModels = sortedOffers.map((offer) =>
-      this.toOfferViewModel(offer, resolveStoreName(offer.storeId)),
-    );
+    const representativeProduct = result.offers[0];
 
     return {
-      id: product.id,
+      /**
+       * Use the comparison key as the stable identifier.
+       */
+      id: result.comparisonKey,
 
-      title: product.title,
+      /**
+       * Display information comes from the first offer.
+       */
+      title: representativeProduct?.title ?? "",
 
-      brand: product.brand,
+      brand: representativeProduct?.brand ?? "",
 
-      category: product.category,
+      /**
+       * Category is not currently returned by the backend.
+       */
+      category: "",
 
-      thumbnail: product.images[0]?.url ?? "",
+      /**
+       * Thumbnail comes from the representative offer.
+       */
+      thumbnail: representativeProduct?.imageUrl ?? "",
 
-      images: this.toImageViewModels(product.images),
+      /**
+       * Multiple product images are not yet supported
+       * by the backend.
+       */
+      images: [],
 
-      rating: product.rating,
+      /**
+       * Rating will be added later.
+       */
+      rating: representativeProduct?.rating ?? 0,
 
-      reviewCount: product.reviewCount,
+      /**
+       * Review count is not currently available.
+       */
+      reviewCount: 0,
 
-      specifications: this.toSpecificationViewModels(product.specifications),
+      /**
+       * Product specifications will be added
+       * by the backend later.
+       */
+      specifications: [],
 
-      offerCount: offerViewModels.length,
+      offerCount: result.offerCount,
 
-      hasOffers: offerViewModels.length > 0,
+      hasOffers: offers.length > 0,
 
-      lowestOffer: offerViewModels.length > 0 ? offerViewModels[0] : null,
+      lowestOffer: offers[0] ?? null,
 
-      offers: offerViewModels,
+      offers,
     };
+  }
+
+  /**
+   * Converts backend search results into SearchResultViewModels.
+   */
+  public static toSearchResultViewModels(
+    results: readonly SearchResultDto[],
+  ): SearchResultViewModel[] {
+    return results.map((result) => this.toSearchResultViewModel(result));
   }
 
   /**
    * Produces the Search Summary ViewModel.
    */
   public static toSearchSummaryViewModel(
-    results: SearchResultViewModel[],
+    results: readonly SearchResultViewModel[],
   ): SearchSummaryViewModel {
     if (results.length === 0) {
       return {
@@ -148,12 +174,12 @@ export class SearchMapper {
     const uniqueStores = new Set<string>();
     const prices: number[] = [];
 
-    results.forEach((result) => {
-      result.offers.forEach((offer) => {
+    for (const result of results) {
+      for (const offer of result.offers) {
         uniqueStores.add(offer.storeId);
         prices.push(offer.currentPrice);
-      });
-    });
+      }
+    }
 
     const lowestPrice = Math.min(...prices);
 
