@@ -10,16 +10,27 @@
  * - Render the Search input.
  * - Display inline autocomplete.
  * - Accept autocomplete shortcuts.
- * - Forward remaining keyboard events.
+ * - Forward keyboard events.
  * - Forward focus events.
+ * - Support loading/disabled state.
+ *
+ * Architecture:
+ *
+ * SearchPage
+ *      ↓
+ * SearchToolbar
+ *      ↓
+ * SearchInput
  *
  * Notes:
- * - Presentation only.
- * - No Search business logic.
+ * - Presentation component only.
+ * - No business logic.
+ * - No API or service dependencies.
  * -----------------------------------------------------------------------------
  */
 
 import { forwardRef } from "react";
+import type { KeyboardEventHandler } from "react";
 
 import { Search } from "lucide-react";
 
@@ -30,6 +41,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     {
       value,
       ghostText = "",
+      disabled = false,
       onChange,
       onAcceptAutocomplete,
       onKeyDown,
@@ -38,9 +50,17 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     },
     ref,
   ) => {
-    const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
-      event,
-    ) => {
+    /**
+     * -------------------------------------------------------------------------
+     * Keyboard Interaction
+     * -------------------------------------------------------------------------
+     */
+
+    const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+      if (disabled) {
+        return;
+      }
+
       switch (event.key) {
         /**
          * Accept inline autocomplete.
@@ -62,7 +82,11 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     };
 
     return (
-      <div className="flex flex-1 items-center gap-3">
+      <div
+        className={`flex flex-1 items-center gap-3 ${
+          disabled ? "opacity-70" : ""
+        }`}
+      >
         <Search size={20} className="shrink-0 text-slate-400" />
 
         <label htmlFor="product-search" className="sr-only">
@@ -85,7 +109,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           >
             <span className="invisible">{value}</span>
 
-            {ghostText.length > 0 && (
+            {!disabled && ghostText.length > 0 && (
               <span className="select-none text-slate-400">{ghostText}</span>
             )}
           </div>
@@ -95,6 +119,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             id="product-search"
             type="search"
             value={value}
+            disabled={disabled}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
@@ -107,6 +132,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             onBlur={onBlur}
             aria-label="Search products"
             aria-autocomplete="both"
+            aria-disabled={disabled}
             className="
               relative
               z-10
@@ -118,6 +144,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
               caret-slate-900
               outline-none
               placeholder:text-slate-400
+              disabled:cursor-not-allowed
+              disabled:text-slate-500
             "
           />
         </div>
