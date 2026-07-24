@@ -24,6 +24,9 @@ import MainLayout from "@/app/shell/MainLayout";
 import { SearchPage } from "@/features/search";
 import { DashboardPage } from "@/features/dashboard";
 import { ComparePage } from "@/features/compare";
+import { AIRecommendationsPage } from "@/features/ai-recommendations";
+import { AlertsPage } from "@/features/alerts";
+import { SettingsPage } from "@/features/settings";
 
 import NotFoundPage from "@/app/pages/NotFoundPage";
 
@@ -34,13 +37,22 @@ function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path={ROUTES.HOME} element={<SearchPage />} />
+          <Route path={ROUTES.HOME} element={<DashboardPage />} />
 
           <Route path={ROUTES.SEARCH} element={<SearchPage />} />
 
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
 
           <Route path={ROUTES.COMPARE} element={<ComparePage />} />
+
+          <Route
+            path={ROUTES.AI_RECOMMENDATIONS}
+            element={<AIRecommendationsPage />}
+          />
+
+          <Route path={ROUTES.ALERTS} element={<AlertsPage />} />
+
+          <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

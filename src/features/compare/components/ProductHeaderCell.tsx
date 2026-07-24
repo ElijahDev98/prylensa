@@ -27,6 +27,10 @@ interface ProductHeaderCellProps {
 }
 
 function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
+  const hasRating = product.rating > 0;
+
+  const hasReviews = product.reviewCount > 0;
+
   return (
     <article
       className="
@@ -125,41 +129,49 @@ function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
           {product.subtitle}
         </p>
 
-        <div
-          className="
-            mt-4
-            flex
-            items-center
-            gap-2
-          "
-        >
-          <Star
-            size={16}
+        {(hasRating || hasReviews) && (
+          <div
             className="
-              fill-amber-400
-              text-amber-400
-            "
-          />
-
-          <span
-            className="
-              text-sm
-              font-medium
-              text-slate-900
+              mt-4
+              flex
+              items-center
+              gap-2
             "
           >
-            {product.rating}
-          </span>
+            {hasRating && (
+              <>
+                <Star
+                  size={16}
+                  className="
+                    fill-amber-400
+                    text-amber-400
+                  "
+                />
 
-          <span
-            className="
-              text-sm
-              text-slate-500
-            "
-          >
-            ({product.reviewCount.toLocaleString()} reviews)
-          </span>
-        </div>
+                <span
+                  className="
+                    text-sm
+                    font-medium
+                    text-slate-900
+                  "
+                >
+                  {product.rating}
+                </span>
+              </>
+            )}
+
+            {hasReviews && (
+              <span
+                className="
+                  text-sm
+                  text-slate-500
+                "
+              >
+                ({product.reviewCount.toLocaleString()} reviews)
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );

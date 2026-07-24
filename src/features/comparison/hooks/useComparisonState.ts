@@ -24,6 +24,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import {
+  addSelectedProduct,
   addProduct,
   clearComparison,
   createComparisonState,
@@ -54,13 +55,62 @@ import { EMPTY_INSIGHTS } from "../viewmodels/comparison-insight.viewmodel";
 import { EMPTY_RECOMMENDATION } from "../viewmodels/recommendation.viewmodel";
 import { EMPTY_SUMMARY } from "../viewmodels/comparison-summary.viewmodel";
 
+import { getOffers } from "@/features/offer/services/offer.service";
+import type { Offer } from "@/features/offer/types/offer.types";
 import { getProductById, getProductsByIds } from "@/features/product";
+import type { Product } from "@/features/product/types/product.types";
 import {
   getStoreById,
   getStores,
 } from "@/features/store/services/store.service";
 
 import type { ComparisonViewModel } from "../viewmodels/comparison.viewmodel";
+import type { ComparisonSelectedProduct } from "../services/comparison.service";
+
+function toProductEntity(product: ComparisonSelectedProduct): Product {
+  return {
+    id: product.id,
+
+    title: product.title,
+
+    brand: product.brand,
+
+    category: product.category,
+
+    description: product.description,
+
+    rating: product.rating,
+
+    reviewCount: product.reviewCount,
+
+    images: product.imageUrl
+      ? [
+          {
+            id: `${product.id}-image`,
+            url: product.imageUrl,
+            alt: product.imageAlt,
+          },
+        ]
+      : [],
+
+    specifications: product.specifications,
+  };
+}
+
+function toOfferEntity(
+  productId: string,
+  offer: ComparisonSelectedProduct["offers"][number],
+): Offer {
+  return {
+    ...offer,
+
+    productId,
+
+    currency: "NGN",
+
+    lastUpdated: new Date().toISOString(),
+  };
+}
 
 function useComparisonState(): ComparisonViewModel {
   /**
@@ -91,6 +141,10 @@ function useComparisonState(): ComparisonViewModel {
         setComparison((previous) => addProduct(previous, productId));
       },
 
+      addSelectedProduct(product: ComparisonSelectedProduct) {
+        setComparison((previous) => addSelectedProduct(previous, product));
+      },
+
       removeProduct(productId: string) {
         setComparison((previous) => removeProduct(previous, productId));
       },
@@ -118,7 +172,25 @@ function useComparisonState(): ComparisonViewModel {
 
   const stores = getStores();
 
-  const productEntities = getProductsByIds(comparison.selectedProductIds);
+  const selectedRuntimeProductIds = comparison.selectedProducts.map(
+    (product) => product.id,
+  );
+
+  const catalogProductEntities = getProductsByIds(
+    comparison.selectedProductIds.filter(
+      (productId) => !selectedRuntimeProductIds.includes(productId),
+    ),
+  );
+
+  const runtimeProductEntities = comparison.selectedProducts.map(toProductEntity);
+
+  const productEntities = [...catalogProductEntities, ...runtimeProductEntities];
+
+  const runtimeOfferEntities = comparison.selectedProducts.flatMap((product) =>
+    product.offers.map((offer) => toOfferEntity(product.id, offer)),
+  );
+
+  const offerEntities = [...getOffers(), ...runtimeOfferEntities];
 
   /**
    * ---------------------------------------------------------------------------
@@ -150,6 +222,7 @@ function useComparisonState(): ComparisonViewModel {
   const rowModels = getComparisonRows({
     products: orderedProducts,
     stores: visibleStores,
+    offers: offerEntities,
   });
 
   /**
@@ -185,9 +258,14 @@ function useComparisonState(): ComparisonViewModel {
     analysis.recommendation == null
       ? EMPTY_RECOMMENDATION
       : (() => {
-          const recommendedProduct = getProductById(
-            analysis.recommendation.offer.productId,
-          );
+          const recommendedProduct =
+            orderedProducts.find(
+              (product) =>
+                product.id === analysis.recommendation?.offer.productId,
+            ) ??
+            getProductById(
+              analysis.recommendation.offer.productId,
+            );
 
           const recommendedStore = getStoreById(
             analysis.recommendation.offer.storeId,

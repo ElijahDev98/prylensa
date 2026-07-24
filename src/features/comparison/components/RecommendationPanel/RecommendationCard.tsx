@@ -30,11 +30,16 @@ import {
 import RecommendationReason from "./RecommendationReason";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
+import { formatCurrency } from "@/shared/utils/currency";
 
 function RecommendationCard() {
   const comparison = useComparison();
 
   const recommendation = comparison.recommendation;
+
+  if (recommendation.productId.length === 0) {
+    return null;
+  }
 
   return (
     <article
@@ -255,7 +260,7 @@ function RecommendationCard() {
               text-emerald-600
             "
           >
-            ₦{comparison.summary.estimatedSavings.toLocaleString()}
+            {formatCurrency(comparison.summary.estimatedSavings)}
           </p>
         </div>
       </div>

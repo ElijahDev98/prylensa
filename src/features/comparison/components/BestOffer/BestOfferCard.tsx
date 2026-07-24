@@ -13,11 +13,16 @@ import { ExternalLink, ShoppingBag } from "lucide-react";
 import OfferStat from "./OfferStat";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
+import { formatCurrency } from "@/shared/utils/currency";
 
 function BestOfferCard() {
   const comparison = useComparison();
 
   const recommendation = comparison.recommendation;
+
+  if (recommendation.productId.length === 0) {
+    return null;
+  }
 
   return (
     <section
@@ -85,7 +90,7 @@ function BestOfferCard() {
       >
         <OfferStat
           label="Price"
-          value={`₦${recommendation.price.toLocaleString()}`}
+          value={formatCurrency(recommendation.price)}
         />
 
         <OfferStat label="Discount" value={`${recommendation.discount}%`} />

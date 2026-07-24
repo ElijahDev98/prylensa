@@ -260,15 +260,18 @@ export default function useSearch() {
    */
 
   const acceptAutocomplete = useCallback(() => {
-    if (
-      activeSuggestionIndex < 0 ||
-      activeSuggestionIndex >= suggestions.length
-    ) {
+    if (!autocomplete) {
       return;
     }
 
-    selectSuggestion(suggestions[activeSuggestionIndex]);
-  }, [activeSuggestionIndex, suggestions, selectSuggestion]);
+    setState((previous) => ({
+      ...previous,
+      query: previous.query + autocomplete,
+    }));
+
+    setSuggestionsOpen(false);
+    setActiveSuggestionIndex(-1);
+  }, [autocomplete]);
 
   const clearSuggestions = useCallback(() => {
     setSuggestionsOpen(false);

@@ -24,6 +24,7 @@
 
 import { useState } from "react";
 
+import { DEFAULT_SEARCH_FILTERS } from "../../types/search-filter.types";
 import { loadRecentSearches } from "../../utils/recent-search.storage";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -39,6 +40,9 @@ function createInitialState(): SearchState {
     selectedResult: null,
     recentSearches: loadRecentSearches(),
     sort: "relevance",
+    filters: {
+      ...DEFAULT_SEARCH_FILTERS,
+    },
   };
 }
 

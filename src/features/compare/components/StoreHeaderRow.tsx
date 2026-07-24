@@ -20,7 +20,7 @@ import ProductLabelCell from "./ProductLabelCell";
 import StoreHeaderCell from "./StoreHeaderCell";
 
 import type { ComparisonProductViewModel } from "@/features/comparison/viewmodels/comparison-product.viewmodel";
-import type { Store } from "@/features/comparison/types/store.types";
+import type { Store } from "@/features/store";
 
 interface StoreHeaderRowProps {
   products: ComparisonProductViewModel[];

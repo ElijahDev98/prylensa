@@ -13,7 +13,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import type { StoreViewModel } from "@/features/store";
+import type { Store } from "@/features/store";
 
 import type { ComparisonAnalyticsViewModel } from "../viewmodels/comparison-analytics.viewmodel";
 import type { ComparisonInsightViewModel } from "../viewmodels/comparison-insight.viewmodel";
@@ -22,6 +22,7 @@ import type { ComparisonProductViewModel } from "../viewmodels/comparison-produc
 import type { ComparisonRowViewModel } from "../viewmodels/comparison-row.viewmodel";
 import type { ComparisonSummaryViewModel } from "../viewmodels/comparison-summary.viewmodel";
 import type { RecommendationViewModel } from "../viewmodels/recommendation.viewmodel";
+import type { ComparisonSelectedProduct } from "../services/comparison.service";
 
 export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   /**
@@ -37,7 +38,7 @@ export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
   /**
    * Available stores.
    */
-  stores: StoreViewModel[];
+  stores: Store[];
 
   /**
    * Analytics used by charts.
@@ -68,6 +69,8 @@ export interface ComparisonViewModel extends ComparisonPreferencesViewModel {
    * Product actions.
    */
   addProduct(productId: string): void;
+
+  addSelectedProduct(product: ComparisonSelectedProduct): void;
 
   removeProduct(productId: string): void;
 

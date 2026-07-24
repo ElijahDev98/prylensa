@@ -47,20 +47,50 @@ interface UseSearchActionsProps {
 
 export default function useSearchActions({ setState }: UseSearchActionsProps) {
   const updateSort = useCallback(
-    (sort: SearchSortOption) => {
+    async (sort: SearchSortOption) => {
+      let query = "";
+
       setState((previous) => ({
         ...previous,
         sort,
-        results: searchProducts(previous.query, sort),
+        loading: true,
+      }));
+
+      setState((previous) => {
+        query = previous.query;
+
+        return previous;
+      });
+
+      const results = await searchProducts(query, sort);
+
+      setState((previous) => ({
+        ...previous,
+        loading: false,
+        results,
       }));
     },
     [setState],
   );
 
-  const executeSearch = useCallback(() => {
-    setState((previous) => {
-      const results = searchProducts(previous.query, previous.sort);
+  const executeSearch = useCallback(async () => {
+    let query = "";
+    let sort: SearchSortOption = "relevance";
 
+    setState((previous) => {
+      query = previous.query;
+      sort = previous.sort;
+
+      return {
+        ...previous,
+        loading: true,
+        feedback: {},
+      };
+    });
+
+    const results = await searchProducts(query, sort);
+
+    setState((previous) => {
       return {
         ...previous,
         loading: false,
@@ -68,18 +98,35 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
         selectedResult: null,
         recentSearches: addRecentSearch(
           previous.recentSearches,
-          previous.query,
+          query,
         ),
       };
     });
   }, [setState]);
 
   const executeRecentSearch = useCallback(
-    (query: string) => {
+    async (query: string) => {
+      let sort: SearchSortOption = "relevance";
+
+      setState((previous) => {
+        sort = previous.sort;
+
+        return {
+          ...previous,
+          query,
+          loading: true,
+          feedback: {},
+          selectedResult: null,
+        };
+      });
+
+      const results = await searchProducts(query, sort);
+
       setState((previous) => ({
         ...previous,
         query,
-        results: searchProducts(query, previous.sort),
+        loading: false,
+        results,
         selectedResult: null,
         recentSearches: addRecentSearch(previous.recentSearches, query),
       }));

@@ -34,6 +34,8 @@ import useKeyboardShortcuts from "./hooks/useKeyboardShortcuts";
 import useSearch from "./hooks/useSearch";
 import useSearchFocus from "./hooks/useSearchFocus";
 
+import { toComparisonSelectedProduct } from "./mappers/search-comparison.mapper";
+
 import { RecentSearches, SearchResultList, WelcomeSection } from "./components";
 
 import { SearchSession } from "./components/session";
@@ -120,6 +122,20 @@ function SearchPage() {
 
   /**
    * ---------------------------------------------------------------------------
+   * Add Selected Product To Comparison
+   * ---------------------------------------------------------------------------
+   */
+
+  const handleCompareSelectedProduct = useCallback(() => {
+    if (selectedResult === null) {
+      return;
+    }
+
+    comparison.addSelectedProduct(toComparisonSelectedProduct(selectedResult));
+  }, [comparison, selectedResult]);
+
+  /**
+   * ---------------------------------------------------------------------------
    * Global Keyboard Shortcuts
    * ---------------------------------------------------------------------------
    */
@@ -198,7 +214,7 @@ function SearchPage() {
         result={selectedResult}
         loading={loading}
         error={feedback.error ?? null}
-        onCompare={comparison.addProduct}
+        onCompare={handleCompareSelectedProduct}
         isCompared={
           selectedResult !== null && comparison.isSelected(selectedResult.id)
         }

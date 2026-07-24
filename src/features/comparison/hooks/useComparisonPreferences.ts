@@ -34,7 +34,7 @@ import type {
   ComparisonSortOption,
 } from "../types/comparison-preferences.types";
 
-import type { ComparisonPreferencesViewModel } from "../types/comparison-preferences.viewmodel";
+import type { ComparisonPreferencesViewModel } from "../viewmodels/comparison-preferences.viewmodel";
 
 function useComparisonPreferences(): ComparisonPreferencesViewModel {
   const [preferences, setPreferences] = useState(createComparisonPreferences);

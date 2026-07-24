@@ -11,10 +11,10 @@
 import {
   BarChart3,
   Bell,
-  ChartColumn,
   LayoutDashboard,
   Search,
   Settings,
+  Sparkles,
 } from "lucide-react";
 
 import { ROUTES } from "@/app/router/routes";
@@ -23,28 +23,28 @@ import type { SidebarNavigationItem } from "./sidebar.types";
 
 export const SIDEBAR_NAVIGATION: SidebarNavigationItem[] = [
   {
-    id: "search",
-    label: "Search",
-    path: ROUTES.HOME,
-    icon: Search,
-  },
-  {
     id: "dashboard",
     label: "Dashboard",
-    path: ROUTES.DASHBOARD,
+    path: ROUTES.HOME,
     icon: LayoutDashboard,
   },
   {
+    id: "search",
+    label: "Search",
+    path: ROUTES.SEARCH,
+    icon: Search,
+  },
+  {
     id: "compare",
-    label: "Compare",
+    label: "Comparison",
     path: ROUTES.COMPARE,
     icon: BarChart3,
   },
   {
-    id: "analytics",
-    label: "Analytics",
-    path: ROUTES.ANALYTICS,
-    icon: ChartColumn,
+    id: "ai-recommendations",
+    label: "AI Recommendations",
+    path: ROUTES.AI_RECOMMENDATIONS,
+    icon: Sparkles,
   },
   {
     id: "alerts",

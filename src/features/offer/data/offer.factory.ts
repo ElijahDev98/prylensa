@@ -58,5 +58,7 @@ export function createOffers(productId: string, seeds: OfferSeed[]): Offer[] {
     productUrl: "#",
 
     lastUpdated: new Date().toISOString(),
+
+    currency: "NGN",
   }));
 }

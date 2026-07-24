@@ -21,6 +21,7 @@
 
 import { getOffersByProductId } from "@/features/offer/services/offer.service";
 
+import type { Offer } from "@/features/offer/types/offer.types";
 import type { Product } from "@/features/product/types/product.types";
 import type { Store } from "@/features/store/types/store.types";
 
@@ -35,48 +36,56 @@ interface BuildComparisonRowsOptions {
   products: Product[];
 
   stores: Store[];
+
+  offers?: Offer[];
 }
 
 export function getComparisonRows({
   products,
   stores,
+  offers,
 }: BuildComparisonRowsOptions): ComparisonRowModel[] {
   return [
-    buildPriceRow(products, stores),
-    buildDiscountRow(products, stores),
-    buildAvailabilityRow(products, stores),
+    buildPriceRow(products, stores, offers),
+    buildDiscountRow(products, stores, offers),
+    buildAvailabilityRow(products, stores, offers),
   ];
 }
 
 function buildPriceRow(
   products: Product[],
   stores: Store[],
+  offers?: Offer[],
 ): ComparisonRowModel {
   return {
     id: COMPARISON_ROW_ID.PRICE,
 
     label: "Price",
 
-    products: products.map((product) => buildPriceValues(product, stores)),
+    products: products.map((product) => buildPriceValues(product, stores, offers)),
   };
 }
 
 function buildDiscountRow(
   products: Product[],
   stores: Store[],
+  offers?: Offer[],
 ): ComparisonRowModel {
   return {
     id: COMPARISON_ROW_ID.DISCOUNT,
 
     label: "Discount",
 
-    products: products.map((product) => buildDiscountValues(product, stores)),
+    products: products.map((product) =>
+      buildDiscountValues(product, stores, offers),
+    ),
   };
 }
 
 function buildAvailabilityRow(
   products: Product[],
   stores: Store[],
+  offers?: Offer[],
 ): ComparisonRowModel {
   return {
     id: COMPARISON_ROW_ID.AVAILABILITY,
@@ -84,23 +93,30 @@ function buildAvailabilityRow(
     label: "Availability",
 
     products: products.map((product) =>
-      buildAvailabilityValues(product, stores),
+      buildAvailabilityValues(product, stores, offers),
     ),
   };
+}
+
+function getProductOffers(productId: string, offers?: Offer[]): Offer[] {
+  const sourceOffers = offers ?? getOffersByProductId(productId);
+
+  return sourceOffers.filter((offer) => offer.productId === productId);
 }
 
 function buildPriceValues(
   product: Product,
   stores: Store[],
+  offers?: Offer[],
 ): ComparisonProductValuesModel {
-  const offers = getOffersByProductId(product.id).filter((offer) =>
+  const productOffers = getProductOffers(product.id, offers).filter((offer) =>
     stores.some((store) => store.id === offer.storeId),
   );
 
   return {
     productId: product.id,
 
-    values: offers.map((offer) => ({
+    values: productOffers.map((offer) => ({
       storeId: offer.storeId,
 
       value: offer.currentPrice,
@@ -111,15 +127,16 @@ function buildPriceValues(
 function buildDiscountValues(
   product: Product,
   stores: Store[],
+  offers?: Offer[],
 ): ComparisonProductValuesModel {
-  const offers = getOffersByProductId(product.id).filter((offer) =>
+  const productOffers = getProductOffers(product.id, offers).filter((offer) =>
     stores.some((store) => store.id === offer.storeId),
   );
 
   return {
     productId: product.id,
 
-    values: offers.map((offer) => ({
+    values: productOffers.map((offer) => ({
       storeId: offer.storeId,
 
       value: offer.discount,
@@ -130,15 +147,16 @@ function buildDiscountValues(
 function buildAvailabilityValues(
   product: Product,
   stores: Store[],
+  offers?: Offer[],
 ): ComparisonProductValuesModel {
-  const offers = getOffersByProductId(product.id).filter((offer) =>
+  const productOffers = getProductOffers(product.id, offers).filter((offer) =>
     stores.some((store) => store.id === offer.storeId),
   );
 
   return {
     productId: product.id,
 
-    values: offers.map((offer) => ({
+    values: productOffers.map((offer) => ({
       storeId: offer.storeId,
 
       value: offer.stockStatus,

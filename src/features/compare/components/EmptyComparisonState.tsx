@@ -18,7 +18,13 @@
 
 import { Box, Plus } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
+import { ROUTES } from "@/app/router/routes";
+
 function EmptyComparisonState() {
+  const navigate = useNavigate();
+
   return (
     <section
       aria-label="Empty Comparison State"
@@ -74,6 +80,7 @@ function EmptyComparisonState() {
 
       <button
         type="button"
+        onClick={() => navigate(ROUTES.SEARCH)}
         className="
           inline-flex
           items-center

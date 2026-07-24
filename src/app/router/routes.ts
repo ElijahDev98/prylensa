@@ -17,13 +17,9 @@ export const ROUTES = {
 
   COMPARE: "/compare",
 
-  ANALYTICS: "/analytics",
-
-  WATCHLIST: "/watchlist",
+  AI_RECOMMENDATIONS: "/ai-recommendations",
 
   ALERTS: "/alerts",
 
   SETTINGS: "/settings",
-
-  PROFILE: "/profile",
 } as const;

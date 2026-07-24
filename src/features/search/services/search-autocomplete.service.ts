@@ -9,7 +9,7 @@
  * Responsibilities:
  * - Complete the user's current query.
  * - Rank autocomplete candidates.
- * - Return the best completion.
+ * - Return the remaining completion (suffix).
  *
  * Architecture:
  * UI
@@ -31,7 +31,12 @@ function normalize(value: string): string {
 }
 
 /**
- * Returns the best inline autocomplete.
+ * Returns the remaining autocomplete suffix.
+ *
+ * Example:
+ * Query:      "Xiaomi"
+ * Match:      "Xiaomi 15 Ultra"
+ * Returns:    " 15 Ultra"
  */
 export function getAutocomplete(query: string): string | null {
   const keyword = normalize(query);
@@ -40,10 +45,20 @@ export function getAutocomplete(query: string): string | null {
     return null;
   }
 
-  const candidates = getProducts()
+  const bestMatch = getProducts()
     .map((product) => product.title)
-    .filter((title) => title.toLowerCase().startsWith(keyword))
-    .sort((left, right) => left.localeCompare(right));
+    .filter((title) => normalize(title).startsWith(keyword))
+    .sort((left, right) => left.localeCompare(right))[0];
 
-  return candidates[0] ?? null;
+  if (!bestMatch) {
+    return null;
+  }
+
+  // Exact match — nothing left to autocomplete.
+  if (normalize(bestMatch) === keyword) {
+    return null;
+  }
+
+  // Return only the remaining portion of the suggestion.
+  return bestMatch.substring(query.length);
 }

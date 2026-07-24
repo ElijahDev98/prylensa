@@ -9,7 +9,7 @@ import { useContext } from "react";
 
 import { ComparisonContext } from "./ComparisonContext";
 
-import type { ComparisonViewModel } from "../types/comparison.viewmodel";
+import type { ComparisonViewModel } from "../viewmodels/comparison.viewmodel";
 
 function useComparisonContext(): ComparisonViewModel {
   const comparison = useContext(ComparisonContext);
