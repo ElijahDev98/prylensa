@@ -15,15 +15,18 @@ function SidebarBrand() {
       className="
         border-b
         border-slate-200
-        px-6
+        px-3
         py-5
+        lg:px-6
       "
     >
       <section
         className="
           flex
           items-center
-          gap-3
+          justify-center
+          lg:justify-start
+          lg:gap-3
         "
       >
         <img
@@ -36,7 +39,7 @@ function SidebarBrand() {
           "
         />
 
-        <section>
+        <section className="hidden lg:block">
           <h1
             className="
               text-lg

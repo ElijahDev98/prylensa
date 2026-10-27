@@ -21,10 +21,12 @@ function SidebarFooter() {
   return (
     <footer
       className="
+        hidden
         border-t
         border-slate-200
         px-5
         py-4
+        lg:block
       "
     >
       <section className="space-y-1 text-center">

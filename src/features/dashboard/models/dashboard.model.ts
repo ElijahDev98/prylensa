@@ -33,7 +33,10 @@
  * Restricts metrics to known business concepts.
  */
 export type DashboardMetricLabel =
-  "Saved Comparisons" | "Price Alerts" | "Recent Searches" | "Stores Monitored";
+  | "Products Tracked"
+  | "Price Drops"
+  | "Marketplace Offers"
+  | "Stores Monitored";
 
 /**
  * Dashboard metric.
@@ -65,6 +68,8 @@ export interface TrendingProductModel {
 
   currentPrice: number;
 
+  averagePrice: number;
+
   priceChangePercentage: number;
 
   trend: ProductTrend;
@@ -95,6 +100,10 @@ export interface TrendingProductModel {
    * Optional product thumbnail.
    */
   thumbnail?: string;
+
+  qualityScore: number;
+
+  qualityLabel: string;
 }
 
 /**
@@ -135,6 +144,8 @@ export interface RecommendationModel {
   description: string;
 
   priority: RecommendationPriority;
+
+  feedback?: "helpful" | "not-helpful" | null;
 }
 
 /**
@@ -167,4 +178,6 @@ export interface DashboardModel {
   priceAlerts: PriceAlertModel[];
 
   recentComparisons: RecentComparisonModel[];
+
+  generatedAt: string;
 }

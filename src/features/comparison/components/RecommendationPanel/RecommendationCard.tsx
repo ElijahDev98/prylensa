@@ -30,10 +30,11 @@ import {
 import RecommendationReason from "./RecommendationReason";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
-import { formatCurrency } from "@/shared/utils/currency";
+import { usePreferences } from "@/features/settings";
 
 function RecommendationCard() {
   const comparison = useComparison();
+  const { formatPrice } = usePreferences();
 
   const recommendation = comparison.recommendation;
 
@@ -260,7 +261,7 @@ function RecommendationCard() {
               text-emerald-600
             "
           >
-            {formatCurrency(comparison.summary.estimatedSavings)}
+            {formatPrice(comparison.summary.estimatedSavings)}
           </p>
         </div>
       </div>

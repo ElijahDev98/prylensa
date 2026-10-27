@@ -39,6 +39,7 @@ import type {
  */
 export function buildSearchSummary(
   results: SearchResultViewModel[],
+  formatPrice: (value: number) => string,
 ): SearchSummaryViewModel {
-  return SearchMapper.toSearchSummaryViewModel(results);
+  return SearchMapper.toSearchSummaryViewModel(results, formatPrice);
 }

@@ -36,8 +36,9 @@ function AppSidebar() {
         className="
           flex-1
           overflow-y-auto
-          px-4
+          px-2
           py-4
+          lg:px-4
         "
       >
         <SidebarNavigation />

@@ -20,12 +20,14 @@
 import { AlertTriangle, CheckCircle2, Info, Lightbulb } from "lucide-react";
 
 import type { ComparisonInsightViewModel } from "@/features/comparison/viewmodels/comparison-insight.viewmodel";
+import { usePreferences } from "@/features/settings";
 
 interface InsightCardProps {
   insight: ComparisonInsightViewModel;
 }
 
 function InsightCard({ insight }: InsightCardProps) {
+  const { formatPrice } = usePreferences();
   function getSeverityStyles() {
     switch (insight.severity) {
       case "success":
@@ -66,7 +68,7 @@ function InsightCard({ insight }: InsightCardProps) {
   function formatValue(): string {
     switch (insight.metricType) {
       case "currency":
-        return `₦${Math.round(insight.value).toLocaleString()}`;
+        return formatPrice(insight.value);
 
       case "percentage":
         return `${insight.value.toFixed(1)}%`;

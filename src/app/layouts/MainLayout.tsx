@@ -4,7 +4,7 @@
  * Feature: Application Shell
  *
  * Purpose:
- * Defines the primary application layout for Priciq.
+ * Defines the primary application layout for Prylensa.
  *
  * Responsibilities:
  * - Establish the root page structure.

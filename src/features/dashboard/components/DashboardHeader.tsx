@@ -20,13 +20,33 @@
 
 import { RefreshCw } from "lucide-react";
 
-function DashboardHeader() {
+interface DashboardHeaderProps {
+  refreshing: boolean;
+
+  lastUpdated: Date | null;
+
+  onRefresh: () => void;
+}
+
+function DashboardHeader({
+  refreshing,
+  lastUpdated,
+  onRefresh,
+}: DashboardHeaderProps) {
   const today = new Intl.DateTimeFormat("en-NG", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(new Date());
+
+  const lastUpdatedLabel =
+    lastUpdated === null
+      ? "Live marketplace data"
+      : `Updated ${new Intl.DateTimeFormat("en-NG", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(lastUpdated)}`;
 
   return (
     <header
@@ -61,12 +81,19 @@ function DashboardHeader() {
         </h1>
 
         <p className="mt-2 text-slate-500">
-          Monitor market trends, savings and AI insights in one place.
+          Monitor live market trends, product quality and buying signals in one
+          place.
+        </p>
+
+        <p className="mt-3 text-sm font-medium text-slate-500">
+          {lastUpdatedLabel}
         </p>
       </div>
 
       <button
         type="button"
+        onClick={onRefresh}
+        disabled={refreshing}
         className="
           inline-flex
           items-center
@@ -82,10 +109,15 @@ function DashboardHeader() {
           transition-colors
           duration-200
           hover:bg-slate-100
+          disabled:cursor-not-allowed
+          disabled:opacity-60
         "
       >
-        <RefreshCw size={18} />
-        Refresh
+        <RefreshCw
+          size={18}
+          className={refreshing ? "animate-spin" : undefined}
+        />
+        {refreshing ? "Refreshing" : "Refresh"}
       </button>
     </header>
   );

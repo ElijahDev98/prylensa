@@ -5,25 +5,6 @@
  *
  * Purpose:
  * Maps Dashboard business models to presentation view models.
- *
- * Responsibilities:
- * - Format business values.
- * - Assign UI metadata.
- * - Keep presentation concerns out of models.
- *
- * Architecture:
- *
- * UI
- *   ↓
- * ViewModel
- *   ↓
- * Mapper
- *   ↓
- * Model
- *
- * Notes:
- * - No business rules.
- * - No API calls.
  * -----------------------------------------------------------------------------
  */
 
@@ -31,53 +12,42 @@ import { Activity, Bell, ShoppingCart, TrendingUp } from "lucide-react";
 
 import type {
   DashboardMetricModel,
-  TrendingProductModel,
-  RecommendationModel,
+  DashboardModel,
   PriceAlertModel,
   RecentComparisonModel,
-  DashboardModel,
+  RecommendationModel,
+  TrendingProductModel,
 } from "../models/dashboard.model";
 
 import type {
   DashboardMetricViewModel,
-  TrendingProductViewModel,
-  RecommendationViewModel,
+  DashboardViewModel,
   PriceAlertViewModel,
   RecentComparisonViewModel,
-  DashboardViewModel,
+  RecommendationViewModel,
+  TrendingProductViewModel,
 } from "../viewmodels/dashboard.viewmodel";
 
-/**
- * Formats a currency value.
- */
-function formatCurrency(value: number): string {
-  return `₦${value.toLocaleString()}`;
-}
+type PriceFormatter = (valueInNgn: number) => string;
 
-/**
- * Formats a percentage.
- */
 function formatPercentage(value: number): string {
   return `${value > 0 ? "+" : ""}${value}%`;
 }
 
-/**
- * Metric icon configuration.
- */
 const METRIC_UI = {
-  "Saved Comparisons": {
+  "Products Tracked": {
     icon: Activity,
     iconBackground: "bg-blue-100",
     iconColor: "text-blue-600",
   },
 
-  "Price Alerts": {
+  "Price Drops": {
     icon: Bell,
     iconBackground: "bg-amber-100",
     iconColor: "text-amber-600",
   },
 
-  "Recent Searches": {
+  "Marketplace Offers": {
     icon: TrendingUp,
     iconBackground: "bg-emerald-100",
     iconColor: "text-emerald-600",
@@ -89,7 +59,7 @@ const METRIC_UI = {
     iconColor: "text-purple-600",
   },
 } satisfies Record<
-  string,
+  DashboardMetricModel["label"],
   {
     icon: typeof Activity;
     iconBackground: string;
@@ -97,76 +67,70 @@ const METRIC_UI = {
   }
 >;
 
-/**
- * Maps a metric.
- */
+function getQualityColor(score: number): string {
+  if (score >= 85) {
+    return "bg-emerald-50 text-emerald-700";
+  }
+
+  if (score >= 70) {
+    return "bg-blue-50 text-blue-700";
+  }
+
+  if (score >= 50) {
+    return "bg-amber-50 text-amber-700";
+  }
+
+  return "bg-slate-100 text-slate-600";
+}
+
 function mapMetric(model: DashboardMetricModel): DashboardMetricViewModel {
   const ui = METRIC_UI[model.label];
 
   return {
     id: model.id,
-
     label: model.label,
-
     valueLabel: model.value.toLocaleString(),
-
     changeLabel: formatPercentage(model.changePercentage),
-
     icon: ui.icon,
-
     iconBackground: ui.iconBackground,
-
     iconColor: ui.iconColor,
-
     trendColor:
       model.changePercentage >= 0 ? "text-emerald-600" : "text-red-600",
-
     isPositiveTrend: model.changePercentage >= 0,
   };
 }
 
-/**
- * Maps a trending product.
- */
 function mapTrendingProduct(
   model: TrendingProductModel,
+  formatPrice: PriceFormatter,
 ): TrendingProductViewModel {
   return {
     id: model.id,
-
     name: model.name,
-
     category: model.category,
-
-    currentPriceLabel: formatCurrency(model.currentPrice),
-
+    currentPriceLabel: formatPrice(model.currentPrice),
+    averagePriceLabel: formatPrice(model.averagePrice),
     priceChangeLabel: formatPercentage(model.priceChangePercentage),
-
     trend: model.trend,
-
     stores: model.stores,
-
     bestPriceStoreLabel: model.bestPriceStore,
-
     isBestPrice: model.isBestPrice,
-
     trendHistory: model.trendHistory,
-
     thumbnail: model.thumbnail,
-
+    qualityScoreLabel: `${model.qualityScore}/100`,
+    qualityLabel: model.qualityLabel,
+    qualityColor: getQualityColor(model.qualityScore),
     trendColor: model.trend === "up" ? "text-emerald-600" : "text-red-600",
   };
 }
 
-/**
- * Maps an AI recommendation.
- */
 function mapRecommendation(
   model: RecommendationModel,
 ): RecommendationViewModel {
   return {
     ...model,
-
+    feedback: model.feedback ?? null,
+    feedbackEnabled: model.feedback !== undefined,
     badgeColor:
       model.priority === "high"
         ? "bg-red-100 text-red-700"
@@ -176,60 +140,50 @@ function mapRecommendation(
   };
 }
 
-/**
- * Maps a price alert.
- */
-function mapPriceAlert(model: PriceAlertModel): PriceAlertViewModel {
+function mapPriceAlert(
+  model: PriceAlertModel,
+  formatPrice: PriceFormatter,
+): PriceAlertViewModel {
   return {
     id: model.id,
-
     product: model.product,
-
     store: model.store,
-
-    currentPriceLabel: formatCurrency(model.currentPrice),
-
-    previousPriceLabel: formatCurrency(model.previousPrice),
-
+    currentPriceLabel: formatPrice(model.currentPrice),
+    previousPriceLabel: formatPrice(model.previousPrice),
     direction: model.direction,
-
     directionColor:
       model.direction === "down" ? "text-emerald-600" : "text-red-600",
   };
 }
 
-/**
- * Maps a recent comparison.
- */
 function mapRecentComparison(
   model: RecentComparisonModel,
+  formatPrice: PriceFormatter,
 ): RecentComparisonViewModel {
   return {
     id: model.id,
-
     product: model.product,
-
     comparedStoresLabel: `${model.comparedStores} Stores`,
-
-    bestPriceLabel: formatCurrency(model.bestPrice),
-
+    bestPriceLabel: formatPrice(model.bestPrice),
     comparedAtLabel: model.comparedAt,
   };
 }
 
-/**
- * Maps the complete dashboard.
- */
-export function mapDashboard(model: DashboardModel): DashboardViewModel {
+export function mapDashboard(
+  model: DashboardModel,
+  formatPrice: PriceFormatter,
+): DashboardViewModel {
   return {
     metrics: model.metrics.map(mapMetric),
-
-    trendingProducts: model.trendingProducts.map(mapTrendingProduct),
-
+    trendingProducts: model.trendingProducts.map((item) =>
+      mapTrendingProduct(item, formatPrice),
+    ),
     recommendations: model.recommendations.map(mapRecommendation),
-
-    priceAlerts: model.priceAlerts.map(mapPriceAlert),
-
-    recentComparisons: model.recentComparisons.map(mapRecentComparison),
+    priceAlerts: model.priceAlerts.map((item) =>
+      mapPriceAlert(item, formatPrice),
+    ),
+    recentComparisons: model.recentComparisons.map((item) =>
+      mapRecentComparison(item, formatPrice),
+    ),
   };
 }

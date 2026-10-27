@@ -62,6 +62,8 @@ export interface TrendingProductViewModel {
 
   currentPriceLabel: string;
 
+  averagePriceLabel: string;
+
   priceChangeLabel: string;
 
   trend: "up" | "down";
@@ -91,6 +93,12 @@ export interface TrendingProductViewModel {
    */
   thumbnail?: string;
 
+  qualityScoreLabel: string;
+
+  qualityLabel: string;
+
+  qualityColor: string;
+
   trendColor: string;
 }
 
@@ -107,6 +115,10 @@ export interface RecommendationViewModel {
   priority: "high" | "medium" | "low";
 
   badgeColor: string;
+
+  feedback: "helpful" | "not-helpful" | null;
+
+  feedbackEnabled: boolean;
 }
 
 /**

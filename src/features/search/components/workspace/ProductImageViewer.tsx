@@ -1,3 +1,5 @@
+import ProductImage from "@/components/ui/ProductImage";
+
 import type { ProductImageViewerProps } from "../../types/product-gallery.types";
 
 function ProductImageViewer({ image }: ProductImageViewerProps) {
@@ -34,17 +36,11 @@ function ProductImageViewer({ image }: ProductImageViewerProps) {
         p-6
       "
     >
-      <img
+      <ProductImage
         src={image.url}
         alt={image.alt}
-        className="
-          h-full
-          w-auto
-          max-w-full
-          object-contain
-          transition-all
-          duration-300
-        "
+        className="h-full w-auto max-w-full object-contain transition-all duration-300"
+        fallbackClassName="h-full w-full rounded-lg"
       />
     </figure>
   );

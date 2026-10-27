@@ -14,8 +14,8 @@ export const LAYOUT = {
   },
 
   workspacePanel: {
-    minHeight: "min-h-[400px]",
-    maxHeight: "max-h-[620px]",
+    minHeight: "min-h-[420px]",
+    maxHeight: "max-h-none",
     fullHeight: "h-full",
     stretch: "self-stretch",
   },

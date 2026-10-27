@@ -23,8 +23,6 @@
  * -----------------------------------------------------------------------------
  */
 
-import { getProducts } from "@/features/product";
-
 const MAX_SUGGESTIONS = 8;
 
 function normalize(value: string): string {
@@ -71,13 +69,7 @@ export function getSearchSuggestions(
     return [];
   }
 
-  const products = getProducts();
-
-  const productTitles = products.map((product) => product.title);
-
-  const brands = products.map((product) => product.brand);
-
-  const suggestions = unique([...recentSearches, ...productTitles, ...brands]);
+  const suggestions = unique(recentSearches);
 
   return rankSuggestions(suggestions, keyword).slice(0, MAX_SUGGESTIONS);
 }

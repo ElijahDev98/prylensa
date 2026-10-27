@@ -4,7 +4,7 @@
  * Feature: Sidebar
  *
  * Purpose:
- * Displays the Priciq branding inside the application sidebar.
+ * Displays the Prylensa branding inside the application sidebar.
  *
  * Responsibilities:
  * - Render the application logo.

@@ -50,6 +50,12 @@ export interface ProductSpecificationViewModel {
 export interface SearchOfferViewModel {
   id: string;
 
+  productTitle: string;
+
+  brand: string;
+
+  imageUrl: string;
+
   storeId: string;
 
   storeName: string;
@@ -67,6 +73,12 @@ export interface SearchOfferViewModel {
   inStock: boolean;
 
   productUrl: string;
+
+  dataSource: "live" | "persisted-snapshot";
+
+  observedAt?: string;
+
+  availabilityStatus: "in-stock" | "out-of-stock" | "unverified";
 }
 
 /**
@@ -104,6 +116,58 @@ export interface SearchSummaryViewModel {
    * Formatted average price.
    */
   averagePriceLabel: string;
+
+  /** Highest AI relevance score in the current result set. */
+  bestQueryMatch: number;
+
+  /** Formatted highest AI relevance score. */
+  bestQueryMatchLabel: string;
+}
+
+export interface SearchAiAnalysisViewModel {
+  relevanceScore: number;
+
+  relevanceLabel: string;
+
+  relevanceReason: string;
+
+  insight: string;
+
+  confidenceLabel: string;
+
+  evaluationLabel: string;
+
+  riskLabel: string;
+
+  riskColor: string;
+
+  savingsLabel: string;
+
+  predictionLabel: string;
+
+  predictionExplanation: string;
+
+  predictionEvidenceLabel: string;
+
+  predictionConfidenceLabel: string;
+
+  predictionColor: string;
+
+  recommendationAction: string;
+
+  recommendationReason: string;
+
+  recommendationPriority: "high" | "medium" | "low";
+
+  recommendationColor: string;
+
+  variantStatus: "verified" | "review" | "conflict" | "insufficient";
+
+  variantLabel: string;
+
+  variantSummary: string;
+
+  variantColor: string;
 }
 
 /**
@@ -135,4 +199,6 @@ export interface SearchResultViewModel {
   lowestOffer: SearchOfferViewModel | null;
 
   offers: SearchOfferViewModel[];
+
+  aiAnalysis: SearchAiAnalysisViewModel | null;
 }

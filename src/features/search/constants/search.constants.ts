@@ -13,6 +13,7 @@ export const SEARCH_DEFAULTS = {
 } as const;
 
 export const SEARCH_CONTENT = {
-  welcomeTitle: "Welcome Back 👋",
-  welcomeSubtitle: "AI-Powered Price Comparison",
+  welcomeTitle: "Search and compare products",
+  welcomeSubtitle:
+    "AI-powered real-time e-commerce price comparison and analysis",
 } as const;

@@ -19,7 +19,10 @@ import type { ReactNode } from "react";
 
 import QueryProvider from "./QueryProvider";
 
+import { AuthGate, AuthProvider } from "@/features/auth";
 import { ComparisonProvider } from "@/features/comparison/context/ComparisonContext";
+import { DashboardProvider } from "@/features/dashboard/context/DashboardContext";
+import { PreferencesProvider } from "@/features/settings";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -28,7 +31,15 @@ interface AppProvidersProps {
 function AppProviders({ children }: AppProvidersProps) {
   return (
     <QueryProvider>
-      <ComparisonProvider>{children}</ComparisonProvider>
+      <AuthProvider>
+        <PreferencesProvider>
+          <AuthGate>
+            <DashboardProvider>
+              <ComparisonProvider>{children}</ComparisonProvider>
+            </DashboardProvider>
+          </AuthGate>
+        </PreferencesProvider>
+      </AuthProvider>
     </QueryProvider>
   );
 }

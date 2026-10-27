@@ -23,17 +23,22 @@ function AppHeader() {
         top-0
         z-30
         flex
-        h-16
+        min-h-16
         items-center
         justify-between
-        gap-6
+        gap-3
         border-b
         border-slate-200
         bg-white
-        px-6
+        px-4
+        py-3
+        sm:gap-6
+        sm:px-6
       "
     >
-      <HeaderSearch />
+      <div className="hidden min-w-0 flex-1 md:block">
+        <HeaderSearch />
+      </div>
 
       <HeaderActions />
     </header>

@@ -22,6 +22,8 @@
  * -----------------------------------------------------------------------------
  */
 
+import ProductImage from "@/components/ui/ProductImage";
+
 import type { ProductImageViewModel } from "../../viewmodels/search.viewmodel";
 
 interface ProductThumbnailProps {
@@ -59,10 +61,11 @@ function ProductThumbnail({
         }
       `}
     >
-      <img
+      <ProductImage
         src={image.url}
         alt={image.alt}
         className="h-full w-full object-cover"
+        fallbackClassName="h-full w-full"
       />
     </button>
   );

@@ -15,7 +15,13 @@
  * -----------------------------------------------------------------------------
  */
 
-const STORAGE_KEY = "priciq.search.recent";
+import {
+  readMigratedStorageValue,
+  removeMigratedStorageValue,
+} from "@/shared/utils/migrated-storage";
+
+const STORAGE_KEY = "prylensa.search.recent";
+const LEGACY_STORAGE_KEY = "priciq.search.recent";
 
 const MAX_RECENT_SEARCHES = 8;
 
@@ -24,7 +30,7 @@ const MAX_RECENT_SEARCHES = 8;
  */
 export function loadRecentSearches(): string[] {
   try {
-    const value = localStorage.getItem(STORAGE_KEY);
+    const value = readMigratedStorageValue(STORAGE_KEY, LEGACY_STORAGE_KEY);
 
     if (!value) {
       return [];
@@ -69,8 +75,28 @@ export function addRecentSearch(searches: string[], query: string): string[] {
 }
 
 /**
+ * Removes one search term while preserving the remaining order.
+ */
+export function removeRecentSearch(
+  searches: string[],
+  query: string,
+): string[] {
+  const updated = searches.filter(
+    (item) => item.toLowerCase() !== query.trim().toLowerCase(),
+  );
+
+  if (updated.length === 0) {
+    clearRecentSearches();
+  } else {
+    saveRecentSearches(updated);
+  }
+
+  return updated;
+}
+
+/**
  * Clears all recent searches.
  */
 export function clearRecentSearches(): void {
-  localStorage.removeItem(STORAGE_KEY);
+  removeMigratedStorageValue(STORAGE_KEY, LEGACY_STORAGE_KEY);
 }

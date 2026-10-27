@@ -28,6 +28,11 @@ export interface ComparisonProductViewModel {
   subtitle: string;
 
   /**
+   * Product category used for a meaningful image fallback.
+   */
+  category: string;
+
+  /**
    * Primary product image.
    */
   imageUrl: string;

@@ -80,7 +80,7 @@ function EmptyComparisonState() {
 
       <button
         type="button"
-        onClick={() => navigate(ROUTES.SEARCH)}
+        onClick={() => navigate(`${ROUTES.SEARCH}?mode=comparison`)}
         className="
           inline-flex
           items-center

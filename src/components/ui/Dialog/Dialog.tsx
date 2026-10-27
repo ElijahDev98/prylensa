@@ -30,10 +30,19 @@ interface DialogProps {
 
   footer?: ReactNode;
 
+  size?: "default" | "wide";
+
   onClose(): void;
 }
 
-function Dialog({ open, title, children, footer, onClose }: DialogProps) {
+function Dialog({
+  open,
+  title,
+  children,
+  footer,
+  size = "default",
+  onClose,
+}: DialogProps) {
   if (!open) {
     return null;
   }
@@ -56,17 +65,17 @@ function Dialog({ open, title, children, footer, onClose }: DialogProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
-        className="
+        className={`
           flex
           max-h-[90vh]
           w-full
-          max-w-3xl
           flex-col
           overflow-hidden
           rounded-2xl
           bg-white
           shadow-2xl
-        "
+          ${size === "wide" ? "max-w-6xl" : "max-w-3xl"}
+        `}
         onClick={(event) => event.stopPropagation()}
       >
         {/* Header */}

@@ -9,16 +9,6 @@
  */
 
 /**
- * Product data.
- */
-export * from "./data/products";
-
-/**
- * Product services.
- */
-export * from "./services/product.service";
-
-/**
  * Product domain types.
  */
 export type {

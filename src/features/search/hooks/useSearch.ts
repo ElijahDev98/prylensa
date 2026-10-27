@@ -27,7 +27,7 @@
  */
 
 import { DEFAULT_SEARCH_FILTERS } from "../types/search-filter.types";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { getAutocomplete } from "../services/search-autocomplete.service";
 import { buildSearchSummary } from "../services/search-summary.service";
@@ -38,9 +38,12 @@ import {
   addRecentSearch,
   clearRecentSearches,
   loadRecentSearches,
+  removeRecentSearch,
 } from "../utils/recent-search.storage";
 
 import useOfferDialog from "./search/useOfferDialog";
+import { usePreferences } from "@/features/settings";
+import { SearchMapper } from "../mappers/search.mapper";
 
 import type { SearchSortOption, SearchState } from "../types/search.types";
 import type {
@@ -52,6 +55,7 @@ function createInitialState(): SearchState {
   return {
     query: "",
     loading: false,
+    hasSearched: false,
     feedback: {},
     results: [],
     selectedResult: null,
@@ -63,23 +67,39 @@ function createInitialState(): SearchState {
   };
 }
 
+let cachedSearchState: SearchState | null = null;
+
 const EMPTY_SUMMARY: SearchSummaryViewModel = {
   resultCount: 0,
   storeCount: 0,
   lowestPrice: 0,
-  lowestPriceLabel: "₦0",
+  lowestPriceLabel: "0",
   averagePrice: 0,
-  averagePriceLabel: "₦0",
+  averagePriceLabel: "0",
+  bestQueryMatch: 0,
+  bestQueryMatchLabel: "0%",
 };
 
 export default function useSearch() {
+  const { formatPrice } = usePreferences();
+  const formatPriceRef = useRef(formatPrice);
   /**
    * ---------------------------------------------------------------------------
    * Feature State
    * ---------------------------------------------------------------------------
    */
 
-  const [state, setState] = useState<SearchState>(createInitialState);
+  const [state, setState] = useState<SearchState>(
+    () =>
+      cachedSearchState
+        ? {
+            ...cachedSearchState,
+            hasSearched:
+              cachedSearchState.hasSearched ??
+              cachedSearchState.results.length > 0,
+          }
+        : createInitialState(),
+  );
 
   /**
    * ---------------------------------------------------------------------------
@@ -93,25 +113,41 @@ export default function useSearch() {
 
   const offerDialog = useOfferDialog();
 
+  useEffect(() => {
+    cachedSearchState = state;
+  }, [state]);
+
+  useEffect(() => {
+    formatPriceRef.current = formatPrice;
+  }, [formatPrice]);
+
   /**
    * ---------------------------------------------------------------------------
    * Derived State
    * ---------------------------------------------------------------------------
    */
 
+  const displayResults = useMemo(
+    () => SearchMapper.reformatSearchResultViewModels(state.results, formatPrice),
+    [state.results, formatPrice],
+  );
+
+  const displaySelectedResult =
+    displayResults.find((result) => result.id === state.selectedResult?.id) ?? null;
+
   const summary = useMemo(() => {
-    return state.results.length > 0
-      ? buildSearchSummary(state.results)
-      : EMPTY_SUMMARY;
-  }, [state.results]);
+    return displayResults.length > 0
+      ? buildSearchSummary(displayResults, formatPrice)
+      : { ...EMPTY_SUMMARY, lowestPriceLabel: formatPrice(0), averagePriceLabel: formatPrice(0) };
+  }, [displayResults, formatPrice]);
 
   const suggestions = useMemo(() => {
     return getSearchSuggestions(state.query, state.recentSearches);
   }, [state.query, state.recentSearches]);
 
   const autocomplete = useMemo(() => {
-    return getAutocomplete(state.query);
-  }, [state.query]);
+    return getAutocomplete(state.query, state.recentSearches);
+  }, [state.query, state.recentSearches]);
 
   /**
    * ---------------------------------------------------------------------------
@@ -131,36 +167,45 @@ export default function useSearch() {
       const trimmedQuery = query.trim();
 
       if (!trimmedQuery) {
-        return;
+        return false;
       }
 
       setState((previous) => ({
         ...previous,
         loading: true,
+        hasSearched: false,
         feedback: {},
       }));
 
       try {
-        const results = await searchProducts(trimmedQuery, sort);
+        const results = await searchProducts(
+          trimmedQuery,
+          sort,
+          formatPriceRef.current,
+        );
 
         setState((previous) => ({
           ...previous,
           query: options?.updateQuery ? trimmedQuery : previous.query,
           loading: false,
+          hasSearched: true,
           results,
-          selectedResult: null,
+          selectedResult: results[0] ?? null,
           recentSearches: options?.saveRecent
             ? addRecentSearch(previous.recentSearches, trimmedQuery)
             : previous.recentSearches,
         }));
+        return true;
       } catch {
         setState((previous) => ({
           ...previous,
           loading: false,
+          hasSearched: false,
           feedback: {
             error: "Unable to complete search. Please try again.",
           },
         }));
+        return false;
       }
     },
     [],
@@ -178,6 +223,8 @@ export default function useSearch() {
     setState((previous) => ({
       ...previous,
       query,
+      hasSearched: false,
+      results: [],
       selectedResult: null,
     }));
 
@@ -227,6 +274,19 @@ export default function useSearch() {
       setActiveSuggestionIndex(-1);
 
       await runSearch(query, state.sort, {
+        updateQuery: true,
+        saveRecent: true,
+      });
+    },
+    [state.sort, runSearch],
+  );
+
+  const executeSearchQuery = useCallback(
+    async (query: string) => {
+      setSuggestionsOpen(false);
+      setActiveSuggestionIndex(-1);
+
+      return runSearch(query, state.sort, {
         updateQuery: true,
         saveRecent: true,
       });
@@ -313,6 +373,13 @@ export default function useSearch() {
     }));
   }, []);
 
+  const removeRecentSearchHistory = useCallback((query: string) => {
+    setState((previous) => ({
+      ...previous,
+      recentSearches: removeRecentSearch(previous.recentSearches, query),
+    }));
+  }, []);
+
   /**
    * ---------------------------------------------------------------------------
    * Product Selection
@@ -340,6 +407,7 @@ export default function useSearch() {
       ...previous,
       query: "",
       loading: false,
+      hasSearched: false,
       feedback: {},
       results: [],
       selectedResult: null,
@@ -369,6 +437,8 @@ export default function useSearch() {
      * Feature State
      */
     ...state,
+    results: displayResults,
+    selectedResult: displaySelectedResult,
 
     /**
      * Derived State
@@ -396,6 +466,7 @@ export default function useSearch() {
      * Search
      */
     executeSearch,
+    executeSearchQuery,
     executeRecentSearch,
 
     /**
@@ -412,6 +483,7 @@ export default function useSearch() {
      * Recent Searches
      */
     clearRecentSearchHistory,
+    removeRecentSearchHistory,
 
     /**
      * Selection

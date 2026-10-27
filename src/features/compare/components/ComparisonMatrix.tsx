@@ -12,14 +12,27 @@ import ComparisonDataRow from "./ComparisonDataRow";
 import EmptyComparisonState from "./EmptyComparisonState";
 import ProductHeaderRow from "./ProductHeaderRow";
 import StoreHeaderRow from "./StoreHeaderRow";
+import MatchedMarketplaceMatrix from "./MatchedMarketplaceMatrix";
 
 import useComparisonContext from "@/features/comparison/context/useComparisonContext";
+import { getComparisonGroupId } from "@/features/comparison/utils/comparison-group";
 
 function ComparisonMatrix() {
   const comparison = useComparisonContext();
 
   if (comparison.products.length === 0) {
     return <EmptyComparisonState />;
+  }
+
+  const matchedGroupIds = new Set(
+    comparison.products.map((product) => getComparisonGroupId(product.id)),
+  );
+  const matchedMarketplaceMode =
+    matchedGroupIds.size === 1 &&
+    comparison.analytics.marketplacePrices.length > 1;
+
+  if (matchedMarketplaceMode) {
+    return <MatchedMarketplaceMatrix />;
   }
 
   return (

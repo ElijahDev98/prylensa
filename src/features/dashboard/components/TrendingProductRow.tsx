@@ -211,6 +211,46 @@ function TrendingProductRow({
               </span>
             </div>
           )}
+
+          <div
+            className="
+              mt-3
+              flex
+              flex-wrap
+              gap-2
+            "
+          >
+            <span
+              className={`
+                inline-flex
+                items-center
+                rounded-full
+                px-3
+                py-1
+                text-xs
+                font-semibold
+                ${product.qualityColor}
+              `}
+            >
+              Quality {product.qualityLabel} - {product.qualityScoreLabel}
+            </span>
+
+            <span
+              className="
+                inline-flex
+                items-center
+                rounded-full
+                bg-slate-100
+                px-3
+                py-1
+                text-xs
+                font-medium
+                text-slate-600
+              "
+            >
+              Avg {product.averagePriceLabel}
+            </span>
+          </div>
         </div>
       </div>
 

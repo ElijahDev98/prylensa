@@ -49,7 +49,8 @@ import type { SearchResultViewModel } from "../viewmodels/search.viewmodel";
  */
 export async function searchProducts(
   query: string,
-  sort: SearchSortOption = "relevance",
+  sort: SearchSortOption,
+  formatPrice: (value: number) => string,
 ): Promise<SearchResultViewModel[]> {
   /**
    * Normalize the incoming search keyword.
@@ -71,7 +72,7 @@ export async function searchProducts(
   /**
    * Convert backend DTOs into UI ViewModels.
    */
-  const results = SearchMapper.toSearchResultViewModels(searchResults);
+  const results = SearchMapper.toSearchResultViewModels(searchResults, formatPrice);
 
   /**
    * Apply presentation sorting.
@@ -105,9 +106,14 @@ function sortSearchResults(
 
     case "relevance":
     default:
-      /**
-       * The backend currently returns results ordered by relevance.
-       */
-      return sorted;
+      return sorted.sort(
+        (left, right) => {
+          const leftCoverage = new Set(left.offers.map((offer) => offer.storeId)).size;
+          const rightCoverage = new Set(right.offers.map((offer) => offer.storeId)).size;
+          return rightCoverage - leftCoverage ||
+            (right.aiAnalysis?.relevanceScore ?? 0) -
+              (left.aiAnalysis?.relevanceScore ?? 0);
+        },
+      );
   }
 }

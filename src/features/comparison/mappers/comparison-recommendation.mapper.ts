@@ -22,8 +22,11 @@ import type { Product } from "@/features/product/types/product.types";
 import type { Store } from "@/features/store/types/store.types";
 
 import type { ComparisonRecommendation } from "../services/comparison-analysis/comparison-types";
+import type { ComparisonSelectedProductAnalysis } from "../services/comparison.service";
 
 import type { RecommendationViewModel } from "../viewmodels/recommendation.viewmodel";
+import type { Offer } from "@/features/offer/types/offer.types";
+import { getOfferFreshness } from "@/shared/utils/offer-freshness";
 
 interface RecommendationMapperInput {
   recommendation: ComparisonRecommendation;
@@ -31,12 +34,27 @@ interface RecommendationMapperInput {
   product?: Product;
 
   store?: Store;
+
+  productUrl?: string;
+
+  sourceOffer?: Offer;
+
+  savings?: number;
+
+  searchAnalysis?: ComparisonSelectedProductAnalysis;
+
+  formatPrice(valueInNgn: number): string;
 }
 
 export function toComparisonRecommendationViewModel({
   recommendation,
   product,
   store,
+  productUrl = "",
+  sourceOffer,
+  savings = 0,
+  searchAnalysis,
+  formatPrice,
 }: RecommendationMapperInput): RecommendationViewModel {
   const offer = recommendation.offer;
 
@@ -46,13 +64,22 @@ export function toComparisonRecommendationViewModel({
 
   const inStock = offer.availability === "IN_STOCK";
 
-  const availability = inStock ? "In Stock" : "Out of Stock";
+  const availabilityUnverified = sourceOffer?.availabilityStatus === "unverified";
+  const availability = availabilityUnverified
+    ? "Availability Unverified"
+    : inStock
+      ? "In Stock"
+      : "Out of Stock";
 
   const storeName = store?.name ?? "Unknown Store";
 
   const productTitle = product?.title ?? "Unknown Product";
 
   const confidence = Math.round(recommendation.score * 100);
+  const freshness = getOfferFreshness(
+    sourceOffer?.observedAt,
+    sourceOffer?.dataSource ?? "persisted-snapshot",
+  );
 
   const reasons: string[] = [];
 
@@ -76,12 +103,15 @@ export function toComparisonRecommendationViewModel({
     reasons.push("Best overall offer among compared products");
   }
 
-  const title = `Buy from ${storeName}`;
+  const title = availabilityUnverified
+    ? `Verify availability at ${storeName}`
+    : `Buy from ${storeName}`;
 
-  const description =
-    discount > 0
-      ? `${productTitle} is available from ${storeName} for ₦${price.toLocaleString()} with a ${discount}% discount. This offer achieved the highest overall recommendation score after evaluating price, discount, availability and retailer quality.`
-      : `${productTitle} is available from ${storeName} for ₦${price.toLocaleString()}. This offer achieved the highest overall recommendation score after evaluating price, availability and retailer quality.`;
+  const description = availabilityUnverified
+    ? `${storeName} last listed ${productTitle} for ${formatPrice(price)}, but the stored observation is too old to confirm current availability. Verify the product page before relying on this price.`
+    : discount > 0
+      ? `${productTitle} is available from ${storeName} for ${formatPrice(price)} with a ${discount}% discount. This offer achieved the highest overall recommendation score after evaluating price, discount, availability and retailer quality.`
+      : `${productTitle} is available from ${storeName} for ${formatPrice(price)}. This offer achieved the highest overall recommendation score after evaluating price, availability and retailer quality.`;
 
   return {
     title,
@@ -96,6 +126,8 @@ export function toComparisonRecommendationViewModel({
 
     productTitle,
 
+    productUrl,
+
     price,
 
     discount,
@@ -104,8 +136,36 @@ export function toComparisonRecommendationViewModel({
 
     confidence,
 
-    savings: price,
+    savings,
 
     reasons,
+
+    aiConfidenceLabel: searchAnalysis?.confidenceLabel ?? "",
+
+    aiRiskLabel: searchAnalysis?.riskLabel ?? "",
+
+    aiPredictionLabel: searchAnalysis?.predictionLabel ?? "",
+
+    aiEvidenceLabel: searchAnalysis?.predictionEvidenceLabel ?? "",
+
+    aiRecommendationAction: searchAnalysis?.recommendationAction ?? "",
+
+    aiRecommendationReason: searchAnalysis?.recommendationReason ?? "",
+
+    aiInsight: searchAnalysis?.insight ?? "",
+
+    aiVariantStatus: searchAnalysis?.variantStatus ?? "insufficient",
+
+    aiVariantLabel: searchAnalysis?.variantLabel ?? "Limited variant evidence",
+
+    aiVariantSummary:
+      searchAnalysis?.variantSummary ??
+      "Marketplace titles do not provide enough shared variant evidence.",
+
+    freshnessLabel: freshness.label,
+
+    freshnessTitle: freshness.title,
+
+    freshnessIsStale: freshness.isStale,
   };
 }

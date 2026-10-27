@@ -10,10 +10,7 @@
  * - Provide a consistent panel appearance.
  * - Render child widget content.
  *
- * Dashboard Rule:
- * Panels size themselves according to their content.
- * They never force equal heights.
- * -----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------- 
  */
 
 import Card from "@/components/ui/Card";
@@ -29,6 +26,7 @@ function DashboardPanel({ children, className = "" }: DashboardPanelProps) {
     <Card
       className={`
         rounded-3xl
+        h-full
         p-6
         ${className}
       `}

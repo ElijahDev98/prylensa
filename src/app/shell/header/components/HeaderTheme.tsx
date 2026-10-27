@@ -4,22 +4,25 @@
  * Feature: Header
  *
  * Purpose:
- * Theme switch placeholder.
+ * Persistent application theme switch.
  * -----------------------------------------------------------------------------
  */
 
-import { Moon } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
+import { usePreferences } from "@/features/settings";
 
-interface HeaderThemeProps {
-  onClick: () => void;
-}
+function HeaderTheme() {
+  const { theme, toggleTheme } = usePreferences();
+  const dark = theme === "dark";
+  const label = dark ? "Switch to light mode" : "Switch to dark mode";
 
-function HeaderTheme({ onClick }: HeaderThemeProps) {
   return (
     <button
       type="button"
-      aria-label="Toggle theme"
-      onClick={onClick}
+      aria-label={label}
+      title={label}
+      aria-pressed={dark}
+      onClick={toggleTheme}
       className="
         flex
         h-10
@@ -34,7 +37,7 @@ function HeaderTheme({ onClick }: HeaderThemeProps) {
         hover:bg-slate-100
       "
     >
-      <Moon size={18} />
+      {dark ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   );
 }

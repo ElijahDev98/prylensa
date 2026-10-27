@@ -20,6 +20,8 @@
 import DashboardWidgetHeader from "./DashboardWidgetHeader";
 import TrendingProductRow from "./TrendingProductRow";
 
+import { useState } from "react";
+
 import type { TrendingProductViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface TrendingProductsWidgetProps {
@@ -27,19 +29,32 @@ interface TrendingProductsWidgetProps {
 }
 
 function TrendingProductsWidget({ products }: TrendingProductsWidgetProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  const visibleProducts = expanded ? products : products.slice(0, 2);
+
+  const canToggle = products.length > 2;
+
   return (
     <section>
       <DashboardWidgetHeader
         title="Trending Products"
         description="Most active products across connected stores."
-        actionLabel="View All"
+        actionLabel={canToggle ? (expanded ? "Show Less" : "View All") : undefined}
+        onAction={() => setExpanded((current) => !current)}
       />
 
-      <div>
-        {products.map((product) => (
-          <TrendingProductRow key={product.id} product={product} />
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <p className="text-sm text-slate-500">
+          No live marketplace products are available yet.
+        </p>
+      ) : (
+        <div>
+          {visibleProducts.map((product) => (
+            <TrendingProductRow key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

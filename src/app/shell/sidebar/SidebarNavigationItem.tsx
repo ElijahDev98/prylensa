@@ -8,6 +8,7 @@
  */
 
 import { NavLink } from "react-router-dom";
+import { ROUTES } from "@/app/router/routes";
 
 import type { SidebarNavigationItem as NavigationItem } from "./sidebar.types";
 
@@ -21,9 +22,10 @@ function SidebarNavigationItem({ item }: SidebarNavigationItemProps) {
   return (
     <NavLink
       to={item.path}
+      end={item.path === ROUTES.SEARCH}
       className={({ isActive }) =>
         [
-          "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+          "flex items-center justify-center rounded-xl px-3 py-3 text-sm font-medium transition-colors lg:justify-start lg:gap-3 lg:px-4",
           isActive
             ? "bg-blue-600 text-white"
             : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
@@ -32,7 +34,7 @@ function SidebarNavigationItem({ item }: SidebarNavigationItemProps) {
     >
       <Icon size={18} />
 
-      <span>{item.label}</span>
+      <span className="hidden lg:inline">{item.label}</span>
     </NavLink>
   );
 }

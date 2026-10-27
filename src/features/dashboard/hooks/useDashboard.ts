@@ -5,67 +5,85 @@
  *
  * Purpose:
  * Orchestrates the Dashboard feature.
- *
- * Responsibilities:
- * - Load dashboard data.
- * - Coordinate Dashboard services.
- * - Map business models to presentation models.
- * - Expose Dashboard view models.
- *
- * Architecture:
- *
- * UI
- *   ↓
- * Hook
- *   ↓
- * Service
- *   ↓
- * Mapper
- *   ↓
- * ViewModel
- *   ↓
- * Model
- *
- * Notes:
- * - Feature orchestrator.
- * - No business rules.
  * -----------------------------------------------------------------------------
  */
 
 import { useMemo } from "react";
 
-import { mapDashboard } from "../mappers/dashboard.mapper";
+import { getProductIntelligenceItems } from "@/features/product-intelligence";
+import { usePreferences } from "@/features/settings";
 
-import { getDashboard } from "../services/dashboard.service";
+import { useDashboardContext } from "./useDashboardContext";
+import { mapDashboard } from "../mappers/dashboard.mapper";
+import { enrichDashboardWithUserIntelligence } from "../services/dashboard-user-intelligence.service";
+
+import type { DashboardModel } from "../models/dashboard.model";
+
+const EMPTY_DASHBOARD_MODEL: DashboardModel = {
+  metrics: [
+    {
+      id: "products",
+      label: "Products Tracked",
+      value: 0,
+      changePercentage: 0,
+    },
+    {
+      id: "price-drops",
+      label: "Price Drops",
+      value: 0,
+      changePercentage: 0,
+    },
+    {
+      id: "offers",
+      label: "Marketplace Offers",
+      value: 0,
+      changePercentage: 0,
+    },
+    {
+      id: "stores",
+      label: "Stores Monitored",
+      value: 0,
+      changePercentage: 0,
+    },
+  ],
+  trendingProducts: [],
+  recommendations: [],
+  priceAlerts: [],
+  recentComparisons: [],
+  generatedAt: new Date(0).toISOString(),
+};
 
 export default function useDashboard() {
-  /**
-   * ---------------------------------------------------------------------------
-   * Business Model
-   * ---------------------------------------------------------------------------
-   */
-
-  const dashboard = useMemo(() => {
-    return getDashboard();
-  }, []);
-
-  /**
-   * ---------------------------------------------------------------------------
-   * Presentation ViewModel
-   * ---------------------------------------------------------------------------
-   */
+  const { formatPrice } = usePreferences();
+  const context = useDashboardContext();
+  const productIntelligenceItems = useMemo(
+    () => {
+      void context.intelligenceRevision;
+      return getProductIntelligenceItems();
+    },
+    [context.intelligenceRevision],
+  );
 
   const viewModel = useMemo(() => {
-    return mapDashboard(dashboard);
-  }, [dashboard]);
+    const dashboardModel = context.dashboard ?? EMPTY_DASHBOARD_MODEL;
 
-  /**
-   * ---------------------------------------------------------------------------
-   * Public API
-   * ---------------------------------------------------------------------------
-   */
+    return mapDashboard(
+      enrichDashboardWithUserIntelligence(
+        dashboardModel,
+        productIntelligenceItems,
+      ),
+      formatPrice,
+    );
+  }, [context.dashboard, formatPrice, productIntelligenceItems]);
+
+  const hasImmediateIntelligence = productIntelligenceItems.length > 0;
 
   return {
     ...viewModel,
+    loading: context.loading && !hasImmediateIntelligence,
+    refreshing: context.refreshing,
+    error: context.error,
+    lastUpdated: context.lastUpdated,
+    refreshDashboard: context.refreshDashboard,
   };
 }

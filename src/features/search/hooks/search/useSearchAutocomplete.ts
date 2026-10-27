@@ -28,6 +28,7 @@
 import { useCallback, useState } from "react";
 
 import { getAutocomplete } from "../../services/search-autocomplete.service";
+import { loadRecentSearches } from "../../utils/recent-search.storage";
 
 interface UseSearchAutocompleteResult {
   autocomplete: string | null;
@@ -43,7 +44,7 @@ export default function useSearchAutocomplete(): UseSearchAutocompleteResult {
   const [autocomplete, setAutocomplete] = useState<string | null>(null);
 
   const updateAutocomplete = useCallback((query: string) => {
-    setAutocomplete(getAutocomplete(query));
+    setAutocomplete(getAutocomplete(query, loadRecentSearches()));
   }, []);
 
   const acceptAutocomplete = useCallback(

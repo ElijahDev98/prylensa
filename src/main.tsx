@@ -4,7 +4,7 @@
  * Feature: Application Bootstrap
  *
  * Purpose:
- * Entry point of the Priciq application.
+ * Entry point of the Prylensa application.
  *
  * Responsibilities:
  * - Initialize React.
@@ -18,8 +18,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import App from "@/App";
+import { applyAppTheme, readStoredTheme } from "@/features/settings/theme/app-theme";
 
 import "./styles/index.css";
+
+applyAppTheme(readStoredTheme());
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

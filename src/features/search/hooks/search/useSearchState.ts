@@ -35,6 +35,7 @@ function createInitialState(): SearchState {
   return {
     query: "",
     loading: false,
+    hasSearched: false,
     feedback: {},
     results: [],
     selectedResult: null,

@@ -11,11 +11,12 @@
 import { CheckCircle2 } from "lucide-react";
 
 import { formatAvailability } from "@/shared/utils/availability";
-import { formatCurrency } from "@/shared/utils/currency";
 import { formatPercentage } from "@/shared/utils/percentage";
+import { usePreferences } from "@/features/settings";
 
 import type { StockStatus } from "@/features/offer";
 import type { Store } from "@/features/store";
+import { StoreMark } from "@/features/store";
 
 import type {
   ComparisonRowType,
@@ -31,6 +32,7 @@ interface ComparisonValueProps {
 }
 
 function ComparisonValue({ rowType, store, value }: ComparisonValueProps) {
+  const { formatPrice } = usePreferences();
   const valueColorMap = {
     default: "text-slate-900",
     success: "text-green-600",
@@ -47,7 +49,7 @@ function ComparisonValue({ rowType, store, value }: ComparisonValueProps) {
       case "price":
         return (
           <span className={valueColor}>
-            {formatCurrency(value.value as number)}
+            {formatPrice(value.value as number)}
           </span>
         );
 
@@ -103,21 +105,7 @@ function ComparisonValue({ rowType, store, value }: ComparisonValueProps) {
           min-w-0
         "
       >
-        <img
-          src={store.logoUrl}
-          alt={store.logoAlt}
-          className="
-            h-8
-            w-8
-            rounded-md
-            object-contain
-            bg-white
-            border
-            border-slate-200
-            p-1
-            shrink-0
-          "
-        />
+        <StoreMark storeId={store.id} storeName={store.name} />
 
         <span
           className="

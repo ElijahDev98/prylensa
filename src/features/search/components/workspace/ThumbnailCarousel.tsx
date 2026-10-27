@@ -36,29 +36,34 @@ interface ThumbnailCarouselProps {
   activeImageId: string;
 
   onSelectImage(id: string): void;
+
+  onPrevious(): void;
+
+  onNext(): void;
+
+  canGoPrevious: boolean;
+
+  canGoNext: boolean;
 }
 
 function ThumbnailCarousel({
   images,
   activeImageId,
   onSelectImage,
+  onPrevious,
+  onNext,
+  canGoPrevious,
+  canGoNext,
 }: ThumbnailCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) {
-      return;
-    }
-
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -92 : 92,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <div className="mt-3 flex items-center gap-2">
-      <CarouselButton direction="left" onClick={() => scroll("left")} />
+      <CarouselButton
+        direction="left"
+        onClick={onPrevious}
+        disabled={!canGoPrevious}
+      />
 
       <ProductThumbnailList
         images={images}
@@ -67,7 +72,11 @@ function ThumbnailCarousel({
         scrollRef={scrollRef}
       />
 
-      <CarouselButton direction="right" onClick={() => scroll("right")} />
+      <CarouselButton
+        direction="right"
+        onClick={onNext}
+        disabled={!canGoNext}
+      />
     </div>
   );
 }

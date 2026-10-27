@@ -37,9 +37,10 @@ function ComparisonStoreFilter() {
             (option) => option.value,
           );
 
-          comparison.resetPreferences();
-
-          values.forEach((storeId) => comparison.toggleStore(storeId));
+          comparison.setStores(
+            values,
+            comparison.stores.map((store) => store.id),
+          );
         }}
         className="
           min-w-52

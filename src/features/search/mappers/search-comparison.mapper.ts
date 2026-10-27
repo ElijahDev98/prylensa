@@ -38,57 +38,105 @@ function normalizeStoreId(storeId: string): string {
   return normalized;
 }
 
-export function toComparisonSelectedProduct(
+export function toComparisonSelectedProducts(
   result: SearchResultViewModel,
-): ComparisonSelectedProduct {
-  const image = result.images[0];
+): ComparisonSelectedProduct[] {
+  const offersByStore = new Map<string, typeof result.offers>();
 
-  return {
-    id: result.id,
+  for (const offer of result.offers) {
+    const storeId = normalizeStoreId(offer.storeId);
+    const storeOffers = offersByStore.get(storeId) ?? [];
+    storeOffers.push(offer);
+    offersByStore.set(storeId, storeOffers);
+  }
 
-    title: result.title,
+  return [...offersByStore.entries()].map(([storeId, offers]) => {
+    const sortedOffers = [...offers].sort((left, right) => {
+      const leftVerified = left.availabilityStatus === "in-stock";
+      const rightVerified = right.availabilityStatus === "in-stock";
+      if (leftVerified !== rightVerified) {
+        return leftVerified ? -1 : 1;
+      }
 
-    brand: result.brand,
+      return left.currentPrice - right.currentPrice;
+    });
+    const representative = sortedOffers[0];
+    const title = representative?.productTitle || result.title;
+    const imageUrl = representative?.imageUrl || result.thumbnail;
 
-    category: result.category || "Marketplace result",
+    return {
+      id: `${result.id}::${storeId}`,
 
-    description:
-      result.specifications.length > 0
-        ? result.specifications
-            .map((specification) => `${specification.name}: ${specification.value}`)
-            .join(", ")
-        : `${result.title} from ${result.offerCount} marketplace offer${
-            result.offerCount === 1 ? "" : "s"
-          }.`,
+      title,
 
-    imageUrl: image?.url ?? result.thumbnail,
+      brand: representative?.brand || result.brand,
 
-    imageAlt: image?.alt ?? result.title,
+      category: result.category || "Marketplace result",
 
-    rating: result.rating,
+      description: `${title} at ${representative?.storeName ?? storeId}, represented by ${offers.length} matched listing${offers.length === 1 ? "" : "s"}.`,
 
-    reviewCount: result.reviewCount,
+      imageUrl,
 
-    specifications: result.specifications,
+      imageAlt: title,
 
-    offers: result.offers.map((offer) => ({
-      id: offer.id,
+      rating: result.rating,
 
-      storeId: normalizeStoreId(offer.storeId),
+      reviewCount: result.reviewCount,
 
-      currentPrice: offer.currentPrice,
+      specifications: [
+        ...result.specifications,
+        {
+          id: `${result.id}-${storeId}-marketplace`,
+          name: "Marketplace",
+          value: representative?.storeName ?? storeId,
+        },
+      ],
 
-      previousPrice: offer.originalPrice ?? offer.currentPrice,
+      aiAnalysis: result.aiAnalysis
+        ? {
+            confidenceLabel: result.aiAnalysis.confidenceLabel,
+            evaluationLabel: result.aiAnalysis.evaluationLabel,
+            riskLabel: result.aiAnalysis.riskLabel,
+            predictionLabel: result.aiAnalysis.predictionLabel,
+            predictionEvidenceLabel: result.aiAnalysis.predictionEvidenceLabel,
+            recommendationAction: result.aiAnalysis.recommendationAction,
+            recommendationReason: result.aiAnalysis.recommendationReason,
+            insight: result.aiAnalysis.insight,
+            variantStatus: result.aiAnalysis.variantStatus,
+            variantLabel: result.aiAnalysis.variantLabel,
+            variantSummary: result.aiAnalysis.variantSummary,
+          }
+        : undefined,
 
-      discount: offer.discountPercentage ?? 0,
+      offers: sortedOffers.map((offer) => ({
+        id: offer.id,
 
-      shippingFee: 0,
+        storeId,
 
-      estimatedDelivery: "Marketplace delivery",
+        currentPrice: offer.currentPrice,
 
-      stockStatus: offer.inStock ? "IN_STOCK" : "OUT_OF_STOCK",
+        previousPrice: offer.originalPrice ?? offer.currentPrice,
 
-      productUrl: offer.productUrl,
-    })),
-  };
+        discount: offer.discountPercentage ?? 0,
+
+        shippingFee: 0,
+
+        estimatedDelivery: "Marketplace delivery",
+
+        stockStatus: offer.availabilityStatus === "unverified"
+          ? "UNVERIFIED"
+          : offer.inStock
+            ? "IN_STOCK"
+            : "OUT_OF_STOCK",
+
+        productUrl: offer.productUrl,
+
+        dataSource: offer.dataSource,
+
+        observedAt: offer.observedAt,
+
+        availabilityStatus: offer.availabilityStatus,
+      })),
+    };
+  });
 }

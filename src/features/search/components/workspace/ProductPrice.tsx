@@ -25,12 +25,14 @@
  */
 
 import type { SearchOfferViewModel } from "../../viewmodels/search.viewmodel";
+import { usePreferences } from "@/features/settings";
 
 interface ProductPriceProps {
   offer: SearchOfferViewModel | null;
 }
 
 function ProductPrice({ offer }: ProductPriceProps) {
+  const { formatPrice } = usePreferences();
   if (!offer) {
     return (
       <section className="mt-8">
@@ -49,9 +51,10 @@ function ProductPrice({ offer }: ProductPriceProps) {
           {offer.currentPriceLabel}
         </h3>
 
-        {offer.discountPercentage !== undefined && (
-          <span
-            className="
+        {offer.discountPercentage !== undefined &&
+          offer.discountPercentage > 0 && (
+            <span
+              className="
               rounded-full
               bg-green-100
               px-3
@@ -60,10 +63,10 @@ function ProductPrice({ offer }: ProductPriceProps) {
               font-semibold
               text-green-700
             "
-          >
-            -{offer.discountPercentage}%
-          </span>
-        )}
+            >
+              -{offer.discountPercentage}%
+            </span>
+          )}
       </div>
 
       {offer.originalPriceLabel && (
@@ -73,7 +76,7 @@ function ProductPrice({ offer }: ProductPriceProps) {
           </span>
 
           <span className="text-sm text-slate-500">
-            Save ₦{savings.toLocaleString()}
+            Save {formatPrice(savings)}
           </span>
         </div>
       )}

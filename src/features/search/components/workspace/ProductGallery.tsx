@@ -9,7 +9,7 @@
  * Responsibilities:
  * - Display the active product image.
  * - Display thumbnail navigation.
- * - Coordinate gallery presentation state.
+ * - Render controlled matched-store navigation.
  *
  * Architecture:
  * UI
@@ -30,16 +30,20 @@ import { LAYOUT, SPACING } from "@/design-system";
 import ProductImageViewer from "./ProductImageViewer";
 import ThumbnailCarousel from "./ThumbnailCarousel";
 
-import { useProductGallery } from "../../hooks/useProductGallery";
-
 import type { ProductGalleryProps } from "../../types/product-gallery.types";
 
-function ProductGallery({ images }: ProductGalleryProps) {
-  const {
-    activeImage,
-    images: galleryImages,
-    setActiveImageId,
-  } = useProductGallery(images);
+function ProductGallery({
+  images,
+  activeImageId,
+  onSelectImage,
+  onPreviousImage,
+  onNextImage,
+}: ProductGalleryProps) {
+  const activeIndex = Math.max(
+    0,
+    images.findIndex((image) => image.id === activeImageId),
+  );
+  const activeImage = images[activeIndex];
 
   return (
     <Card
@@ -65,9 +69,13 @@ function ProductGallery({ images }: ProductGalleryProps) {
       </div>
 
       <ThumbnailCarousel
-        images={galleryImages}
+        images={images}
         activeImageId={activeImage?.id ?? ""}
-        onSelectImage={setActiveImageId}
+        onSelectImage={onSelectImage}
+        onPrevious={onPreviousImage}
+        onNext={onNextImage}
+        canGoPrevious={activeIndex > 0}
+        canGoNext={activeIndex < images.length - 1}
       />
     </Card>
   );

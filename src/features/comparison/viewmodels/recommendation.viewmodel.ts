@@ -46,6 +46,9 @@ export interface RecommendationViewModel {
    */
   productTitle: string;
 
+  /** Direct URL for the recommended marketplace listing. */
+  productUrl: string;
+
   /**
    * Recommended price.
    */
@@ -75,6 +78,32 @@ export interface RecommendationViewModel {
    * Recommendation reasons.
    */
   reasons: string[];
+
+  aiConfidenceLabel: string;
+
+  aiRiskLabel: string;
+
+  aiPredictionLabel: string;
+
+  aiEvidenceLabel: string;
+
+  aiRecommendationAction: string;
+
+  aiRecommendationReason: string;
+
+  aiInsight: string;
+
+  aiVariantStatus: "verified" | "review" | "conflict" | "insufficient";
+
+  aiVariantLabel: string;
+
+  aiVariantSummary: string;
+
+  freshnessLabel: string;
+
+  freshnessTitle: string;
+
+  freshnessIsStale: boolean;
 }
 
 /**
@@ -93,6 +122,8 @@ export const EMPTY_RECOMMENDATION: RecommendationViewModel = {
 
   productTitle: "",
 
+  productUrl: "",
+
   price: 0,
 
   discount: 0,
@@ -104,4 +135,30 @@ export const EMPTY_RECOMMENDATION: RecommendationViewModel = {
   savings: 0,
 
   reasons: [],
+
+  aiConfidenceLabel: "",
+
+  aiRiskLabel: "",
+
+  aiPredictionLabel: "",
+
+  aiEvidenceLabel: "",
+
+  aiRecommendationAction: "",
+
+  aiRecommendationReason: "",
+
+  aiInsight: "",
+
+  aiVariantStatus: "insufficient",
+
+  aiVariantLabel: "Limited variant evidence",
+
+  aiVariantSummary: "Marketplace titles do not provide enough shared variant evidence.",
+
+  freshnessLabel: "Observation time unavailable",
+
+  freshnessTitle: "",
+
+  freshnessIsStale: true,
 };

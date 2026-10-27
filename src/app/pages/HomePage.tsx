@@ -12,10 +12,10 @@ function HomePage() {
   return (
     <section className="space-y-3">
       <header>
-        <h1 className="text-4xl font-bold text-slate-900">Welcome to Priciq</h1>
+        <h1 className="text-4xl font-bold text-slate-900">Welcome to Prylensa</h1>
 
         <p className="text-slate-500">
-          Application Shell initialized successfully.
+          AI-powered real-time e-commerce price comparison and analysis.
         </p>
       </header>
     </section>

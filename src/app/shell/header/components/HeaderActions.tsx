@@ -11,29 +11,41 @@
 import HeaderCompare from "./HeaderCompare";
 import HeaderNotification from "./HeaderNotification";
 import HeaderProfile from "./HeaderProfile";
+import HeaderQuickActions from "./HeaderQuickActions";
 import HeaderTheme from "./HeaderTheme";
-
-import { useHeaderActions } from "../hooks/useHeaderActions";
+import HeaderWorkspaceActions from "./HeaderWorkspaceActions";
 
 function HeaderActions() {
-  const { onNotificationClick, onProfileClick, onThemeClick } =
-    useHeaderActions();
-
   return (
     <section
+      aria-label="Header actions"
       className="
         flex
+        w-full
         items-center
-        gap-3
+        justify-end
+        gap-2
+        sm:gap-3
+        md:w-auto
       "
     >
-      <HeaderCompare />
+      <div className="hidden sm:block">
+        <HeaderCompare />
+      </div>
 
-      <HeaderTheme onClick={onThemeClick} />
+      <div className="hidden sm:block">
+        <HeaderQuickActions />
+      </div>
 
-      <HeaderNotification onClick={onNotificationClick} />
+      <HeaderTheme />
 
-      <HeaderProfile onClick={onProfileClick} />
+      <div className="hidden sm:block">
+        <HeaderNotification />
+      </div>
+
+      <HeaderWorkspaceActions />
+
+      <HeaderProfile />
     </section>
   );
 }

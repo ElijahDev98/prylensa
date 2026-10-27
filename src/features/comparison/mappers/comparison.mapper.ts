@@ -30,6 +30,8 @@ export function toComparisonProductViewModel(
 
     subtitle: product.brand,
 
+    category: product.category,
+
     imageUrl: product.images[0]?.url ?? "",
 
     imageAlt: product.images[0]?.alt ?? product.title,

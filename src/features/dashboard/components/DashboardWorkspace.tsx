@@ -54,6 +54,7 @@ function DashboardWorkspace({
       className="
         grid
         gap-6
+        items-stretch
         lg:grid-cols-12
       "
     >

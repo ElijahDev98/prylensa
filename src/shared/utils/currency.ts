@@ -1,30 +1,35 @@
-/**
- * -----------------------------------------------------------------------------
- * File: currency.ts
- * Shared Utility
- *
- * Purpose:
- * Provides a centralized currency formatter for the application.
- *
- * Responsibilities:
- * - Format monetary values.
- * - Ensure consistent currency display.
- *
- * Does NOT:
- * - Perform business calculations.
- * -----------------------------------------------------------------------------
- */
+export type AppCurrency = "NGN" | "USD" | "GBP";
 
-const DEFAULT_LOCALE = "en-NG";
+export type CurrencyRates = Record<AppCurrency, number>;
 
-const DEFAULT_CURRENCY = "NGN";
+export const DEFAULT_CURRENCY_RATES: CurrencyRates = {
+  NGN: 1,
+  USD: 0.00073,
+  GBP: 0.00055,
+};
 
-const currencyFormatter = new Intl.NumberFormat(DEFAULT_LOCALE, {
-  style: "currency",
-  currency: DEFAULT_CURRENCY,
-  maximumFractionDigits: 0,
-});
+const CURRENCY_LOCALES: Record<AppCurrency, string> = {
+  NGN: "en-NG",
+  USD: "en-US",
+  GBP: "en-GB",
+};
 
-export function formatCurrency(value: number): string {
-  return currencyFormatter.format(value);
+export function convertFromNgn(
+  value: number,
+  currency: AppCurrency,
+  rates: CurrencyRates = DEFAULT_CURRENCY_RATES,
+): number {
+  return value * rates[currency];
+}
+
+export function formatCurrency(
+  value: number,
+  currency: AppCurrency = "NGN",
+  rates: CurrencyRates = DEFAULT_CURRENCY_RATES,
+): string {
+  return new Intl.NumberFormat(CURRENCY_LOCALES[currency], {
+    style: "currency",
+    currency,
+    maximumFractionDigits: currency === "NGN" ? 0 : 2,
+  }).format(convertFromNgn(value, currency, rates));
 }

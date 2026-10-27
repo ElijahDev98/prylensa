@@ -39,9 +39,15 @@ export interface ComparisonSelectedProductOffer {
 
   estimatedDelivery: string;
 
-  stockStatus: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
+  stockStatus: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK" | "UNVERIFIED";
 
   productUrl: string;
+
+  dataSource: "live" | "persisted-snapshot";
+
+  observedAt?: string;
+
+  availabilityStatus?: "in-stock" | "out-of-stock" | "unverified";
 }
 
 export interface ComparisonSelectedProductSpecification {
@@ -50,6 +56,20 @@ export interface ComparisonSelectedProductSpecification {
   name: string;
 
   value: string;
+}
+
+export interface ComparisonSelectedProductAnalysis {
+  confidenceLabel: string;
+  evaluationLabel: string;
+  riskLabel: string;
+  predictionLabel: string;
+  predictionEvidenceLabel: string;
+  recommendationAction: string;
+  recommendationReason: string;
+  insight: string;
+  variantStatus: "verified" | "review" | "conflict" | "insufficient";
+  variantLabel: string;
+  variantSummary: string;
 }
 
 export interface ComparisonSelectedProduct {
@@ -73,6 +93,8 @@ export interface ComparisonSelectedProduct {
 
   specifications: ComparisonSelectedProductSpecification[];
 
+  aiAnalysis?: ComparisonSelectedProductAnalysis;
+
   offers: ComparisonSelectedProductOffer[];
 }
 
@@ -84,26 +106,17 @@ export function createComparisonState(): ComparisonState {
   };
 }
 
-export function addProduct(
-  state: ComparisonState,
-  productId: string,
-): ComparisonState {
-  if (state.selectedProductIds.includes(productId)) {
-    return state;
-  }
-
-  return {
-    ...state,
-    selectedProductIds: [...state.selectedProductIds, productId],
-  };
-}
-
 export function addSelectedProduct(
   state: ComparisonState,
   product: ComparisonSelectedProduct,
 ): ComparisonState {
   if (state.selectedProductIds.includes(product.id)) {
-    return state;
+    return {
+      ...state,
+      selectedProducts: state.selectedProducts.map((selectedProduct) =>
+        selectedProduct.id === product.id ? product : selectedProduct,
+      ),
+    };
   }
 
   return {
@@ -113,6 +126,52 @@ export function addSelectedProduct(
 
     selectedProducts: [...state.selectedProducts, product],
   };
+}
+
+export function replaceSelectedProductGroup(
+  _state: ComparisonState,
+  _groupId: string,
+  products: ComparisonSelectedProduct[],
+): ComparisonState {
+  return {
+    selectedProductIds: products.map((product) => product.id),
+    selectedProducts: products,
+  };
+}
+
+export function normalizeSelectedProductGroups(
+  products: ComparisonSelectedProduct[],
+): ComparisonSelectedProduct[] {
+  return products.flatMap((product) => {
+    const offersByStore = new Map<string, ComparisonSelectedProductOffer[]>();
+
+    for (const offer of product.offers) {
+      const storeOffers = offersByStore.get(offer.storeId) ?? [];
+      storeOffers.push(offer);
+      offersByStore.set(offer.storeId, storeOffers);
+    }
+
+    if (offersByStore.size <= 1) {
+      return [product];
+    }
+
+    return [...offersByStore.entries()].map(([storeId, offers]) => ({
+      ...product,
+      id: `${product.id}::${storeId}`,
+      description: `${product.description} Marketplace: ${storeId}.`,
+      specifications: [
+        ...product.specifications.filter(
+          (specification) => specification.name.toLowerCase() !== "marketplace",
+        ),
+        {
+          id: `${product.id}-${storeId}-marketplace`,
+          name: "Marketplace",
+          value: storeId.charAt(0).toUpperCase() + storeId.slice(1),
+        },
+      ],
+      offers,
+    }));
+  });
 }
 
 export function removeProduct(

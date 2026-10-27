@@ -24,6 +24,7 @@ import {
   clearStores,
   createComparisonPreferences,
   resetComparisonPreferences,
+  setStores as updateStores,
   setAvailability as updateAvailability,
   setSort as updateSort,
   toggleStore as updateStoreSelection,
@@ -45,12 +46,20 @@ function useComparisonPreferences(): ComparisonPreferencesViewModel {
         setPreferences((previous) => updateSort(previous, sortBy));
       },
 
-      toggleStore(storeId: string) {
-        setPreferences((previous) => updateStoreSelection(previous, storeId));
+      toggleStore(storeId: string, allStoreIds: string[]) {
+        setPreferences((previous) =>
+          updateStoreSelection(previous, storeId, allStoreIds),
+        );
       },
 
       clearStores() {
         setPreferences((previous) => clearStores(previous));
+      },
+
+      setStores(storeIds: string[], allStoreIds: string[]) {
+        setPreferences((previous) =>
+          updateStores(previous, storeIds, allStoreIds),
+        );
       },
 
       setAvailability(availability: AvailabilityFilter) {

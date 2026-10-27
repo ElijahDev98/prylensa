@@ -6,10 +6,11 @@
  */
 
 export interface HeaderSearchState {
-  isOpen: boolean;
+  query: string;
 }
 
 export interface UseHeaderSearchReturn {
   state: HeaderSearchState;
-  openSearch: () => void;
+  updateQuery: (query: string) => void;
+  submitSearch: () => void;
 }

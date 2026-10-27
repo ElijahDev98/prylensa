@@ -44,6 +44,8 @@ interface SearchWorkspaceProps {
 
   loading: boolean;
 
+  hasSearched: boolean;
+
   error: string | null;
 
   onCompare(productId: string): void;
@@ -55,6 +57,10 @@ interface SearchWorkspaceProps {
   onOpenOfferDialog(): void;
 
   onCloseOfferDialog(): void;
+
+  onOpenComparison(): void;
+
+  onViewComparison(): void;
 
   /**
    * Clears the current product selection.
@@ -69,12 +75,15 @@ function SearchWorkspace({
   results,
   result,
   loading,
+  hasSearched,
   error,
   onCompare,
   isCompared,
   offerDialogOpen,
   onOpenOfferDialog,
   onCloseOfferDialog,
+  onOpenComparison,
+  onViewComparison,
   onChangeProduct,
   onRetry,
 }: SearchWorkspaceProps) {
@@ -95,7 +104,7 @@ function SearchWorkspace({
   /**
    * Initial workspace
    */
-  if (query.trim().length === 0) {
+  if (query.trim().length === 0 || !hasSearched) {
     return <SearchEmpty />;
   }
 
@@ -122,6 +131,7 @@ function SearchWorkspace({
         <WorkspaceLayout
           result={result}
           onCompare={onCompare}
+          onViewComparison={onViewComparison}
           isCompared={isCompared}
           onViewAllPrices={onOpenOfferDialog}
           onChangeProduct={onChangeProduct}
@@ -130,7 +140,10 @@ function SearchWorkspace({
 
       <OfferDialog
         open={offerDialogOpen}
-        offers={result.offers}
+        result={result}
+        isCompared={isCompared}
+        onCompare={() => onCompare(result.id)}
+        onOpenComparison={onOpenComparison}
         onClose={onCloseOfferDialog}
       />
     </>

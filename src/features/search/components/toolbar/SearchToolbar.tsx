@@ -29,7 +29,7 @@
 
 import type { ComponentProps, KeyboardEventHandler, Ref } from "react";
 
-import { Camera, Mic } from "lucide-react";
+import { Camera, Mic, Square } from "lucide-react";
 
 import SearchControls from "./SearchControls";
 import SearchInput from "./SearchInput";
@@ -74,6 +74,18 @@ interface SearchToolbarProps {
   onMoveSuggestionUp(): void;
 
   onMoveSuggestionDown(): void;
+
+  onOpenVisualSearch(): void;
+
+  onToggleVoiceSearch(): void;
+
+  voiceListening: boolean;
+
+  voiceSupported: boolean;
+
+  voiceMessage: string | null;
+
+  voiceError: string | null;
 }
 
 function SearchToolbar({
@@ -93,6 +105,12 @@ function SearchToolbar({
   onSelectSuggestion,
   onMoveSuggestionUp,
   onMoveSuggestionDown,
+  onOpenVisualSearch,
+  onToggleVoiceSearch,
+  voiceListening,
+  voiceSupported,
+  voiceMessage,
+  voiceError,
 }: SearchToolbarProps) {
   /**
    * ---------------------------------------------------------------------------
@@ -155,8 +173,9 @@ function SearchToolbar({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-4">
-      <div className="relative flex-1">
+    <div className="space-y-2">
+      <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-4">
+        <div className="relative min-w-0 basis-full flex-1 md:basis-auto">
         <div
           className="
             flex
@@ -190,7 +209,9 @@ function SearchToolbar({
           <button
             type="button"
             disabled={loading}
+            onClick={onOpenVisualSearch}
             aria-label="Search by image"
+            title="Search by image"
             className="
               rounded-lg
               p-2
@@ -207,21 +228,33 @@ function SearchToolbar({
           <button
             type="button"
             disabled={loading}
-            aria-label="Voice search"
-            className="
+            onClick={onToggleVoiceSearch}
+            aria-label={voiceListening ? "Stop voice search" : "Voice search"}
+            aria-pressed={voiceListening}
+            title={
+              voiceSupported
+                ? voiceListening
+                  ? "Stop listening"
+                  : "Voice search"
+                : "Voice search is unavailable"
+            }
+            className={`
               rounded-lg
               p-2
-              text-slate-500
               transition-colors
-              hover:bg-slate-100
               disabled:cursor-not-allowed
               disabled:opacity-50
-            "
+              ${
+                voiceListening
+                  ? "bg-red-50 text-red-600 hover:bg-red-100"
+                  : "text-slate-500 hover:bg-slate-100"
+              }
+            `}
           >
-            <Mic size={20} />
+            {voiceListening ? <Square size={18} /> : <Mic size={20} />}
           </button>
 
-          <div className="ml-2">
+          <div className="ml-2 hidden sm:block">
             <SearchShortcutHint />
           </div>
         </div>
@@ -231,12 +264,23 @@ function SearchToolbar({
           activeIndex={activeSuggestionIndex}
           onSelect={onSelectSuggestion}
         />
-      </div>
+        </div>
 
-      <SearchControls sort={sort} onSortChange={onSortChange} />
+        <SearchControls sort={sort} onSortChange={onSortChange} />
 
-      <SearchSubmitButton loading={loading} />
-    </form>
+        <SearchSubmitButton loading={loading} />
+      </form>
+
+      {(voiceMessage || voiceError) && (
+        <p
+          role={voiceError ? "alert" : "status"}
+          aria-live="polite"
+          className={`px-1 text-sm ${voiceError ? "text-red-700" : "text-slate-600"}`}
+        >
+          {voiceError ?? voiceMessage}
+        </p>
+      )}
+    </div>
   );
 }
 

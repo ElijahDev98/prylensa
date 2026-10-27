@@ -63,15 +63,25 @@ export function setSort(
 export function toggleStore(
   preferences: ComparisonPreferences,
   storeId: string,
+  allStoreIds: string[],
 ): ComparisonPreferences {
-  const isSelected = preferences.selectedStoreIds.includes(storeId);
+  const selectedStoreIds =
+    preferences.selectedStoreIds.length === 0
+      ? allStoreIds
+      : preferences.selectedStoreIds;
+  const isSelected = selectedStoreIds.includes(storeId);
+  const nextSelectedStoreIds = isSelected
+    ? selectedStoreIds.filter((id) => id !== storeId)
+    : [...selectedStoreIds, storeId];
 
   return {
     ...preferences,
 
-    selectedStoreIds: isSelected
-      ? preferences.selectedStoreIds.filter((id) => id !== storeId)
-      : [...preferences.selectedStoreIds, storeId],
+    // An empty selection is the canonical representation for all stores.
+    selectedStoreIds:
+      nextSelectedStoreIds.length === allStoreIds.length
+        ? []
+        : nextSelectedStoreIds,
   };
 }
 
@@ -107,6 +117,22 @@ export function clearStores(
     ...preferences,
 
     selectedStoreIds: [],
+  };
+}
+
+export function setStores(
+  preferences: ComparisonPreferences,
+  storeIds: string[],
+  allStoreIds: string[],
+): ComparisonPreferences {
+  const validStoreIds = [...new Set(storeIds)].filter((storeId) =>
+    allStoreIds.includes(storeId),
+  );
+
+  return {
+    ...preferences,
+    selectedStoreIds:
+      validStoreIds.length === allStoreIds.length ? [] : validStoreIds,
   };
 }
 

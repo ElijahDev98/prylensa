@@ -4,7 +4,7 @@
 | Feature: Global Styles
 |
 | Purpose:
-| Global stylesheet for the Priciq application.
+| Global stylesheet for the Prylensa application.
 |
 | Responsibilities:
 | - Import Tailwind CSS.
@@ -17,6 +17,13 @@
 :root {
   font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: light;
+  --chart-grid: #e2e8f0;
+  --chart-text: #334155;
+  --chart-text-muted: #475569;
+  --chart-cursor: rgba(15, 23, 42, 0.04);
+  --chart-tooltip: #ffffff;
+  --chart-border: #e2e8f0;
+  --chart-shadow: rgba(15, 23, 42, 0.1);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -38,6 +45,239 @@ body,
 body {
   background-color: #f8fafc;
   color: #0f172a;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --chart-grid: #293548;
+  --chart-text: #e2e8f0;
+  --chart-text-muted: #94a3b8;
+  --chart-cursor: rgba(148, 163, 184, 0.08);
+  --chart-tooltip: #111827;
+  --chart-border: #334155;
+  --chart-shadow: rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] body {
+  background-color: #080d18;
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: #111827 !important;
+}
+
+html[data-theme="dark"] .bg-slate-50 {
+  background-color: #172033 !important;
+}
+
+html[data-theme="dark"] .bg-slate-100 {
+  background-color: #0b1220 !important;
+}
+
+html[data-theme="dark"] .bg-slate-200 {
+  background-color: #263246 !important;
+}
+
+html[data-theme="dark"] .bg-slate-300 {
+  background-color: #334155 !important;
+}
+
+html[data-theme="dark"] .bg-slate-400 {
+  background-color: #475569 !important;
+}
+
+html[data-theme="dark"] .text-slate-950,
+html[data-theme="dark"] .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .text-slate-700 {
+  color: #d5deea !important;
+}
+
+html[data-theme="dark"] .text-slate-600 {
+  color: #bdc9d8 !important;
+}
+
+html[data-theme="dark"] .text-slate-500 {
+  color: #9aa9bd !important;
+}
+
+html[data-theme="dark"] .text-slate-400 {
+  color: #8190a6 !important;
+}
+
+html[data-theme="dark"] .text-slate-300 {
+  color: #708198 !important;
+}
+
+html[data-theme="dark"] .border-slate-100 {
+  border-color: #202b3d !important;
+}
+
+html[data-theme="dark"] .border-slate-200,
+html[data-theme="dark"] .divide-slate-200 > :not(:last-child) {
+  border-color: #293548 !important;
+}
+
+html[data-theme="dark"] .border-slate-300 {
+  border-color: #3a4960 !important;
+}
+
+html[data-theme="dark"] .divide-slate-100 > :not(:last-child) {
+  border-color: #202b3d !important;
+}
+
+html[data-theme="dark"] .bg-blue-50 {
+  background-color: #10254a !important;
+}
+
+html[data-theme="dark"] .bg-blue-100 {
+  background-color: #153565 !important;
+}
+
+html[data-theme="dark"] .bg-blue-300 {
+  background-color: #315b91 !important;
+}
+
+html[data-theme="dark"] .text-blue-600,
+html[data-theme="dark"] .text-blue-700 {
+  color: #7db5ff !important;
+}
+
+html[data-theme="dark"] .text-blue-800 {
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] .border-blue-100,
+html[data-theme="dark"] .border-blue-200 {
+  border-color: #244a78 !important;
+}
+
+html[data-theme="dark"] .border-blue-300 {
+  border-color: #3b82f6 !important;
+}
+
+html[data-theme="dark"] .bg-emerald-50,
+html[data-theme="dark"] .bg-emerald-100,
+html[data-theme="dark"] .bg-green-100 {
+  background-color: #0d3029 !important;
+}
+
+html[data-theme="dark"] .text-emerald-500,
+html[data-theme="dark"] .text-emerald-600,
+html[data-theme="dark"] .text-emerald-700,
+html[data-theme="dark"] .text-emerald-800,
+html[data-theme="dark"] .text-green-600,
+html[data-theme="dark"] .text-green-700 {
+  color: #6ee7b7 !important;
+}
+
+html[data-theme="dark"] .border-emerald-100,
+html[data-theme="dark"] .border-emerald-200,
+html[data-theme="dark"] .border-emerald-300,
+html[data-theme="dark"] .border-green-200 {
+  border-color: #176654 !important;
+}
+
+html[data-theme="dark"] .bg-amber-50,
+html[data-theme="dark"] .bg-amber-100 {
+  background-color: #352810 !important;
+}
+
+html[data-theme="dark"] .text-amber-400,
+html[data-theme="dark"] .text-amber-500,
+html[data-theme="dark"] .text-amber-600,
+html[data-theme="dark"] .text-amber-700,
+html[data-theme="dark"] .text-amber-800,
+html[data-theme="dark"] .text-yellow-400 {
+  color: #fcd34d !important;
+}
+
+html[data-theme="dark"] .border-amber-100,
+html[data-theme="dark"] .border-amber-200,
+html[data-theme="dark"] .border-amber-500 {
+  border-color: #806520 !important;
+}
+
+html[data-theme="dark"] .bg-red-50,
+html[data-theme="dark"] .bg-red-100 {
+  background-color: #3a171c !important;
+}
+
+html[data-theme="dark"] .text-red-500,
+html[data-theme="dark"] .text-red-600,
+html[data-theme="dark"] .text-red-700,
+html[data-theme="dark"] .text-red-900,
+html[data-theme="dark"] .text-rose-700 {
+  color: #fca5a5 !important;
+}
+
+html[data-theme="dark"] .border-red-100,
+html[data-theme="dark"] .border-red-200 {
+  border-color: #7f3038 !important;
+}
+
+html[data-theme="dark"] .bg-purple-100,
+html[data-theme="dark"] .bg-violet-100 {
+  background-color: #2d2148 !important;
+}
+
+html[data-theme="dark"] .text-purple-600,
+html[data-theme="dark"] .text-violet-600 {
+  color: #c4b5fd !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea {
+  caret-color: #60a5fa;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #718096;
+}
+
+html[data-theme="dark"] [data-highlighted] {
+  background-color: #1e293b;
+}
+
+html[data-theme="dark"] .hover\:bg-slate-50:hover,
+html[data-theme="dark"] .hover\:bg-slate-100:hover,
+html[data-theme="dark"] .focus\:bg-slate-100:focus {
+  background-color: #1e293b !important;
+}
+
+html[data-theme="dark"] .hover\:bg-slate-200:hover {
+  background-color: #334155 !important;
+}
+
+html[data-theme="dark"] .hover\:text-slate-600:hover,
+html[data-theme="dark"] .hover\:text-slate-900:hover {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] ::selection {
+  background-color: #1d4ed8;
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }
 
 /* Hide horizontal scrollbar while preserving scrolling */

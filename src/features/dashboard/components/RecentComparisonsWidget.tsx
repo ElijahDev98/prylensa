@@ -20,6 +20,8 @@
 import DashboardWidgetHeader from "./DashboardWidgetHeader";
 import RecentComparisonRow from "./RecentComparisonRow";
 
+import { useState } from "react";
+
 import type { RecentComparisonViewModel } from "../viewmodels/dashboard.viewmodel";
 
 interface RecentComparisonsWidgetProps {
@@ -29,19 +31,32 @@ interface RecentComparisonsWidgetProps {
 function RecentComparisonsWidget({
   comparisons,
 }: RecentComparisonsWidgetProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  const visibleComparisons = expanded ? comparisons : comparisons.slice(0, 2);
+
+  const canToggle = comparisons.length > 2;
+
   return (
     <section>
       <DashboardWidgetHeader
         title="Recent Comparisons"
         description="Latest comparison activity across products."
-        actionLabel="View All"
+        actionLabel={canToggle ? (expanded ? "Show Less" : "View All") : undefined}
+        onAction={() => setExpanded((current) => !current)}
       />
 
-      <div>
-        {comparisons.map((comparison) => (
-          <RecentComparisonRow key={comparison.id} comparison={comparison} />
-        ))}
-      </div>
+      {comparisons.length === 0 ? (
+        <p className="text-sm text-slate-500">
+          Recent live comparisons will appear after products are refreshed.
+        </p>
+      ) : (
+        <div>
+          {visibleComparisons.map((comparison) => (
+            <RecentComparisonRow key={comparison.id} comparison={comparison} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

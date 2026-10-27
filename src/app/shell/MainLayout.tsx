@@ -25,11 +25,12 @@ function MainLayout() {
       ---------------------------------------------------------------------- */}
       <aside
         className="
-          w-72
+          w-20
           shrink-0
           border-r
           border-slate-200
           bg-white
+          lg:w-72
         "
       >
         <AppSidebar />
@@ -38,15 +39,17 @@ function MainLayout() {
       {/* ---------------------------------------------------------------------
           Main Application
       ---------------------------------------------------------------------- */}
-      <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <AppHeader />
 
         <main
           id="main-content"
           className="
             flex-1
+            min-w-0
             overflow-y-auto
-            p-6
+            p-4
+            sm:p-6
           "
         >
           <Outlet />

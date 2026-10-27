@@ -6,30 +6,42 @@
  * Purpose:
  * Encapsulates the Header Search state and behaviour.
  *
- * Future Integration:
- * - Command Palette
- * - Ctrl + K
- * - Search Suggestions
- * - Search History
- * - AI Search
  * -----------------------------------------------------------------------------
  */
 
 import { useCallback, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
+import { ROUTES } from "@/app/router/routes";
+
 import type { UseHeaderSearchReturn } from "../types/header.types";
 
 export function useHeaderSearch(): UseHeaderSearchReturn {
-  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
-  const openSearch = useCallback(() => {
-    setIsOpen(true);
+  const navigate = useNavigate();
+
+  const updateQuery = useCallback((nextQuery: string) => {
+    setQuery(nextQuery);
   }, []);
+
+  const submitSearch = useCallback(() => {
+    const trimmedQuery = query.trim();
+
+    if (trimmedQuery.length === 0) {
+      navigate(ROUTES.SEARCH);
+      return;
+    }
+
+    navigate(`${ROUTES.SEARCH}?q=${encodeURIComponent(trimmedQuery)}`);
+  }, [navigate, query]);
 
   return {
     state: {
-      isOpen,
+      query,
     },
-    openSearch,
+    updateQuery,
+    submitSearch,
   };
 }

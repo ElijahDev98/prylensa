@@ -18,9 +18,8 @@
  * -----------------------------------------------------------------------------
  */
 
-import { getOffersByProductId } from "@/features/offer/services/offer.service";
-
 import type { Product } from "@/features/product";
+import type { Offer } from "@/features/offer/types/offer.types";
 
 import type { ComparisonSortOption } from "../types/comparison-preferences.types";
 
@@ -30,20 +29,21 @@ import type { ComparisonSortOption } from "../types/comparison-preferences.types
 export function orderProducts(
   products: Product[],
   sortBy: ComparisonSortOption,
+  offers: Offer[] = [],
 ): Product[] {
   const ordered = [...products];
 
   switch (sortBy) {
     case "price-ascending":
-      ordered.sort(compareLowestPriceAscending);
+      ordered.sort((left, right) => getLowestPrice(left, offers) - getLowestPrice(right, offers));
       break;
 
     case "price-descending":
-      ordered.sort(compareLowestPriceDescending);
+      ordered.sort((left, right) => getLowestPrice(right, offers) - getLowestPrice(left, offers));
       break;
 
     case "discount-descending":
-      ordered.sort(compareHighestDiscountDescending);
+      ordered.sort((left, right) => getHighestDiscount(right, offers) - getHighestDiscount(left, offers));
       break;
 
     case "alphabetical":
@@ -57,27 +57,6 @@ export function orderProducts(
 /**
  * Lowest price first.
  */
-function compareLowestPriceAscending(left: Product, right: Product): number {
-  return getLowestPrice(left) - getLowestPrice(right);
-}
-
-/**
- * Highest price first.
- */
-function compareLowestPriceDescending(left: Product, right: Product): number {
-  return getLowestPrice(right) - getLowestPrice(left);
-}
-
-/**
- * Highest discount first.
- */
-function compareHighestDiscountDescending(
-  left: Product,
-  right: Product,
-): number {
-  return getHighestDiscount(right) - getHighestDiscount(left);
-}
-
 /**
  * Alphabetical order.
  */
@@ -88,8 +67,8 @@ function compareAlphabetically(left: Product, right: Product): number {
 /**
  * Lowest available offer.
  */
-function getLowestPrice(product: Product): number {
-  const offers = getOffersByProductId(product.id);
+function getLowestPrice(product: Product, allOffers: Offer[]): number {
+  const offers = allOffers.filter((offer) => offer.productId === product.id);
 
   if (offers.length === 0) {
     return Number.MAX_SAFE_INTEGER;
@@ -101,8 +80,8 @@ function getLowestPrice(product: Product): number {
 /**
  * Highest available discount.
  */
-function getHighestDiscount(product: Product): number {
-  const offers = getOffersByProductId(product.id);
+function getHighestDiscount(product: Product, allOffers: Offer[]): number {
+  const offers = allOffers.filter((offer) => offer.productId === product.id);
 
   if (offers.length === 0) {
     return 0;

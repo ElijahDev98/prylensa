@@ -29,6 +29,7 @@
 import { useCallback } from "react";
 
 import { searchProducts } from "../../services/search.service";
+import { usePreferences } from "@/features/settings";
 
 import {
   addRecentSearch,
@@ -46,6 +47,7 @@ interface UseSearchActionsProps {
 }
 
 export default function useSearchActions({ setState }: UseSearchActionsProps) {
+  const { formatPrice } = usePreferences();
   const updateSort = useCallback(
     async (sort: SearchSortOption) => {
       let query = "";
@@ -54,6 +56,7 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
         ...previous,
         sort,
         loading: true,
+        hasSearched: false,
       }));
 
       setState((previous) => {
@@ -62,15 +65,16 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
         return previous;
       });
 
-      const results = await searchProducts(query, sort);
+      const results = await searchProducts(query, sort, formatPrice);
 
       setState((previous) => ({
         ...previous,
         loading: false,
+        hasSearched: true,
         results,
       }));
     },
-    [setState],
+    [setState, formatPrice],
   );
 
   const executeSearch = useCallback(async () => {
@@ -84,16 +88,18 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
       return {
         ...previous,
         loading: true,
+        hasSearched: false,
         feedback: {},
       };
     });
 
-    const results = await searchProducts(query, sort);
+    const results = await searchProducts(query, sort, formatPrice);
 
     setState((previous) => {
       return {
         ...previous,
         loading: false,
+        hasSearched: true,
         results,
         selectedResult: null,
         recentSearches: addRecentSearch(
@@ -102,7 +108,7 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
         ),
       };
     });
-  }, [setState]);
+  }, [setState, formatPrice]);
 
   const executeRecentSearch = useCallback(
     async (query: string) => {
@@ -115,23 +121,25 @@ export default function useSearchActions({ setState }: UseSearchActionsProps) {
           ...previous,
           query,
           loading: true,
+          hasSearched: false,
           feedback: {},
           selectedResult: null,
         };
       });
 
-      const results = await searchProducts(query, sort);
+      const results = await searchProducts(query, sort, formatPrice);
 
       setState((previous) => ({
         ...previous,
         query,
         loading: false,
+        hasSearched: true,
         results,
         selectedResult: null,
         recentSearches: addRecentSearch(previous.recentSearches, query),
       }));
     },
-    [setState],
+    [setState, formatPrice],
   );
 
   const selectResult = useCallback(

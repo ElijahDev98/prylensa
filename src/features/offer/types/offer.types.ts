@@ -19,7 +19,11 @@
 /**
  * Product availability at a store.
  */
-export type StockStatus = "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
+export type StockStatus =
+  | "IN_STOCK"
+  | "LOW_STOCK"
+  | "OUT_OF_STOCK"
+  | "UNVERIFIED";
 
 /**
  * Supported currencies.
@@ -92,10 +96,15 @@ export interface Offer {
    * Last synchronization time.
    *
    * NOTE:
-   * Mock string for now.
-   * Later becomes ISO timestamp.
+   * ISO timestamp from the marketplace observation.
    */
   lastUpdated: string;
+
+  dataSource: "live" | "persisted-snapshot";
+
+  observedAt?: string;
+
+  availabilityStatus?: "in-stock" | "out-of-stock" | "unverified";
 
   /**
    * Currency.

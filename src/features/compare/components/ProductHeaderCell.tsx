@@ -17,6 +17,7 @@
  */
 
 import { Star, X } from "lucide-react";
+import ProductImage from "@/components/ui/ProductImage";
 
 import type { ComparisonProductViewModel } from "@/features/comparison/viewmodels/comparison-product.viewmodel";
 
@@ -61,22 +62,11 @@ function ProductHeaderCell({ product, onRemove }: ProductHeaderCellProps) {
           bg-slate-50
         "
       >
-        {product.imageUrl ? (
-          <img
-            src={product.imageUrl}
-            alt={product.imageAlt}
-            className="h-full w-full object-contain"
-          />
-        ) : (
-          <div
-            className="
-              h-16
-              w-12
-              rounded-lg
-              bg-slate-200
-            "
-          />
-        )}
+        <ProductImage
+          src={product.imageUrl}
+          alt={product.imageAlt}
+          category={product.category}
+        />
       </div>
 
       {/* Product Information */}

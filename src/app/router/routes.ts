@@ -13,6 +13,8 @@ export const ROUTES = {
 
   SEARCH: "/search",
 
+  SEARCH_HISTORY: "/search/history",
+
   DASHBOARD: "/dashboard",
 
   COMPARE: "/compare",

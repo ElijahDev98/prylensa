@@ -24,8 +24,6 @@
  * -----------------------------------------------------------------------------
  */
 
-import { getProducts } from "@/features/product";
-
 function normalize(value: string): string {
   return value.trim().toLowerCase();
 }
@@ -38,15 +36,14 @@ function normalize(value: string): string {
  * Match:      "Xiaomi 15 Ultra"
  * Returns:    " 15 Ultra"
  */
-export function getAutocomplete(query: string): string | null {
+export function getAutocomplete(query: string, candidates: string[] = []): string | null {
   const keyword = normalize(query);
 
   if (keyword.length < 2) {
     return null;
   }
 
-  const bestMatch = getProducts()
-    .map((product) => product.title)
+  const bestMatch = candidates
     .filter((title) => normalize(title).startsWith(keyword))
     .sort((left, right) => left.localeCompare(right))[0];
 

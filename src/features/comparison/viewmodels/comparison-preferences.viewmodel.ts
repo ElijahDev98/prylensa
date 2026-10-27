@@ -44,12 +44,14 @@ export interface ComparisonPreferencesViewModel {
   /**
    * Toggles a store filter.
    */
-  toggleStore(storeId: string): void;
+  toggleStore(storeId: string, allStoreIds: string[]): void;
 
   /**
    * Clears all selected stores.
    */
   clearStores(): void;
+
+  setStores(storeIds: string[], allStoreIds: string[]): void;
 
   /**
    * Updates the availability filter.

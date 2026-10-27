@@ -1,3 +1,5 @@
+import type { StockStatus } from "@/features/offer";
+
 /**
  * -----------------------------------------------------------------------------
  * File: comparison-analytics.viewmodel.ts
@@ -42,11 +44,66 @@ export interface ComparisonPricePointViewModel {
   isHighest: boolean;
 }
 
+export type ComparisonMarketPosition =
+  | "Best price"
+  | "Below average"
+  | "Above average";
+
+export interface ComparisonOfferPricePointViewModel {
+  id: string;
+  productId: string;
+  productName: string;
+  storeId: string;
+  storeName: string;
+  price: number;
+  previousPrice: number;
+  discount: number;
+  stockStatus: StockStatus;
+  productUrl: string;
+  differenceFromBest: number;
+  differencePercentage: number;
+  position: ComparisonMarketPosition;
+  isBest: boolean;
+  dataSource: "live" | "persisted-snapshot";
+  observedAt?: string;
+  availabilityStatus: "in-stock" | "unverified";
+  freshnessLabel: string;
+  isStale: boolean;
+}
+
+export interface ComparisonMarketplacePriceViewModel {
+  id: string;
+  productId: string;
+  productName: string;
+  storeId: string;
+  storeName: string;
+  price: number;
+  previousPrice: number;
+  discount: number;
+  stockStatus: StockStatus;
+  productUrl: string;
+  offerCount: number;
+  differenceFromBest: number;
+  differencePercentage: number;
+  isLowest: boolean;
+  isHighest: boolean;
+  dataSource: "live" | "persisted-snapshot";
+  availabilityStatus: "in-stock" | "unverified";
+  freshnessLabel: string;
+  isStale: boolean;
+}
+
 export interface ComparisonAnalyticsViewModel {
   /**
    * Product price distribution.
    */
   prices: ComparisonPricePointViewModel[];
+
+  /** Every visible marketplace offer used by the distribution table. */
+  offers: ComparisonOfferPricePointViewModel[];
+
+  /** One best listing per product and marketplace for store-level comparison. */
+  marketplacePrices: ComparisonMarketplacePriceViewModel[];
 
   /**
    * Lowest available price.
@@ -62,6 +119,16 @@ export interface ComparisonAnalyticsViewModel {
    * Average product price.
    */
   averagePrice: number;
+
+  medianPrice: number;
+
+  priceRange: number;
+
+  spreadPercentage: number;
+
+  offerCount: number;
+
+  storeCount: number;
 }
 
 /**
@@ -70,9 +137,23 @@ export interface ComparisonAnalyticsViewModel {
 export const EMPTY_ANALYTICS: ComparisonAnalyticsViewModel = {
   prices: [],
 
+  offers: [],
+
+  marketplacePrices: [],
+
   lowestPrice: 0,
 
   highestPrice: 0,
 
   averagePrice: 0,
+
+  medianPrice: 0,
+
+  priceRange: 0,
+
+  spreadPercentage: 0,
+
+  offerCount: 0,
+
+  storeCount: 0,
 };

@@ -18,7 +18,13 @@
  * -----------------------------------------------------------------------------
  */
 
-import { Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import {
+  recommendationActionLabel,
+  recommendationDestination,
+} from "@/features/ai-recommendations/services/recommendation-navigation";
 
 import type { RecommendationViewModel } from "../viewmodels/dashboard.viewmodel";
 
@@ -27,6 +33,8 @@ interface RecommendationRowProps {
 }
 
 function RecommendationRow({ recommendation }: RecommendationRowProps) {
+  const navigate = useNavigate();
+
   return (
     <article
       className="
@@ -122,6 +130,15 @@ function RecommendationRow({ recommendation }: RecommendationRowProps) {
           >
             {recommendation.description}
           </p>
+
+          <button
+            type="button"
+            onClick={() => navigate(recommendationDestination(recommendation))}
+            className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700"
+          >
+            {recommendationActionLabel(recommendation)}
+            <ArrowRight size={15} />
+          </button>
         </div>
       </div>
 

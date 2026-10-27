@@ -8,18 +8,15 @@
  * -----------------------------------------------------------------------------
  */
 
+import { usePreferences } from "@/features/settings";
+
 interface BestOfferCardProps {
   store: string;
   price: number;
-  currency: string;
 }
 
-function BestOfferCard({ store, price, currency }: BestOfferCardProps) {
-  const formatter = new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  });
+function BestOfferCard({ store, price }: BestOfferCardProps) {
+  const { formatPrice } = usePreferences();
 
   return (
     <section
@@ -36,7 +33,7 @@ function BestOfferCard({ store, price, currency }: BestOfferCardProps) {
         Best Offer
       </p>
 
-      <h3 className="mt-3 text-xl font-bold">{formatter.format(price)}</h3>
+      <h3 className="mt-3 text-xl font-bold">{formatPrice(price)}</h3>
 
       <p className="mt-2 text-sm text-blue-100">{store}</p>
     </section>

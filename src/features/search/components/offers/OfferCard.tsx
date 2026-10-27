@@ -31,6 +31,11 @@ interface OfferCardProps {
 }
 
 function OfferCard({ offer }: OfferCardProps) {
+  const availabilityLabel = offer.availabilityStatus === "unverified"
+    ? "Availability unverified"
+    : offer.inStock
+      ? "In Stock"
+      : "Out of Stock";
   return (
     <article
       className="
@@ -47,7 +52,7 @@ function OfferCard({ offer }: OfferCardProps) {
           <h3 className="font-semibold text-slate-900">{offer.storeName}</h3>
 
           <p className="text-sm text-slate-500">
-            {offer.inStock ? "In Stock" : "Out of Stock"}
+            {availabilityLabel}
           </p>
         </div>
 
@@ -56,11 +61,12 @@ function OfferCard({ offer }: OfferCardProps) {
             {offer.currentPriceLabel}
           </p>
 
-          {offer.discountPercentage !== undefined && (
-            <p className="text-sm text-green-600">
-              Save {offer.discountPercentage}%
-            </p>
-          )}
+          {offer.discountPercentage !== undefined &&
+            offer.discountPercentage > 0 && (
+              <p className="text-sm text-green-600">
+                Save {offer.discountPercentage}%
+              </p>
+            )}
 
           {offer.originalPriceLabel && (
             <p className="text-sm text-slate-400 line-through">

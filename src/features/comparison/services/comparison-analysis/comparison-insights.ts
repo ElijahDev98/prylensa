@@ -32,14 +32,14 @@ function buildSavingsInsight(
   if (summary.potentialSavings >= 100_000) {
     title = "Excellent Savings Opportunity";
 
-    description = `You can save approximately ₦${summary.potentialSavings.toLocaleString()} by choosing the lowest-priced retailer instead of the most expensive option.`;
+    description = "The lowest-priced retailer provides a substantial saving over the most expensive current offer.";
 
     recommendationText =
       "This price difference is substantial. Purchasing from the recommended retailer provides excellent value.";
   } else if (summary.potentialSavings >= 50_000) {
     title = "Good Savings Opportunity";
 
-    description = `Current retailer prices differ by about ₦${summary.potentialSavings.toLocaleString()}, creating a worthwhile saving opportunity.`;
+    description = "Current retailer prices differ enough to create a worthwhile saving opportunity.";
 
     recommendationText =
       "Compare retailers before checkout to avoid paying significantly more.";
@@ -148,14 +148,14 @@ function buildPriceSpreadInsight(
 
     severity = "warning";
 
-    description = `Prices differ by approximately ₦${summary.priceSpread.toLocaleString()} across retailers.`;
+    description = "A significant price difference is present across retailers.";
 
     recommendationText =
       "Always compare prices before purchasing to avoid unnecessary spending.";
   } else if (summary.priceSpread >= 40_000) {
     title = "Moderate Price Variation";
 
-    description = `Retail prices vary by about ₦${summary.priceSpread.toLocaleString()}.`;
+    description = "Retail prices show a moderate difference across marketplaces.";
 
     recommendationText =
       "Price comparison is recommended before making a purchase.";
@@ -204,7 +204,7 @@ function buildAveragePriceInsight(
 
     title: "Market Price Benchmark",
 
-    description: `The current average selling price across all compared retailers is ₦${Math.round(summary.averagePrice).toLocaleString()}.`,
+    description: "This is the current average selling price across all compared retailers.",
 
     recommendationText:
       "Use this average as a benchmark when evaluating future offers.",

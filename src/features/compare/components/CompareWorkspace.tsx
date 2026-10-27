@@ -18,13 +18,12 @@
 
 import BestOfferCard from "../../comparison/components/BestOffer";
 import ComparisonAnalytics from "../../comparison/components/ComparisonAnalytics";
-import ComparisonInsights from "../../comparison/components/ComparisonInsights";
+import AIComparisonPanel from "./AIComparisonPanel";
 import ComparisonMatrix from "./ComparisonMatrix";
 import ComparisonPanel from "./ComparisonPanel";
 import ComparisonPanelHeader from "./ComparisonPanelHeader";
 import ComparisonSummary from "../../comparison/components/ComparisonSummary";
 import ComparisonToolbar from "./ComparisonToolbar";
-import RecommendationPanel from "../../comparison/components/RecommendationPanel";
 
 function CompareWorkspace() {
   return (
@@ -32,6 +31,7 @@ function CompareWorkspace() {
       aria-label="Compare Workspace"
       className="
         flex
+        min-w-0
         flex-col
         gap-8
       "
@@ -43,37 +43,7 @@ function CompareWorkspace() {
       <ComparisonToolbar />
 
       {/* ------------------------------------------------------------------ */}
-      {/* AI Recommendation */}
-      {/* ------------------------------------------------------------------ */}
-
-      <RecommendationPanel />
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Summary */}
-      {/* ------------------------------------------------------------------ */}
-
-      <ComparisonSummary />
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Best Offer */}
-      {/* ------------------------------------------------------------------ */}
-
-      <BestOfferCard />
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Analytics */}
-      {/* ------------------------------------------------------------------ */}
-
-      <ComparisonAnalytics />
-
-      {/* ------------------------------------------------------------------ */}
-      {/* AI Insights */}
-      {/* ------------------------------------------------------------------ */}
-
-      <ComparisonInsights />
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Comparison Matrix */}
+      {/* Factual comparison inputs */}
       {/* ------------------------------------------------------------------ */}
 
       <ComparisonPanel>
@@ -90,6 +60,30 @@ function CompareWorkspace() {
 
         <ComparisonMatrix />
       </ComparisonPanel>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Headline price evidence */}
+      {/* ------------------------------------------------------------------ */}
+
+      <ComparisonSummary />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Detailed analytics */}
+      {/* ------------------------------------------------------------------ */}
+
+      <ComparisonAnalytics />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* AI inference */}
+      {/* ------------------------------------------------------------------ */}
+
+      <AIComparisonPanel />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Actionable offer */}
+      {/* ------------------------------------------------------------------ */}
+
+      <BestOfferCard />
     </section>
   );
 }

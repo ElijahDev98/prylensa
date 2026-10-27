@@ -19,8 +19,6 @@
  * -----------------------------------------------------------------------------
  */
 
-import { getOffersByProductId } from "@/features/offer/services/offer.service";
-
 import type { Offer } from "@/features/offer/types/offer.types";
 import type { Product } from "@/features/product/types/product.types";
 import type { Store } from "@/features/store/types/store.types";
@@ -98,10 +96,40 @@ function buildAvailabilityRow(
   };
 }
 
-function getProductOffers(productId: string, offers?: Offer[]): Offer[] {
-  const sourceOffers = offers ?? getOffersByProductId(productId);
+function getProductOffers(productId: string, offers: Offer[] = []): Offer[] {
+  return offers.filter((offer) => offer.productId === productId);
+}
 
-  return sourceOffers.filter((offer) => offer.productId === productId);
+function getBestStoreOffers(
+  productId: string,
+  stores: Store[],
+  offers: Offer[] = [],
+): Offer[] {
+  const productOffers = getProductOffers(productId, offers);
+
+  return stores.flatMap((store) => {
+    const storeOffers = productOffers
+      .filter(
+        (offer) =>
+          offer.storeId === store.id &&
+          Number.isFinite(offer.currentPrice) &&
+          offer.currentPrice > 0,
+      )
+      .sort((left, right) => {
+        const leftAvailable = left.stockStatus === "IN_STOCK" ||
+          left.stockStatus === "LOW_STOCK";
+        const rightAvailable = right.stockStatus === "IN_STOCK" ||
+          right.stockStatus === "LOW_STOCK";
+
+        if (leftAvailable !== rightAvailable) {
+          return leftAvailable ? -1 : 1;
+        }
+
+        return left.currentPrice - right.currentPrice;
+      });
+
+    return storeOffers.length > 0 ? [storeOffers[0]] : [];
+  });
 }
 
 function buildPriceValues(
@@ -109,9 +137,7 @@ function buildPriceValues(
   stores: Store[],
   offers?: Offer[],
 ): ComparisonProductValuesModel {
-  const productOffers = getProductOffers(product.id, offers).filter((offer) =>
-    stores.some((store) => store.id === offer.storeId),
-  );
+  const productOffers = getBestStoreOffers(product.id, stores, offers);
 
   return {
     productId: product.id,
@@ -129,9 +155,7 @@ function buildDiscountValues(
   stores: Store[],
   offers?: Offer[],
 ): ComparisonProductValuesModel {
-  const productOffers = getProductOffers(product.id, offers).filter((offer) =>
-    stores.some((store) => store.id === offer.storeId),
-  );
+  const productOffers = getBestStoreOffers(product.id, stores, offers);
 
   return {
     productId: product.id,
@@ -149,9 +173,7 @@ function buildAvailabilityValues(
   stores: Store[],
   offers?: Offer[],
 ): ComparisonProductValuesModel {
-  const productOffers = getProductOffers(product.id, offers).filter((offer) =>
-    stores.some((store) => store.id === offer.storeId),
-  );
+  const productOffers = getBestStoreOffers(product.id, stores, offers);
 
   return {
     productId: product.id,

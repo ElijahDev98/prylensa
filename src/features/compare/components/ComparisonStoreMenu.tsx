@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown";
 
 import useComparison from "@/features/comparison/hooks/useComparison";
+import { StoreMark } from "@/features/store";
 
 interface ComparisonStoreMenuProps {
   disabled: boolean;
@@ -84,7 +85,12 @@ function ComparisonStoreMenu({ disabled }: ComparisonStoreMenuProps) {
               <DropdownCheckboxItem
                 key={store.id}
                 checked={checked}
-                onCheckedChange={() => comparison.toggleStore(store.id)}
+                onCheckedChange={() =>
+                  comparison.toggleStore(
+                    store.id,
+                    comparison.stores.map((item) => item.id),
+                  )
+                }
               >
                 <div
                   className="
@@ -93,20 +99,7 @@ function ComparisonStoreMenu({ disabled }: ComparisonStoreMenuProps) {
                     gap-3
                   "
                 >
-                  <img
-                    src={store.logoUrl}
-                    alt={store.logoAlt}
-                    className="
-                      h-8
-                      w-8
-                      rounded-md
-                      border
-                      border-slate-200
-                      bg-white
-                      object-contain
-                      p-1
-                    "
-                  />
+                  <StoreMark storeId={store.id} storeName={store.name} />
 
                   <span>{store.name}</span>
                 </div>

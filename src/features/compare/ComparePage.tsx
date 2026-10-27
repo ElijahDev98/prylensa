@@ -26,6 +26,7 @@ function ComparePage() {
       className="
         mx-auto
         flex
+        min-w-0
         w-full
         max-w-screen-2xl
         flex-col

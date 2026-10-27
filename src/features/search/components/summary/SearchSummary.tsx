@@ -26,6 +26,8 @@ import { BarChart3 } from "lucide-react";
 import SearchSummaryCard from "./SearchSummaryCard";
 
 interface SearchSummaryProps {
+  query: string;
+
   resultCount: number;
 
   storeCount: number;
@@ -33,13 +35,17 @@ interface SearchSummaryProps {
   lowestPrice: string;
 
   averagePrice: string;
+
+  bestQueryMatch: string;
 }
 
 function SearchSummary({
+  query,
   resultCount,
   storeCount,
   lowestPrice,
   averagePrice,
+  bestQueryMatch,
 }: SearchSummaryProps) {
   if (resultCount === 0) {
     return null;
@@ -70,17 +76,14 @@ function SearchSummary({
         <div className="flex items-center gap-3">
           <BarChart3 size={18} className="text-blue-600" />
 
-          <h2
-            className="
-              text-sm
-              font-semibold
-              uppercase
-              tracking-wider
-              text-slate-700
-            "
-          >
-            Search Analytics
-          </h2>
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold text-slate-800">
+              Search result overview
+            </h2>
+            <p className="mt-0.5 truncate text-xs text-slate-500">
+              Results for “{query}”
+            </p>
+          </div>
         </div>
 
         <span
@@ -89,7 +92,7 @@ function SearchSummary({
             text-slate-500
           "
         >
-          Updated now
+          {resultCount} {resultCount === 1 ? "product" : "products"}
         </span>
       </header>
 
@@ -103,13 +106,13 @@ function SearchSummary({
           lg:grid-cols-4
         "
       >
-        <SearchSummaryCard label="Products" value={resultCount} />
-
         <SearchSummaryCard label="Stores" value={storeCount} />
 
         <SearchSummaryCard label="Lowest Price" value={lowestPrice} />
 
         <SearchSummaryCard label="Average Price" value={averagePrice} />
+
+        <SearchSummaryCard label="Best Query Match" value={bestQueryMatch} />
       </div>
     </section>
   );

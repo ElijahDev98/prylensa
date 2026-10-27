@@ -18,7 +18,7 @@
  * -----------------------------------------------------------------------------
  */
 
-import { Box, Download, Plus, Trash2 } from "lucide-react";
+import { Box, Download, LoaderCircle, Plus, Trash2 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +26,7 @@ import ComparisonSortMenu from "./ComparisonSortMenu";
 import ComparisonStoreMenu from "./ComparisonStoreMenu";
 
 import useComparisonContext from "@/features/comparison/context/useComparisonContext";
+import { getComparisonGroupId } from "@/features/comparison/utils/comparison-group";
 
 function ComparisonToolbar() {
   const comparison = useComparisonContext();
@@ -36,10 +37,17 @@ function ComparisonToolbar() {
 
   const hasProducts = productCount > 0;
 
-  const canSort = productCount > 1;
+  const matchedGroupIds = new Set(
+    comparison.products.map((product) => getComparisonGroupId(product.id)),
+  );
+  const matchedMarketplaceMode =
+    matchedGroupIds.size === 1 &&
+    comparison.analytics.marketplacePrices.length > 1;
+
+  const canSort = productCount > 1 && !matchedMarketplaceMode;
 
   function handleAddProduct() {
-    navigate("/search");
+    navigate("/search?mode=comparison");
   }
 
   return (
@@ -88,8 +96,9 @@ function ComparisonToolbar() {
               text-slate-900
             "
           >
-            {productCount} Product
-            {productCount !== 1 ? "s" : ""} Selected
+            {matchedMarketplaceMode
+              ? "1 Matched Product"
+              : `${productCount} Product${productCount !== 1 ? "s" : ""} Selected`}
           </h2>
 
           <p
@@ -99,7 +108,9 @@ function ComparisonToolbar() {
               text-slate-500
             "
           >
-            Compare pricing, availability and product features.
+            {matchedMarketplaceMode
+              ? `${comparison.analytics.storeCount} marketplaces represented by ${comparison.analytics.offerCount} available listings.`
+              : "Compare pricing, availability and product features."}
           </p>
         </div>
       </div>
@@ -120,32 +131,43 @@ function ComparisonToolbar() {
 
         <ComparisonSortMenu disabled={!canSort} />
 
-        <button
-          type="button"
-          disabled={!hasProducts}
-          onClick={comparison.exportComparison}
-          className="
-            inline-flex
-            items-center
-            gap-2
-            rounded-xl
-            border
-            border-slate-200
-            bg-white
-            px-4
-            py-3
-            text-sm
-            font-medium
-            text-slate-700
-            transition-colors
-            hover:bg-slate-50
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-          "
-        >
-          <Download size={16} />
-          Export
-        </button>
+        <div className="flex flex-col items-end gap-1">
+          <button
+            type="button"
+            disabled={comparison.isExportingDataset}
+            onClick={() => void comparison.exportDataset()}
+            className="
+              inline-flex
+              items-center
+              gap-2
+              rounded-xl
+              border
+              border-slate-200
+              bg-white
+              px-4
+              py-3
+              text-sm
+              font-medium
+              text-slate-700
+              transition-colors
+              hover:bg-slate-50
+              disabled:cursor-wait
+              disabled:opacity-60
+            "
+          >
+            {comparison.isExportingDataset ? (
+              <LoaderCircle size={16} className="animate-spin" />
+            ) : (
+              <Download size={16} />
+            )}
+            {comparison.isExportingDataset ? "Preparing dataset" : "Export AI dataset"}
+          </button>
+          {comparison.datasetExportError ? (
+            <span className="max-w-64 text-right text-xs text-red-600" role="alert">
+              {comparison.datasetExportError}
+            </span>
+          ) : null}
+        </div>
 
         <button
           type="button"

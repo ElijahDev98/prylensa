@@ -58,6 +58,11 @@ export interface SearchState {
   loading: boolean;
 
   /**
+   * Indicates that the current query has completed successfully.
+   */
+  hasSearched: boolean;
+
+  /**
    * User-facing feedback.
    */
   feedback: SearchFeedback;

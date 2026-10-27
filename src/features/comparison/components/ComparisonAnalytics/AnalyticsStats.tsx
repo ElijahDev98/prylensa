@@ -9,75 +9,38 @@
  */
 
 import useComparison from "@/features/comparison/hooks/useComparison";
+import { usePreferences } from "@/features/settings";
 
 function AnalyticsStats() {
-  const { analytics, summary } = useComparison();
+  const { analytics } = useComparison();
+  const { formatPrice } = usePreferences();
+
+  const metrics = [
+    { label: "Observed offers", value: analytics.offerCount.toString() },
+    { label: "Marketplaces", value: analytics.storeCount.toString() },
+    { label: "Median price", value: formatPrice(analytics.medianPrice) },
+    {
+      label: "Price spread",
+      value: `${formatPrice(analytics.priceRange)} (${analytics.spreadPercentage.toFixed(1)}%)`,
+    },
+  ];
 
   return (
-    <section
-      className="
-        rounded-3xl
-        border
-        border-slate-200
-        bg-white
-        p-6
-        shadow-sm
-      "
-    >
-      <h3
-        className="
-          text-lg
-          font-semibold
-          text-slate-900
-        "
-      >
-        Price Statistics
-      </h3>
-
-      <dl
-        className="
-          mt-6
-          space-y-5
-        "
-      >
-        <div className="flex justify-between">
-          <dt className="text-slate-500">Lowest Price</dt>
-
-          <dd className="font-semibold">
-            ₦{analytics.lowestPrice.toLocaleString()}
+    <dl className="grid overflow-hidden rounded-lg border border-slate-200 bg-slate-50 sm:grid-cols-2 xl:grid-cols-4">
+      {metrics.map((metric, index) => (
+        <div
+          key={metric.label}
+          className={`p-4 ${index > 0 ? "border-t border-slate-200 sm:border-l sm:border-t-0" : ""}`}
+        >
+          <dt className="text-xs font-semibold uppercase text-slate-500">
+            {metric.label}
+          </dt>
+          <dd className="mt-1 text-lg font-bold text-slate-950">
+            {metric.value}
           </dd>
         </div>
-
-        <div className="flex justify-between">
-          <dt className="text-slate-500">Highest Price</dt>
-
-          <dd className="font-semibold">
-            ₦{analytics.highestPrice.toLocaleString()}
-          </dd>
-        </div>
-
-        <div className="flex justify-between">
-          <dt className="text-slate-500">Average Price</dt>
-
-          <dd className="font-semibold">
-            ₦{analytics.averagePrice.toLocaleString()}
-          </dd>
-        </div>
-
-        <div className="flex justify-between">
-          <dt className="text-slate-500">Estimated Savings</dt>
-
-          <dd
-            className="
-              font-semibold
-              text-emerald-600
-            "
-          >
-            ₦{summary.estimatedSavings.toLocaleString()}
-          </dd>
-        </div>
-      </dl>
-    </section>
+      ))}
+    </dl>
   );
 }
 

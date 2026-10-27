@@ -9,16 +9,6 @@
  */
 
 /**
- * Store data.
- */
-export * from "./data/stores";
-
-/**
- * Store services.
- */
-export * from "./services/store.service";
-
-/**
  * Store domain types.
  */
 export type { Store } from "./types/store.types";
@@ -27,3 +17,5 @@ export type { Store } from "./types/store.types";
  * Store ViewModels.
  */
 export type { StoreViewModel } from "./viewmodels/store.viewmodel";
+
+export { default as StoreMark } from "./components/StoreMark";

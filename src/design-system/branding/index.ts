@@ -8,12 +8,15 @@
  * -----------------------------------------------------------------------------
  */
 
-import Logo from "@/assets/branding/priciq-logo.png";
+import Logo from "@/assets/branding/prylensa-logo.png";
 
 export const branding = {
-  name: "Priciq",
+  name: "Prylensa",
 
-  tagline: "Smart Price Intelligence",
+  tagline: "AI-Powered Real-Time Price Intelligence",
+
+  fullTitle:
+    "AI-powered Real-time E-commerce Price Comparison and Analysis System",
 
   loaderMessage: "Preparing your workspace...",
 

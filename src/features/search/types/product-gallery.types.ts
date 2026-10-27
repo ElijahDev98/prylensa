@@ -40,4 +40,12 @@ export interface ProductImageViewerProps {
  */
 export interface ProductGalleryProps {
   images: ProductImageViewModel[];
+
+  activeImageId: string;
+
+  onSelectImage(id: string): void;
+
+  onPreviousImage(): void;
+
+  onNextImage(): void;
 }

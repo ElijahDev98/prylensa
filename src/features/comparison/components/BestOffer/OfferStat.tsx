@@ -30,11 +30,11 @@ function OfferStat({ label, value }: OfferStatProps) {
         h-full
         flex-col
         justify-between
-        rounded-2xl
+        rounded-lg
         border
         border-slate-200
         bg-slate-50
-        p-5
+        p-4
         transition-all
         duration-300
         hover:-translate-y-0.5
@@ -49,8 +49,7 @@ function OfferStat({ label, value }: OfferStatProps) {
             text-xs
             font-semibold
             uppercase
-            tracking-widest
-            text-slate-500
+          text-slate-500
           "
         >
           {label}
@@ -71,9 +70,9 @@ function OfferStat({ label, value }: OfferStatProps) {
 
       <p
         className="
-          mt-6
+          mt-4
           wrap-break-word
-          text-2xl
+          text-xl
           font-bold
           tracking-tight
           text-slate-900

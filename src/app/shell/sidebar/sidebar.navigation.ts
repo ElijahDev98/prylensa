@@ -11,6 +11,7 @@
 import {
   BarChart3,
   Bell,
+  History,
   LayoutDashboard,
   Search,
   Settings,
@@ -33,6 +34,12 @@ export const SIDEBAR_NAVIGATION: SidebarNavigationItem[] = [
     label: "Search",
     path: ROUTES.SEARCH,
     icon: Search,
+  },
+  {
+    id: "search-history",
+    label: "Recent Searches",
+    path: ROUTES.SEARCH_HISTORY,
+    icon: History,
   },
   {
     id: "compare",

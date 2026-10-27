@@ -3,7 +3,7 @@
  * File: vite.config.ts
  *
  * Purpose:
- * Global Vite configuration for the Priciq frontend.
+ * Global Vite configuration for the Prylensa frontend.
  *
  * Responsibilities:
  * - Configure React.

@@ -14,13 +14,16 @@ import {
   CartesianGrid,
   Cell,
   Label,
+  LabelList,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
+import type { ReactNode } from "react";
 
 import ChartCard from "./ChartCard";
+import { usePreferences } from "@/features/settings";
 
 interface BarChartCardProps<T extends object> {
   title: string;
@@ -32,10 +35,12 @@ interface BarChartCardProps<T extends object> {
   xKey: keyof T;
 
   yKey: keyof T;
-}
 
-function formatCurrency(value: number) {
-  return `₦${value.toLocaleString()}`;
+  xAxisLabel?: string;
+
+  showValueLabels?: boolean;
+
+  footer?: ReactNode;
 }
 
 function truncateLabel(label: string) {
@@ -48,7 +53,12 @@ function BarChartCard<T extends object>({
   data,
   xKey,
   yKey,
+  xAxisLabel = "Compared Products",
+  showValueLabels = false,
+  footer,
 }: BarChartCardProps<T>) {
+  const { currency, formatPrice } = usePreferences();
+
   return (
     <ChartCard title={title} description={description}>
       <div className="h-96 w-full">
@@ -63,7 +73,7 @@ function BarChartCard<T extends object>({
             }}
           >
             <CartesianGrid
-              stroke="#E5E7EB"
+              stroke="var(--chart-grid)"
               strokeDasharray="4 4"
               vertical={false}
             />
@@ -76,15 +86,15 @@ function BarChartCard<T extends object>({
               tick={{
                 fontSize: 16,
                 fontWeight: 500,
-                fill: "#475569",
+                fill: "var(--chart-text-muted)",
               }}
             >
               <Label
-                value="Compared Products"
+                value={xAxisLabel}
                 position="insideBottom"
                 offset={-10}
                 style={{
-                  fill: "#334155",
+                  fill: "var(--chart-text)",
                   fontSize: 16,
                   fontWeight: 600,
                 }}
@@ -93,19 +103,19 @@ function BarChartCard<T extends object>({
 
             <YAxis
               width={95}
-              tickFormatter={(value) => formatCurrency(Number(value))}
+              tickFormatter={(value) => formatPrice(Number(value))}
               tick={{
                 fontSize: 13,
                 fontWeight: 500,
-                fill: "#475569",
+                fill: "var(--chart-text-muted)",
               }}
             >
               <Label
-                value="Price (₦)"
+                value={`Price (${currency})`}
                 angle={-90}
                 position="insideLeft"
                 style={{
-                  fill: "#334155",
+                  fill: "var(--chart-text)",
                   fontSize: 16,
                   fontWeight: 600,
                 }}
@@ -113,14 +123,16 @@ function BarChartCard<T extends object>({
             </YAxis>
 
             <Tooltip
-              formatter={(value) => formatCurrency(Number(value))}
+              formatter={(value) => formatPrice(Number(value))}
               cursor={{
-                fill: "rgba(15,23,42,0.04)",
+                fill: "var(--chart-cursor)",
               }}
               contentStyle={{
                 borderRadius: 14,
-                border: "1px solid #E2E8F0",
-                boxShadow: "0 12px 32px rgba(15,23,42,0.10)",
+                backgroundColor: "var(--chart-tooltip)",
+                color: "var(--chart-text)",
+                border: "1px solid var(--chart-border)",
+                boxShadow: "0 12px 32px var(--chart-shadow)",
               }}
               labelStyle={{
                 fontWeight: 600,
@@ -146,10 +158,23 @@ function BarChartCard<T extends object>({
 
                 return <Cell key={index} fill={fill} />;
               })}
+              {showValueLabels && (
+                <LabelList
+                  dataKey={String(yKey)}
+                  position="top"
+                  formatter={(value: unknown) => formatPrice(Number(value))}
+                  style={{
+                    fill: "var(--chart-text)",
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
+                />
+              )}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
+      {footer}
     </ChartCard>
   );
 }

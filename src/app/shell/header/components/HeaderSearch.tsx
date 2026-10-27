@@ -14,13 +14,16 @@ import { HEADER_SEARCH } from "../constants/header.constants";
 import { useHeaderSearch } from "../hooks/useHeaderSearch";
 
 function HeaderSearch() {
-  const { openSearch } = useHeaderSearch();
+  const { state, updateQuery, submitSearch } = useHeaderSearch();
 
   return (
-    <button
-      type="button"
-      aria-label="Open search"
-      onClick={openSearch}
+    <form
+      role="search"
+      aria-label="Global product search"
+      onSubmit={(event) => {
+        event.preventDefault();
+        submitSearch();
+      }}
       className="
         flex
         h-11
@@ -41,12 +44,24 @@ function HeaderSearch() {
     >
       <Search size={18} className="text-slate-400" />
 
-      <span className="flex-1 text-sm text-slate-500">
-        {HEADER_SEARCH.placeholder}
-      </span>
+      <input
+        value={state.query}
+        onChange={(event) => updateQuery(event.target.value)}
+        placeholder={HEADER_SEARCH.placeholder}
+        className="
+          min-w-0
+          flex-1
+          bg-transparent
+          text-sm
+          text-slate-700
+          outline-none
+          placeholder:text-slate-500
+        "
+      />
 
       <kbd
         className="
+          hidden
           rounded-md
           border
           border-slate-300
@@ -55,11 +70,12 @@ function HeaderSearch() {
           py-1
           text-xs
           text-slate-500
+          sm:block
         "
       >
         {HEADER_SEARCH.shortcut}
       </kbd>
-    </button>
+    </form>
   );
 }
 
