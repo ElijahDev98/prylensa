@@ -1,7 +1,17 @@
+<<<<<<< HEAD
+=======
+# Nestjs specific
+/dist
+/node_modules
+/build
+/tmp
+
+>>>>>>> 97b74b75fd6d3180a60c863eaa0f799569285ef0
 # Logs
 logs
 *.log
 npm-debug.log*
+<<<<<<< HEAD
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
@@ -23,3 +33,19 @@ dist-ssr
 *.sln
 *.sw?
 "node_modules/" 
+=======
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# dotenv environment variable files
+.env
+.env.development
+.env.test
+.env.production
+
+# temp directory
+.temp
+.tmp
+>>>>>>> 97b74b75fd6d3180a60c863eaa0f799569285ef0
